@@ -1,1 +1,59 @@
-<!-- KARMA -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KARMA</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="navbar-logo"><span>K</span>ARMA</div>
+    <div class="navbar-links">
+      <a class="navbar-link active" href="index.html">Accueil</a>
+      <a class="navbar-link" href="events.html">Évènements</a>
+    </div>
+    <div class="navbar-user">
+      <span class="mode-badge" id="mode-badge"></span>
+      <div class="avatar" id="avatar" onclick="handleLogout()"></div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div style="background:#0d1f3c; padding:20px 24px; border-bottom:0.5px solid #1a3a5c;">
+    <div style="font-size:11px; color:#4a7a9b; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:6px;">Bienvenue sur KARMA</div>
+    <div style="font-size:20px; font-weight:500; color:#fff; margin-bottom:4px;">Krialys Au Rendez-vous des Meilleurs Analystes</div>
+    <div style="font-size:13px; color:#4a7a9b;">Paris sportifs internes — sans argent, juste la gloire !</div>
+  </div>
+
+  <div class="page-body">
+
+    <!-- EVENEMENT EN COURS -->
+    <div id="current-event-section" style="display:none;">
+      <div class="section-label">Évènement en cours</div>
+      <div class="card card-accent" id="current-event-card"></div>
+      <div class="section-label">Classement provisoire</div>
+      <div class="card" id="current-ranking"></div>
+    </div>
+
+    <!-- PROCHAIN EVENEMENT -->
+    <div id="next-event-section" style="display:none;">
+      <div class="section-label">Prochain évènement</div>
+      <div class="card" id="next-event-card"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- DERNIER EVENEMENT TERMINE -->
+    <div id="last-event-section" style="display:none;">
+      <div class="section-label">Dernier évènement terminé</div>
+      <div class="card card-accent" id="last-event-card"></div>
+    </div>
+
+  </div>
+
+  <script type="module" src="js/home.js"></script>
+</body>
+</html>
