@@ -1,1 +1,33 @@
-<!-- KARMA -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KARMA — Connexion</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="login-page">
+
+  <div class="login-container">
+    <div class="login-logo">
+      <span>K</span>ARMA
+    </div>
+    <div class="login-subtitle">Krialys Au Rendez-vous des Meilleurs Analystes</div>
+
+    <div class="login-card">
+      <div id="login-error" class="error-msg" style="display:none;"></div>
+      <div class="form-group">
+        <label>Login</label>
+        <input type="text" id="login" placeholder="ex: doudou" autocomplete="username"/>
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" id="password" placeholder="••••••••" autocomplete="current-password"/>
+      </div>
+      <button id="login-btn" onclick="handleLogin()">Se connecter</button>
+    </div>
+  </div>
+
+  <script type="module" src="js/auth.js"></script>
+</body>
+</html>
