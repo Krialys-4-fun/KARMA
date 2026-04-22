@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KARMA — Bienvenue</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .onboarding-container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .onboarding-logo {
+      font-size: 28px;
+      font-weight: 600;
+      color: #f97316;
+      letter-spacing: 3px;
+      margin-bottom: 8px;
+    }
+    .onboarding-logo span { color: #fff; }
+    .onboarding-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .onboarding-sub {
+      font-size: 13px;
+      color: #4a7a9b;
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+    .mode-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .mode-card {
+      background: #0d1f3c;
+      border: 2px solid #1a3a5c;
+      border-radius: 12px;
+      padding: 24px 16px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      text-align: center;
+    }
+    .mode-card:hover { border-color: #38bdf8; }
+    .mode-card.selected { border-color: #f97316; }
+    .mode-card-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+    .mode-card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .mode-card-desc {
+      font-size: 12px;
+      color: #6a8caa;
+      line-height: 1.5;
+    }
+    .warning-msg {
+      background: #1a1a0a;
+      border: 0.5px solid #854f0b;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #ef9f27;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .confirm-btn {
+      background: #f97316;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      opacity: 0.4;
+    }
+    .confirm-btn.ready { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="onboarding-container">
+    <div class="onboarding-logo"><span>K</span>ARMA</div>
+    <div class="onboarding-title">Bienvenue ! Choisissez votre mode de jeu</div>
+    <div class="onboarding-sub">Ce choix est définitif — seul l'admin pourra le modifier ultérieurement.</div>
+
+    <div class="mode-cards">
+      <div class="mode-card" id="card-expert" onclick="selectMode('EXPERT')">
+        <div class="mode-card-icon">🧠</div>
+        <div class="mode-card-title">Expert</div>
+        <div class="mode-card-desc">Je joue en aveugle. Je ne vois pas les votes des autres avant la fermeture des votes.</div>
+      </div>
+      <div class="mode-card" id="card-mouton" onclick="selectMode('MOUTON')">
+        <div class="mode-card-icon">🐑</div>
+        <div class="mode-card-title">Mouton</div>
+        <div class="mode-card-desc">Je vois les votes déjà déposés par les autres joueurs avant de voter.</div>
+      </div>
+    </div>
+
+    <div class="warning-msg">
+      ⚠️ Attention — ce choix ne pourra plus être modifié sans intervention de l'admin.
+    </div>
+
+    <button class="confirm-btn" id="confirm-btn" onclick="confirmMode()" disabled>
+      Confirmer mon choix
+    </button>
+  </div>
+
+  <script type="module">
+    import { supabase } from './js/supabase.js';
+
+    const user = JSON.parse(localStorage.getItem('karma_user'));
+    if (!user) window.location.href = 'login.html';
+
+    let selectedMode = null;
+
+    window.selectMode = function(mode) {
+      selectedMode = mode;
+      document.getElementById('card-expert').classList.remove('selected');
+      document.getElementById('card-mouton').classList.remove('selected');
+      document.getElementById('card-' + mode.toLowerCase()).classList.add('selected');
+      const btn = document.getElementById('confirm-btn');
+      btn.disabled = false;
+      btn.classList.add('ready');
+    }
+
+    window.confirmMode = async function() {
+      if (!selectedMode) return;
+
+      const { error } = await supabase
+        .from('users')
+        .update({ mode: selectedMode, mode_modifiable: false })
+        .eq('id', user.id);
+
+      if (error) {
+        alert('Erreur lors de la sauvegarde. Réessayez.');
+        return;
+      }
+
+      // Mise à jour session locale
+      user.mode = selectedMode;
+      localStorage.setItem('karma_user', JSON.stringify(user));
+
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
