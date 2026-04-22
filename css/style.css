@@ -1,1 +1,302 @@
-/* KARMA */
+/* ========== BASE ========== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #0a1628;
+  color: #ccd6e0;
+  min-height: 100vh;
+}
+
+/* ========== NAVBAR ========== */
+.navbar {
+  background: #0d1f3c;
+  border-bottom: 0.5px solid #1a3a5c;
+  padding: 0 24px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-logo {
+  font-size: 18px;
+  font-weight: 600;
+  color: #f97316;
+  letter-spacing: 2px;
+}
+
+.navbar-logo span { color: #ffffff; }
+
+.navbar-links { display: flex; gap: 20px; }
+
+.navbar-link {
+  font-size: 13px;
+  color: #6a8caa;
+  cursor: pointer;
+  padding: 4px 0;
+  border-bottom: 2px solid transparent;
+  text-decoration: none;
+}
+
+.navbar-link:hover { color: #ccd6e0; }
+.navbar-link.active { color: #38bdf8; border-bottom-color: #38bdf8; }
+
+.navbar-user { display: flex; align-items: center; gap: 8px; }
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #f97316;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+}
+
+.mode-badge {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: #0a1a2a;
+  color: #38bdf8;
+  border: 0.5px solid #1a3a5c;
+}
+
+/* ========== LOGIN ========== */
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 380px;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.login-logo {
+  font-size: 36px;
+  font-weight: 600;
+  color: #f97316;
+  letter-spacing: 4px;
+  margin-bottom: 8px;
+}
+
+.login-logo span { color: #fff; }
+
+.login-subtitle {
+  font-size: 12px;
+  color: #4a7a9b;
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+.login-card {
+  background: #0d1f3c;
+  border: 0.5px solid #1a3a5c;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: left;
+}
+
+/* ========== FORMS ========== */
+.form-group { margin-bottom: 16px; }
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  color: #4a7a9b;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  background: #0a1628;
+  border: 0.5px solid #1a3a5c;
+  border-radius: 6px;
+  color: #ccd6e0;
+  font-size: 13px;
+  padding: 9px 12px;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #38bdf8;
+}
+
+/* ========== BUTTONS ========== */
+button {
+  width: 100%;
+  background: #f97316;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+button:hover { background: #ea6c0a; }
+
+.btn-secondary {
+  background: #1a3a5c;
+  color: #38bdf8;
+}
+
+.btn-secondary:hover { background: #1f4a72; }
+
+.btn-danger {
+  background: transparent;
+  color: #f87171;
+  border: 0.5px solid #f87171;
+  font-size: 12px;
+  padding: 5px 10px;
+  width: auto;
+  margin-top: 0;
+}
+
+.btn-danger:hover { background: #2a1a1a; }
+
+.btn-small {
+  font-size: 11px;
+  padding: 4px 10px;
+  width: auto;
+  margin-top: 0;
+  background: #1a3a5c;
+  color: #6a8caa;
+  border: 0.5px solid #1a3a5c;
+}
+
+.btn-small:hover { color: #38bdf8; }
+
+/* ========== BADGES ========== */
+.badge {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.badge-live { background: #2a1a0a; color: #f97316; border: 0.5px solid #f97316; }
+.badge-soon { background: #0a1a2a; color: #38bdf8; }
+.badge-done { background: #0a2a1a; color: #4ade80; }
+.badge-open { background: #0a1a2a; color: #38bdf8; }
+.badge-locked { background: #1a1a2a; color: #6a8caa; }
+.badge-expert { background: #0a1a2a; color: #38bdf8; }
+.badge-mouton { background: #0a2a1a; color: #4ade80; }
+
+/* ========== CARDS ========== */
+.card {
+  background: #0d1f3c;
+  border: 0.5px solid #1a3a5c;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.card-accent { border-left: 3px solid #f97316; border-radius: 0 10px 10px 0; }
+
+/* ========== MESSAGES ========== */
+.error-msg {
+  background: #2a1a1a;
+  color: #f87171;
+  border: 0.5px solid #f87171;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+.success-msg {
+  background: #0a2a1a;
+  color: #4ade80;
+  border: 0.5px solid #4ade80;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+/* ========== PAGE LAYOUT ========== */
+.page-body { padding: 20px 24px; max-width: 800px; margin: 0 auto; }
+
+.section-label {
+  font-size: 11px;
+  color: #4a7a9b;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  margin-top: 20px;
+}
+
+.divider { height: 0.5px; background: #1a3a5c; margin: 20px 0; }
+
+/* ========== TABLES ========== */
+.data-table { width: 100%; border-collapse: collapse; }
+
+.data-table th {
+  font-size: 11px;
+  color: #4a7a9b;
+  text-align: left;
+  padding: 8px;
+  border-bottom: 0.5px solid #1a3a5c;
+}
+
+.data-table td {
+  font-size: 13px;
+  color: #ccd6e0;
+  padding: 10px 8px;
+  border-bottom: 0.5px solid #0d1f3c;
+  vertical-align: middle;
+}
+
+.data-table tr.me td { color: #f97316; }
+
+/* ========== VOTES ========== */
+.votes-list {
+  margin-top: 8px;
+  background: #0a1628;
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+.votes-list-title {
+  font-size: 11px;
+  color: #4a7a9b;
+  margin-bottom: 6px;
+}
+
+.vote-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 0.5px solid #0d1f3c;
+  font-size: 12px;
+}
+
+.vote-row:last-child { border-bottom: none; }
+.vote-player { color: #6a8caa; }
+.vote-player.me { color: #f97316; }
+.vote-score { font-weight: 500; }
+.vote-score.correct { color: #4ade80; }
+.vote-score.wrong { color: #f87171; }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 600px) {
+  .navbar-links { gap: 12px; }
+  .navbar-link { font-size: 12px; }
+  .page-body { padding: 16px; }
+}
