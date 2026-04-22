@@ -1,9 +1,14 @@
-
 import { supabase } from './supabase.js';
 
 // ========== INIT ==========
-const user = requireAdmin();
-document.getElementById('avatar').textContent = user.login.substring(0, 2).toUpperCase();
+document.addEventListener('DOMContentLoaded', () => {
+  const user = requireAdmin();
+  if (!user) return;
+  document.getElementById('avatar').textContent = user.login.substring(0, 2).toUpperCase();
+  loadUsers();
+  loadEvents();
+  loadEventSelects();
+});
 
 // ========== NAVIGATION ==========
 window.showSection = function(section) {
@@ -204,7 +209,7 @@ window.loadMatchesToResult = async function() {
     .order('date_heure');
 
   if (!matches || matches.length === 0) {
-    container.innerHTML = '<div style="font-size:13px; color:#4a7a9b;">Aucun match trouvé. Ajoutez des matchs depuis la section Évènements.</div>';
+    container.innerHTML = '<div style="font-size:13px; color:#4a7a9b;">Aucun match trouvé.</div>';
     return;
   }
 
@@ -249,7 +254,6 @@ window.saveResult = async function(matchId) {
 
   if (error) { alert('Erreur : ' + error.message); return; }
 
-  // Verrouiller les votes de ce match
   await supabase.from('votes').update({ verrouille: true }).eq('match_id', matchId);
 
   alert('Résultat enregistré !');
@@ -266,7 +270,7 @@ window.loadPhases = async function() {
 
   const { data: matches } = await supabase
     .from('matches')
-    .select('phase, statut')
+    .select('phase')
     .eq('event_id', eventId);
 
   const phasesActives = [...new Set(matches?.map(m => m.phase) || [])];
@@ -284,7 +288,7 @@ window.loadPhases = async function() {
             ${isActive ? 'Déverrouillée' : 'Verrouillée'}
           </div>
         </div>
-        ${!isActive ? `<button class="unlock-btn" onclick="unlockPhase('${eventId}', '${phase}')">Déverrouiller</button>` : '<span class="badge badge-done">Active</span>'}
+        ${!isActive ? `<button class="btn-small" onclick="unlockPhase('${eventId}', '${phase}')">Déverrouiller</button>` : '<span class="badge badge-done">Active</span>'}
       </div>`;
   });
 }
@@ -300,8 +304,3 @@ function formatDate(dateStr) {
   const d = new Date(dateStr);
   return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
 }
-
-// ========== LANCEMENT ==========
-loadUsers();
-loadEvents();
-loadEventSelects();
