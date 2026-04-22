@@ -300,3 +300,17 @@ button:hover { background: #ea6c0a; }
   .navbar-link { font-size: 12px; }
   .page-body { padding: 16px; }
 }
+
+/* ========== ADMIN SIDEBAR ========== */
+.sidebar-item {
+  padding: 10px 20px;
+  font-size: 13px;
+  color: #6a8caa;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+}
+
+.sidebar-item:hover { color: #ccd6e0; }
+.sidebar-item.active { color: #38bdf8; border-left-color: #38bdf8; background: #0a1628; }
+
+.admin-section { display: block; }
