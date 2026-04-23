@@ -2,9 +2,13 @@ import { supabase } from './supabase.js';
 import './auth.js';
 
 // ========== INIT ==========
-document.addEventListener('DOMContentLoaded', () => {
-  const user = requireAdmin();
-  if (!user) return;
+window.addEventListener('load', () => {
+  const u = localStorage.getItem('karma_user');
+  const user = u ? JSON.parse(u) : null;
+  if (!user || user.role !== 'ADMIN') {
+    window.location.href = 'index.html';
+    return;
+  }
   document.getElementById('avatar').textContent = user.login.substring(0, 2).toUpperCase();
   loadUsers();
   loadEvents();
