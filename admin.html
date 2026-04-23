@@ -43,7 +43,7 @@
         <div style="font-size:16px; font-weight:500; color:#fff; margin-bottom:16px;">Gestion des utilisateurs</div>
         <button onclick="showAddUser()" style="width:auto; padding:8px 16px; margin-bottom:16px;">+ Nouvel utilisateur</button>
 
-        <div id="add-user-form" style="display:none;" class="card" >
+        <div id="add-user-form" style="display:none;" class="card">
           <div style="font-size:13px; font-weight:500; color:#fff; margin-bottom:12px;">Nouvel utilisateur</div>
           <div class="form-group"><label>Login</label><input type="text" id="new-login" placeholder="ex: doudou"/></div>
           <div class="form-group"><label>Mot de passe</label><input type="password" id="new-password" placeholder="••••••••"/></div>
@@ -90,7 +90,7 @@
             <div class="form-group" style="flex:1;"><label>Date fin</label><input type="date" id="ev-fin"/></div>
           </div>
           <div id="ev-error" class="error-msg" style="display:none;"></div>
-          <button onclick="createEvent()" style="width:auto; padding:8px 16px;">Créer l'évènement</button>
+          <button onclick="creerEvent()" style="width:auto; padding:8px 16px;">Créer l'évènement</button>
         </div>
 
         <div class="section-label">Évènements existants</div>
@@ -120,12 +120,6 @@
     </div>
   </div>
 
-  <script src="js/auth.js"></script>
-<script src="js/auth.js"></script>
-<script type="module">
-  import { supabase } from './js/supabase.js';
-  import './js/auth.js';
-  import './js/admin.js';
-</script>
+  <script type="module" src="js/admin.js"></script>
 </body>
 </html>
