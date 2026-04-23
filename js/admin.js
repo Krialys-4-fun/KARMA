@@ -1,4 +1,5 @@
 import { supabase } from './supabase.js';
+import './auth.js';
 
 // ========== INIT ==========
 document.addEventListener('DOMContentLoaded', () => {
