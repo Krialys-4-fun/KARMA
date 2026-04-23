@@ -138,7 +138,7 @@ async function loadEvents() {
   });
 }
 
-window.createEvent = async function() {
+window.creerEvent = async function() {
   const nom = document.getElementById('ev-nom').value.trim();
   const nom_complet = document.getElementById('ev-nom-complet').value.trim();
   const sport = document.getElementById('ev-sport').value;
