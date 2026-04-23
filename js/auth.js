@@ -77,3 +77,9 @@ function showError(msg) {
     errorDiv.style.display = 'block';
   }
 }
+
+// Attache le bouton de login
+const loginBtn = document.getElementById('login-btn');
+if (loginBtn) {
+  loginBtn.addEventListener('click', window.handleLogin);
+}
