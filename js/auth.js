@@ -82,4 +82,10 @@ function showError(msg) {
     errorDiv.textContent = msg;
     errorDiv.style.display = 'block';
   }
+
+  // Exposition globale des fonctions
+window.requireAuth = requireAuth;
+window.requireAdmin = requireAdmin;
+window.getUser = getUser;
+window.handleLogout = handleLogout;
 }
