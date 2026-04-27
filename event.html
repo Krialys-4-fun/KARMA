@@ -67,21 +67,24 @@
     import { supabase } from './js/supabase.js';
     import './js/auth.js';
 
+    // ========== DRAPEAUX ==========
     const drapeaux = {
-  'Mexique': '🇲🇽', 'Afrique du Sud': '🇿🇦', 'Canada': '🇨🇦',
-  'Bosnie-Herzégovine': '🇧🇦', 'Allemagne': '🇩🇪', "Côte d'Ivoire": '🇨🇮',
-  'États-Unis': '🇺🇸', 'Paraguay': '🇵🇾', 'Brésil': '🇧🇷', 'Maroc': '🇲🇦',
-  'Qatar': '🇶🇦', 'Suisse': '🇨🇭', 'Argentine': '🇦🇷', 'Slovaquie': '🇸🇰',
-  'Japon': '🇯🇵', 'Sénégal': '🇸🇳', 'Espagne': '🇪🇸', 'Suède': '🇸🇪',
-  'Portugal': '🇵🇹', 'Zimbabwe': '🇿🇼', 'France': '🇫🇷', 'Uruguay': '🇺🇾',
-  'Belgique': '🇧🇪', 'Tunisie': '🇹🇳', 'Angleterre': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'Croatie': '🇭🇷',
-  'Pays-Bas': '🇳🇱', 'Arabie Saoudite': '🇸🇦', 'Australie': '🇦🇺',
-  'Nigeria': '🇳🇬', 'Corée du Sud': '🇰🇷', 'Tchéquie': '🇨🇿'
-};
+      'Mexique': '🇲🇽', 'Afrique du Sud': '🇿🇦', 'Canada': '🇨🇦',
+      'Bosnie-Herzégovine': '🇧🇦', 'Allemagne': '🇩🇪', "Côte d'Ivoire": '🇨🇮',
+      'États-Unis': '🇺🇸', 'Paraguay': '🇵🇾', 'Brésil': '🇧🇷', 'Maroc': '🇲🇦',
+      'Qatar': '🇶🇦', 'Suisse': '🇨🇭', 'Argentine': '🇦🇷', 'Slovaquie': '🇸🇰',
+      'Japon': '🇯🇵', 'Sénégal': '🇸🇳', 'Espagne': '🇪🇸', 'Suède': '🇸🇪',
+      'Portugal': '🇵🇹', 'Zimbabwe': '🇿🇼', 'France': '🇫🇷', 'Uruguay': '🇺🇾',
+      'Belgique': '🇧🇪', 'Tunisie': '🇹🇳', 'Angleterre': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'Croatie': '🇭🇷',
+      'Pays-Bas': '🇳🇱', 'Arabie Saoudite': '🇸🇦', 'Australie': '🇦🇺',
+      'Nigeria': '🇳🇬', 'Corée du Sud': '🇰🇷', 'Tchéquie': '🇨🇿'
+    };
 
-function flag(equipe) {
-  return drapeaux[equipe] ? drapeaux[equipe] + ' ' + equipe : equipe;
-}
+    function flag(equipe) {
+      return drapeaux[equipe] ? drapeaux[equipe] + ' ' + equipe : equipe;
+    }
+
+    const params = new URLSearchParams(window.location.search);
     const eventId = params.get('id');
 
     let currentUser = null;
@@ -127,7 +130,6 @@ function flag(equipe) {
       const card = document.getElementById('bonus-card');
       section.style.display = 'block';
 
-      // Vote existant ?
       const { data: existing } = await supabase
         .from('votes_bonus')
         .select('*')
@@ -135,7 +137,6 @@ function flag(equipe) {
         .eq('event_id', eventId)
         .single();
 
-      // Premier match du tournoi
       const { data: firstMatch } = await supabase
         .from('matches')
         .select('date_heure')
@@ -151,7 +152,7 @@ function flag(equipe) {
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <div>
               <div style="font-size:13px; font-weight:500; color:#f97316; margin-bottom:4px;">Vainqueur du tournoi</div>
-              <div style="font-size:13px; color:#fff;">Votre vote : <strong>${existing.equipe_gagnante_vote}</strong></div>
+              <div style="font-size:13px; color:#fff;">Votre vote : <strong>${flag(existing.equipe_gagnante_vote)}</strong></div>
             </div>
             <span class="badge badge-locked">Verrouillé</span>
           </div>`;
@@ -160,7 +161,6 @@ function flag(equipe) {
           <div style="font-size:13px; font-weight:500; color:#f97316; margin-bottom:4px;">Vainqueur du tournoi</div>
           <div style="font-size:13px; color:#6a8caa;">⏰ Vote fermé — le tournoi a déjà commencé.</div>`;
       } else {
-        // Récupérer toutes les équipes
         const { data: matches } = await supabase
           .from('matches')
           .select('equipe_1, equipe_2')
@@ -174,7 +174,7 @@ function flag(equipe) {
           <div class="form-group">
             <select id="bonus-select" style="width:100%;">
               <option value="">-- Choisir une équipe --</option>
-              ${equipes.map(e => `<option value="${e}">${e}</option>`).join('')}
+              ${equipes.map(e => `<option value="${e}">${flag(e)}</option>`).join('')}
             </select>
           </div>
           <button onclick="saveBonus()" style="width:auto; padding:7px 16px;">Valider mon vote bonus</button>`;
@@ -210,7 +210,6 @@ function flag(equipe) {
       const open = matches.filter(m => m.statut === 'a_venir' && new Date(m.date_heure) > now);
       const done = matches.filter(m => m.statut === 'termine');
 
-      // Récupérer mes votes
       const { data: mesVotes } = await supabase
         .from('votes')
         .select('*')
@@ -220,13 +219,11 @@ function flag(equipe) {
       const votesMap = {};
       mesVotes?.forEach(v => { votesMap[v.match_id] = v; });
 
-      // Matchs à voter
       if (open.length > 0) {
         document.getElementById('open-section').style.display = 'block';
         await renderOpenMatches(open, votesMap);
       }
 
-      // Matchs terminés
       if (done.length > 0) {
         document.getElementById('done-section').style.display = 'block';
         await renderDoneMatches(done, votesMap);
@@ -237,7 +234,6 @@ function flag(equipe) {
       const container = document.getElementById('open-matches');
       container.innerHTML = '';
 
-      // Grouper par phase
       const grouped = {};
       matches.forEach(m => {
         if (!grouped[m.phase]) grouped[m.phase] = [];
@@ -251,7 +247,6 @@ function flag(equipe) {
           const monVote = votesMap[m.id];
           let votesAutres = '';
 
-          // Mode MOUTON : afficher les votes déjà déposés
           if (currentUser.mode === 'MOUTON') {
             const { data: votes } = await supabase
               .from('votes')
@@ -281,7 +276,7 @@ function flag(equipe) {
                 <span class="badge badge-open" style="font-size:10px; padding:2px 8px;">Votes ouverts</span>
               </div>
               <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-                <span style="flex:1; font-size:13px; color:#fff;">${m.equipe_1}</span>
+                <span style="flex:1; font-size:13px; color:#fff;">${flag(m.equipe_1)}</span>
                 <div style="display:flex; align-items:center; gap:6px;">
                   <input type="number" min="0" max="20" id="s1-${m.id}"
                     value="${monVote ? monVote.score_vote_1 : ''}"
@@ -291,7 +286,7 @@ function flag(equipe) {
                     value="${monVote ? monVote.score_vote_2 : ''}"
                     style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; font-size:14px; text-align:center; padding:4px 0;"/>
                 </div>
-                <span style="flex:1; font-size:13px; color:#fff; text-align:right;">${m.equipe_2}</span>
+                <span style="flex:1; font-size:13px; color:#fff; text-align:right;">${flag(m.equipe_2)}</span>
               </div>
               <button onclick="saveVote('${m.id}', '${monVote ? monVote.id : ''}')"
                 class="${monVote ? 'btn-secondary' : ''}"
@@ -323,7 +318,6 @@ function flag(equipe) {
             .select('*, users!inner(login)')
             .eq('match_id', m.id);
 
-          const monVote = votesMap[m.id];
           const r1 = m.score_final_1;
           const r2 = m.score_final_2;
 
@@ -349,13 +343,13 @@ function flag(equipe) {
                 <span class="badge badge-done" style="font-size:10px; padding:2px 8px;">Terminé</span>
               </div>
               <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-                <span style="flex:1; font-size:13px; color:#fff;">${m.equipe_1}</span>
+                <span style="flex:1; font-size:13px; color:#fff;">${flag(m.equipe_1)}</span>
                 <div style="display:flex; align-items:center; gap:6px;">
                   <div style="width:36px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#4ade80; font-size:14px; font-weight:500; text-align:center; padding:4px 0;">${r1}</div>
                   <span style="color:#4a7a9b;">—</span>
                   <div style="width:36px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#4ade80; font-size:14px; font-weight:500; text-align:center; padding:4px 0;">${r2}</div>
                 </div>
-                <span style="flex:1; font-size:13px; color:#fff; text-align:right;">${m.equipe_2}</span>
+                <span style="flex:1; font-size:13px; color:#fff; text-align:right;">${flag(m.equipe_2)}</span>
               </div>
               <div class="votes-list">
                 <div class="votes-list-title">Votes de tous les joueurs</div>
@@ -392,7 +386,6 @@ function flag(equipe) {
 
       if (error) { alert('Erreur : ' + error.message); return; }
 
-      // Feedback visuel
       const btn = document.querySelector(`button[onclick="saveVote('${matchId}', '${existingVoteId}')"]`);
       if (btn) {
         btn.textContent = '✓ Vote enregistré !';
