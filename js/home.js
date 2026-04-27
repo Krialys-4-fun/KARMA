@@ -59,7 +59,7 @@ async function loadCurrentEvent() {
   document.getElementById('current-event-card').innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
         <div>
-          <div style="font-size:16px; font-weight:700; color:#ffffff; margin-bottom:4px;">${event.nom}</div>
+          <div style="font-size:16px; font-weight:700; color:#ffffff; margin-bottom:4px;">⚽ ${event.nom}</div>
           <div style="font-size:12px; color:#93c5fd; margin-bottom:2px;">${event.sport} · ${formatDate(event.date_debut)} — ${formatDate(event.date_fin)}</div>
           <div style="font-size:12px; color:#93c5fd; margin-top:2px; font-style:italic;">${event.nom_complet || ''}</div>
         </div>
