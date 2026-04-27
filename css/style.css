@@ -39,18 +39,19 @@ body {
 .navbar-link {
   font-size: 13px;
   font-weight: 500;
-  color: #4a4a6a;
+  color: #f97316;
   cursor: pointer;
-  padding: 6px 16px;
+  padding: 6px 18px;
   border-radius: 20px;
   text-decoration: none;
-  border: none;
+  border: 1.5px solid #f97316;
+  background: transparent;
   transition: all 0.2s;
 }
 
 .navbar-link:hover {
-  background: #fff4ee;
-  color: #f97316;
+  background: #f97316;
+  color: #fff;
 }
 
 .navbar-link.active {
@@ -78,7 +79,7 @@ body {
 .mode-badge {
   font-size: 11px;
   font-weight: 600;
-  padding: 4px 12px;
+  padding: 4px 14px;
   border-radius: 20px;
   background: #1a3a5c;
   color: #ffffff;
