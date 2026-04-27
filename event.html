@@ -68,37 +68,25 @@
     import './js/auth.js';
 
     // ========== DRAPEAUX ==========
-    const drapeaux = {
-  'Mexique': '🇲🇽', 'Afrique du Sud': '🇿🇦', 'Canada': '🇨🇦',
-  'Bosnie-Herzégovine': '🇧🇦', 'Allemagne': '🇩🇪', "Côte d'Ivoire": '🇨🇮',
-  'États-Unis': '🇺🇸', 'Paraguay': '🇵🇾', 'Brésil': '🇧🇷', 'Maroc': '🇲🇦',
-  'Qatar': '🇶🇦', 'Suisse': '🇨🇭', 'Argentine': '🇦🇷', 'Slovaquie': '🇸🇰',
-  'Japon': '🇯🇵', 'Sénégal': '🇸🇳', 'Espagne': '🇪🇸', 'Suède': '🇸🇪',
-  'Portugal': '🇵🇹', 'Zimbabwe': '🇿🇼', 'France': '🇫🇷', 'Uruguay': '🇺🇾',
-  'Belgique': '🇧🇪', 'Tunisie': '🇹🇳', 'Angleterre': '🏴', 'Croatie': '🇭🇷',
-  'Pays-Bas': '🇳🇱', 'Arabie Saoudite': '🇸🇦', 'Australie': '🇦🇺',
-  'Nigeria': '🇳🇬', 'Corée du Sud': '🇰🇷', 'Tchéquie': '🇨🇿'
-};
-
     function flag(equipe) {
-  const codes = {
-    'Mexique': 'MX', 'Afrique du Sud': 'ZA', 'Canada': 'CA',
-    'Bosnie-Herzégovine': 'BA', 'Allemagne': 'DE', "Côte d'Ivoire": 'CI',
-    'États-Unis': 'US', 'Paraguay': 'PY', 'Brésil': 'BR', 'Maroc': 'MA',
-    'Qatar': 'QA', 'Suisse': 'CH', 'Argentine': 'AR', 'Slovaquie': 'SK',
-    'Japon': 'JP', 'Sénégal': 'SN', 'Espagne': 'ES', 'Suède': 'SE',
-    'Portugal': 'PT', 'Zimbabwe': 'ZW', 'France': 'FR', 'Uruguay': 'UY',
-    'Belgique': 'BE', 'Tunisie': 'TN', 'Angleterre': 'GB', 'Croatie': 'HR',
-    'Pays-Bas': 'NL', 'Arabie Saoudite': 'SA', 'Australie': 'AU',
-    'Nigeria': 'NG', 'Corée du Sud': 'KR', 'Tchéquie': 'CZ'
-  };
-  const code = codes[equipe];
-  if (!code) return equipe;
-  const emoji = code.split('').map(c =>
-    String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65)
-  ).join('');
-  return emoji + ' ' + equipe;
-}
+      const codes = {
+        'Mexique': 'MX', 'Afrique du Sud': 'ZA', 'Canada': 'CA',
+        'Bosnie-Herzégovine': 'BA', 'Allemagne': 'DE', "Côte d'Ivoire": 'CI',
+        'États-Unis': 'US', 'Paraguay': 'PY', 'Brésil': 'BR', 'Maroc': 'MA',
+        'Qatar': 'QA', 'Suisse': 'CH', 'Argentine': 'AR', 'Slovaquie': 'SK',
+        'Japon': 'JP', 'Sénégal': 'SN', 'Espagne': 'ES', 'Suède': 'SE',
+        'Portugal': 'PT', 'Zimbabwe': 'ZW', 'France': 'FR', 'Uruguay': 'UY',
+        'Belgique': 'BE', 'Tunisie': 'TN', 'Angleterre': 'GB', 'Croatie': 'HR',
+        'Pays-Bas': 'NL', 'Arabie Saoudite': 'SA', 'Australie': 'AU',
+        'Nigeria': 'NG', 'Corée du Sud': 'KR', 'Tchéquie': 'CZ'
+      };
+      const code = codes[equipe];
+      if (!code) return equipe;
+      const emoji = code.split('').map(c =>
+        String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65)
+      ).join('');
+      return emoji + ' ' + equipe;
+    }
     const params = new URLSearchParams(window.location.search);
     const eventId = params.get('id');
 
