@@ -28,6 +28,10 @@ window.addEventListener('load', async () => {
 
   document.getElementById('mode-badge').textContent = currentUser.mode;
   document.getElementById('avatar').textContent = currentUser.login.substring(0, 2).toUpperCase();
+  document.getElementById('avatar').onclick = () => {
+    localStorage.removeItem('karma_user');
+    window.location.href = 'login.html';
+  };
 
   // Afficher le lien Admin si ADMIN
   if (currentUser.role === 'ADMIN') {
