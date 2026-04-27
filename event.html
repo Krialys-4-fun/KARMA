@@ -12,15 +12,15 @@
     <div class="navbar-logo"><span>K</span>ARMA</div>
     <div class="navbar-links">
       <a class="navbar-link" href="index.html">Accueil</a>
-      <a class="navbar-link active" href="#">Évènement</a>
+      <a class="navbar-link" href="events.html">Évènements</a>
+      <a class="navbar-link" id="admin-link" href="admin.html" style="display:none;">Admin</a>
     </div>
     <div class="navbar-user">
       <span class="mode-badge" id="mode-badge"></span>
-      <div class="avatar" id="avatar" onclick="handleLogout()"></div>
+      <div class="avatar" id="avatar"></div>
     </div>
   </nav>
 
-  <!-- BANNIERE EVENEMENT -->
   <div style="background:#0d1f3c; padding:20px 24px; border-bottom:0.5px solid #1a3a5c;">
     <div style="display:flex; justify-content:space-between; align-items:center;">
       <div>
@@ -35,26 +35,22 @@
 
   <div class="page-body">
 
-    <!-- VOTE BONUS -->
     <div id="bonus-section" style="display:none;">
       <div class="section-label">Vote bonus — Vainqueur du tournoi</div>
       <div class="card" id="bonus-card" style="border:0.5px solid #f97316;"></div>
     </div>
 
-    <!-- MATCHS A VOTER -->
     <div id="open-section" style="display:none;">
       <div class="section-label">Matchs à voter</div>
       <div id="open-matches"></div>
     </div>
 
-    <!-- MATCHS TERMINES -->
     <div id="done-section" style="display:none;">
       <div class="divider"></div>
       <div class="section-label">Matchs terminés</div>
       <div id="done-matches"></div>
     </div>
 
-    <!-- PHASES VERROUILLEES -->
     <div id="locked-section" style="display:none;">
       <div class="divider"></div>
       <div class="section-label">Phases suivantes</div>
@@ -65,19 +61,6 @@
 
   <script type="module">
     import { supabase } from './js/supabase.js';
-    import { initNav } from './js/nav.js';
-    
-    let currentUser = null;
-    
-    window.addEventListener('load', async () => {
-      currentUser = initNav();
-      if (!currentUser) return;
-      if (!eventId) { window.location.href = 'index.html'; return; }
-      await loadEvent();
-      await loadBonus();
-      await loadMatches();
-      await loadLockedPhases();
-    });
 
     // ========== DRAPEAUX ==========
     function flag(equipe) {
@@ -96,11 +79,10 @@
       if (!code) return equipe;
       return `<img src="https://flagcdn.com/16x12/${code}.png" style="vertical-align:middle; margin-right:4px;"/> ${equipe}`;
     }
+
     const params = new URLSearchParams(window.location.search);
     const eventId = params.get('id');
-
     let currentUser = null;
-    let currentEvent = null;
 
     window.addEventListener('load', async () => {
       const u = localStorage.getItem('karma_user');
@@ -108,7 +90,16 @@
       if (!currentUser) { window.location.href = 'login.html'; return; }
 
       document.getElementById('mode-badge').textContent = currentUser.mode;
-      document.getElementById('avatar').textContent = currentUser.login.substring(0, 2).toUpperCase();
+      const avatar = document.getElementById('avatar');
+      avatar.textContent = currentUser.login.substring(0, 2).toUpperCase();
+      avatar.onclick = () => {
+        localStorage.removeItem('karma_user');
+        window.location.href = 'login.html';
+      };
+
+      if (currentUser.role === 'ADMIN') {
+        document.getElementById('admin-link').style.display = 'block';
+      }
 
       if (!eventId) { window.location.href = 'index.html'; return; }
 
@@ -122,7 +113,6 @@
     async function loadEvent() {
       const { data } = await supabase.from('events').select('*').eq('id', eventId).single();
       if (!data) return;
-      currentEvent = data;
 
       document.getElementById('event-sport').textContent = `${data.sport} · Coupe du Monde 2026`;
       document.getElementById('event-nom').textContent = data.nom;
