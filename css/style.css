@@ -3,14 +3,19 @@
 
 body {
   font-family: 'Segoe UI', sans-serif;
-  background: #0a1628;
+  background-color: #0a1628;
+  background-image: url('https://static.wixstatic.com/media/fe6c04_04718c53bbde441aa8cda4564d003237~mv2.jpg/v1/fill/w_980,h_935,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/fe6c04_04718c53bbde441aa8cda4564d003237~mv2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   color: #ccd6e0;
   min-height: 100vh;
 }
 
 /* ========== NAVBAR ========== */
 .navbar {
-  background: #0d1f3c;
+  background: rgba(13, 31, 60, 0.95);
   border-bottom: 0.5px solid #1a3a5c;
   padding: 0 24px;
   height: 52px;
@@ -62,7 +67,7 @@ body {
   font-size: 11px;
   padding: 3px 10px;
   border-radius: 20px;
-  background: #0a1a2a;
+  background: rgba(10, 26, 42, 0.9);
   color: #38bdf8;
   border: 0.5px solid #1a3a5c;
 }
@@ -99,7 +104,7 @@ body {
 }
 
 .login-card {
-  background: #0d1f3c;
+  background: rgba(13, 31, 60, 0.95);
   border: 0.5px solid #1a3a5c;
   border-radius: 12px;
   padding: 24px;
@@ -119,7 +124,7 @@ body {
 .form-group input,
 .form-group select {
   width: 100%;
-  background: #0a1628;
+  background: rgba(10, 22, 40, 0.9);
   border: 0.5px solid #1a3a5c;
   border-radius: 6px;
   color: #ccd6e0;
@@ -190,16 +195,16 @@ button:hover { background: #ea6c0a; }
 }
 
 .badge-live { background: #2a1a0a; color: #f97316; border: 0.5px solid #f97316; }
-.badge-soon { background: #0a1a2a; color: #38bdf8; }
+.badge-soon { background: rgba(10, 26, 42, 0.9); color: #38bdf8; }
 .badge-done { background: #0a2a1a; color: #4ade80; }
-.badge-open { background: #0a1a2a; color: #38bdf8; }
-.badge-locked { background: #1a1a2a; color: #6a8caa; }
-.badge-expert { background: #0a1a2a; color: #38bdf8; }
+.badge-open { background: rgba(10, 26, 42, 0.9); color: #38bdf8; }
+.badge-locked { background: rgba(26, 26, 42, 0.9); color: #6a8caa; }
+.badge-expert { background: rgba(10, 26, 42, 0.9); color: #38bdf8; }
 .badge-mouton { background: #0a2a1a; color: #4ade80; }
 
 /* ========== CARDS ========== */
 .card {
-  background: #0d1f3c;
+  background: rgba(13, 31, 60, 0.92);
   border: 0.5px solid #1a3a5c;
   border-radius: 10px;
   padding: 16px;
@@ -210,7 +215,7 @@ button:hover { background: #ea6c0a; }
 
 /* ========== MESSAGES ========== */
 .error-msg {
-  background: #2a1a1a;
+  background: rgba(42, 26, 26, 0.9);
   color: #f87171;
   border: 0.5px solid #f87171;
   border-radius: 6px;
@@ -220,7 +225,7 @@ button:hover { background: #ea6c0a; }
 }
 
 .success-msg {
-  background: #0a2a1a;
+  background: rgba(10, 42, 26, 0.9);
   color: #4ade80;
   border: 0.5px solid #4ade80;
   border-radius: 6px;
@@ -267,7 +272,7 @@ button:hover { background: #ea6c0a; }
 /* ========== VOTES ========== */
 .votes-list {
   margin-top: 8px;
-  background: #0a1628;
+  background: rgba(10, 22, 40, 0.9);
   border-radius: 8px;
   padding: 8px 12px;
 }
@@ -294,13 +299,6 @@ button:hover { background: #ea6c0a; }
 .vote-score.correct { color: #4ade80; }
 .vote-score.wrong { color: #f87171; }
 
-/* ========== RESPONSIVE ========== */
-@media (max-width: 600px) {
-  .navbar-links { gap: 12px; }
-  .navbar-link { font-size: 12px; }
-  .page-body { padding: 16px; }
-}
-
 /* ========== ADMIN SIDEBAR ========== */
 .sidebar-item {
   padding: 10px 20px;
@@ -311,6 +309,13 @@ button:hover { background: #ea6c0a; }
 }
 
 .sidebar-item:hover { color: #ccd6e0; }
-.sidebar-item.active { color: #38bdf8; border-left-color: #38bdf8; background: #0a1628; }
+.sidebar-item.active { color: #38bdf8; border-left-color: #38bdf8; background: rgba(10, 22, 40, 0.9); }
 
 .admin-section { display: block; }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 600px) {
+  .navbar-links { gap: 12px; }
+  .navbar-link { font-size: 12px; }
+  .page-body { padding: 16px; }
+}
