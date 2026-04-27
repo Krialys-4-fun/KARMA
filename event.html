@@ -67,7 +67,21 @@
     import { supabase } from './js/supabase.js';
     import './js/auth.js';
 
-    const params = new URLSearchParams(window.location.search);
+    const drapeaux = {
+  'Mexique': '🇲🇽', 'Afrique du Sud': '🇿🇦', 'Canada': '🇨🇦',
+  'Bosnie-Herzégovine': '🇧🇦', 'Allemagne': '🇩🇪', "Côte d'Ivoire": '🇨🇮',
+  'États-Unis': '🇺🇸', 'Paraguay': '🇵🇾', 'Brésil': '🇧🇷', 'Maroc': '🇲🇦',
+  'Qatar': '🇶🇦', 'Suisse': '🇨🇭', 'Argentine': '🇦🇷', 'Slovaquie': '🇸🇰',
+  'Japon': '🇯🇵', 'Sénégal': '🇸🇳', 'Espagne': '🇪🇸', 'Suède': '🇸🇪',
+  'Portugal': '🇵🇹', 'Zimbabwe': '🇿🇼', 'France': '🇫🇷', 'Uruguay': '🇺🇾',
+  'Belgique': '🇧🇪', 'Tunisie': '🇹🇳', 'Angleterre': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'Croatie': '🇭🇷',
+  'Pays-Bas': '🇳🇱', 'Arabie Saoudite': '🇸🇦', 'Australie': '🇦🇺',
+  'Nigeria': '🇳🇬', 'Corée du Sud': '🇰🇷', 'Tchéquie': '🇨🇿'
+};
+
+function flag(equipe) {
+  return drapeaux[equipe] ? drapeaux[equipe] + ' ' + equipe : equipe;
+}
     const eventId = params.get('id');
 
     let currentUser = null;
