@@ -57,17 +57,17 @@ async function loadCurrentEvent() {
 
   document.getElementById('current-event-section').style.display = 'block';
   document.getElementById('current-event-card').innerHTML = `
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
-      <div>
-        <div style="font-size:15px; font-weight:500; color:#fff; margin-bottom:4px;">${event.nom}</div>
-        <div style="font-size:12px; color:#4a7a9b;">${event.sport} · ${formatDate(event.date_debut)} — ${formatDate(event.date_fin)}</div>
-        <div style="font-size:12px; color:#4a7a9b; margin-top:2px;">${event.nom_complet || ''}</div>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+        <div>
+          <div style="font-size:16px; font-weight:700; color:#38bdf8; margin-bottom:4px;">${event.nom}</div>
+          <div style="font-size:12px; color:#93c5fd; margin-bottom:2px;">${event.sport} · ${formatDate(event.date_debut)} — ${formatDate(event.date_fin)}</div>
+          <div style="font-size:12px; color:#93c5fd; margin-top:2px; font-style:italic;">${event.nom_complet || ''}</div>
+        </div>
+        <span class="badge badge-live">En cours</span>
       </div>
-      <span class="badge badge-live">En cours</span>
-    </div>
-    <a href="event.html?id=${event.id}">
-      <button style="margin-top:0;">Voter →</button>
-    </a>`;
+      <a href="event.html?id=${event.id}">
+        <button style="margin-top:0;">Voter →</button>
+      </a>`;
 
   await loadCurrentRanking(event.id);
 }
