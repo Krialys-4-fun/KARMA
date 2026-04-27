@@ -21,6 +21,9 @@ function flag(equipe) {
 
 // ========== INIT ==========
 let currentUser = null;
+if (currentUser.role === 'ADMIN') {
+  document.getElementById('admin-link').style.display = 'block';
+}
 
 window.addEventListener('load', async () => {
   const u = localStorage.getItem('karma_user');
