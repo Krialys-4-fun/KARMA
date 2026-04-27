@@ -87,21 +87,21 @@
     window.addEventListener('load', async () => {
       const u = localStorage.getItem('karma_user');
       currentUser = u ? JSON.parse(u) : null;
-      if (!currentUser) { window.location.href = 'login.html'; return; }
+      if (!currentUser) { window.location.href = 'index.html'; return; }
 
       document.getElementById('mode-badge').textContent = currentUser.mode;
       const avatar = document.getElementById('avatar');
       avatar.textContent = currentUser.login.substring(0, 2).toUpperCase();
       avatar.onclick = () => {
         localStorage.removeItem('karma_user');
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
       };
 
       if (currentUser.role === 'ADMIN') {
         document.getElementById('admin-link').style.display = 'block';
       }
 
-      if (!eventId) { window.location.href = 'index.html'; return; }
+      if (!eventId) { window.location.href = 'home.html'; return; }
 
       await loadEvent();
       await loadBonus();
@@ -149,7 +149,8 @@
 
       const isLocked = firstMatch && new Date() >= new Date(firstMatch.date_heure);
 
-      if (existing) {
+      if (existing && isLocked) {
+        // Vote existant + tournoi commencé → verrouillé
         card.innerHTML = `
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <div>
@@ -158,11 +159,35 @@
             </div>
             <span class="badge badge-locked">Verrouillé</span>
           </div>`;
-      } else if (isLocked) {
+
+      } else if (existing && !isLocked) {
+        // Vote existant + tournoi pas encore commencé → modifiable
+        const { data: matches } = await supabase
+          .from('matches')
+          .select('equipe_1, equipe_2')
+          .eq('event_id', eventId);
+
+        const equipes = [...new Set(matches?.flatMap(m => [m.equipe_1, m.equipe_2]) || [])].sort();
+
+        card.innerHTML = `
+          <div style="font-size:13px; font-weight:500; color:#f97316; margin-bottom:8px;">🏆 Vainqueur du tournoi</div>
+          <div style="font-size:12px; color:#4ade80; margin-bottom:10px;">✏️ Vous avez voté <strong>${flag(existing.equipe_gagnante_vote)}</strong> — modifiable jusqu'au 1er match !</div>
+          <div class="form-group">
+            <select id="bonus-select" style="width:100%;">
+              <option value="">-- Choisir une équipe --</option>
+              ${equipes.map(e => `<option value="${e}" ${e === existing.equipe_gagnante_vote ? 'selected' : ''}>${flag(e)}</option>`).join('')}
+            </select>
+          </div>
+          <button onclick="saveBonus('${existing.id}')" style="width:auto; padding:7px 16px;">Modifier mon vote bonus</button>`;
+
+      } else if (!existing && isLocked) {
+        // Pas de vote + tournoi commencé → trop tard
         card.innerHTML = `
           <div style="font-size:13px; font-weight:500; color:#f97316; margin-bottom:4px;">Vainqueur du tournoi</div>
           <div style="font-size:13px; color:#6a8caa;">⏰ Vote fermé — le tournoi a déjà commencé.</div>`;
+
       } else {
+        // Pas de vote + tournoi pas encore commencé → voter
         const { data: matches } = await supabase
           .from('matches')
           .select('equipe_1, equipe_2')
@@ -179,20 +204,27 @@
               ${equipes.map(e => `<option value="${e}">${flag(e)}</option>`).join('')}
             </select>
           </div>
-          <button onclick="saveBonus()" style="width:auto; padding:7px 16px;">Valider mon vote bonus</button>`;
+          <button onclick="saveBonus('')" style="width:auto; padding:7px 16px;">Valider mon vote bonus</button>`;
       }
     }
 
-    window.saveBonus = async function() {
+    window.saveBonus = async function(existingId) {
       const equipe = document.getElementById('bonus-select').value;
       if (!equipe) { alert('Choisissez une équipe !'); return; }
 
-      const { error } = await supabase.from('votes_bonus').insert({
-        user_id: currentUser.id,
-        event_id: eventId,
-        equipe_gagnante_vote: equipe,
-        verrouille: false
-      });
+      let error;
+      if (existingId) {
+        ({ error } = await supabase.from('votes_bonus')
+          .update({ equipe_gagnante_vote: equipe })
+          .eq('id', existingId));
+      } else {
+        ({ error } = await supabase.from('votes_bonus').insert({
+          user_id: currentUser.id,
+          event_id: eventId,
+          equipe_gagnante_vote: equipe,
+          verrouille: false
+        }));
+      }
 
       if (error) { alert('Erreur : ' + error.message); return; }
       loadBonus();
