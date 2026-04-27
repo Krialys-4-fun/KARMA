@@ -157,3 +157,162 @@
     </div>
 
     <div class="faq-item">
+      <div class="faq-question" onclick="toggle(this)">
+        Comment me déconnecter ?
+        <span class="chevron">▼</span>
+      </div>
+      <div class="faq-answer">
+        Cliquez sur votre avatar (cercle avec vos initiales) en haut à droite de la page. Cela vous déconnecte immédiatement et vous redirige vers la page de connexion.
+      </div>
+    </div>
+
+    <!-- REGLES DU JEU -->
+    <div class="faq-section-title">⚽ Règles du jeu — TACLER</div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggle(this)">
+        C'est quoi TACLER ?
+        <span class="chevron">▼</span>
+      </div>
+      <div class="faq-answer">
+        <strong>TACLER</strong> signifie <em>Toujours Analyser Correctement Les Equipes Rivales</em>. C'est le nom de notre évènement de pronostics pour la <strong>Coupe du Monde de Football 2026</strong> qui se déroule du 11 juin au 19 juillet 2026 aux États-Unis, Canada et Mexique. 48 équipes, 104 matchs, et un seul vainqueur KARMA !
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggle(this)">
+        Comment voter sur un match ?
+        <span class="chevron">▼</span>
+      </div>
+      <div class="faq-answer">
+        Rendez-vous sur la page de l'évènement TACLER, puis saisissez votre pronostic de score pour chaque match ouvert aux votes. Cliquez sur <strong>"Valider mon vote"</strong> pour enregistrer. Vous pouvez modifier votre vote tant que le match n'a pas commencé.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggle(this)">
+        Jusqu'à quand peut-on voter sur un match ?
+        <span class="chevron">▼</span>
+      </div>
+      <div class="faq-answer">
+        Les votes se ferment automatiquement à l'<strong>heure du coup d'envoi</strong> de chaque match. Passé ce délai, il n'est plus possible de voter ni de modifier son pronostic pour ce match.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggle(this)">
+        C'est quoi le vote bonus "Vainqueur du tournoi" ?
+        <span class="chevron">▼</span>
+      </div>
+      <div class="faq-answer">
+        En plus des votes sur chaque match, vous pouvez parier sur l'équipe qui remportera la Coupe du Monde. Ce vote rapporte <strong>10 points</strong> si vous avez raison. Il est modifiable jusqu'au coup d'envoi du 1er match (11 juin 2026 à 21h00), puis définitivement verrouillé.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggle(this)">
+        Comment sont calculés les points ?
+        <span class="chevron">▼</span>
+      </div>
+      <div class="faq-answer">
+        <table class="score-table">
+          <thead>
+            <tr>
+              <th>Situation</th>
+              <th>Points</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Bon vainqueur ou nul prédit</td><td class="pts">3 pts</td></tr>
+            <tr><td>+ Score exact trouvé</td><td class="pts">+ 1 pt</td></tr>
+            <tr><td>+ Seul à avoir le score exact <em>(Mode Expert uniquement)</em></td><td class="pts">+ 1 pt</td></tr>
+            <tr><td>Vainqueur du tournoi trouvé</td><td class="pts">10 pts</td></tr>
+            <tr><td>Mauvais vainqueur</td><td class="pts">0 pt</td></tr>
+          </tbody>
+        </table>
+        <br/>Le score maximum par match est de <strong>5 pts</strong> (Expert) ou <strong>4 pts</strong> (Mouton).
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggle(this)">
+        C'est quoi le bonus "seul score exact" ?
+        <span class="chevron">▼</span>
+      </div>
+      <div class="faq-answer">
+        Si vous êtes le <strong>seul joueur</strong> à avoir trouvé le score exact d'un match, vous gagnez un point bonus supplémentaire. <br/><br/>
+        ⚠️ Ce bonus s'applique uniquement aux joueurs en <strong>mode Expert</strong>.<br/>
+        ⚠️ Si deux joueurs ou plus ont le même score exact, <strong>personne</strong> ne reçoit ce bonus.<br/>
+        ⚠️ Ce bonus ne s'applique pas au vote "Vainqueur du tournoi".
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggle(this)">
+        Quand voit-on les votes des autres joueurs ?
+        <span class="chevron">▼</span>
+      </div>
+      <div class="faq-answer">
+        Cela dépend de votre mode :<br/><br/>
+        🧠 <strong>Mode Expert</strong> — Vous ne voyez jamais les votes des autres avant la fermeture des votes. Une fois le match terminé et le résultat saisi, vous voyez tous les votes.<br/><br/>
+        🐑 <strong>Mode Mouton</strong> — Vous voyez en temps réel les votes déjà déposés par les autres joueurs avant de voter. Une fois le match terminé, tout le monde voit tous les votes.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggle(this)">
+        Comment s'organise le tournoi ?
+        <span class="chevron">▼</span>
+      </div>
+      <div class="faq-answer">
+        La Coupe du Monde 2026 se déroule en plusieurs phases :<br/><br/>
+        1. <strong>Phase de groupes</strong> — 48 équipes réparties en 12 groupes de 4. Les 2 premiers de chaque groupe + les 8 meilleurs 3es se qualifient.<br/>
+        2. <strong>Seizièmes de finale</strong> — 32 équipes<br/>
+        3. <strong>Huitièmes de finale</strong> — 16 équipes<br/>
+        4. <strong>Quarts de finale</strong> — 8 équipes<br/>
+        5. <strong>Demi-finales</strong> — 4 équipes<br/>
+        6. <strong>Finale</strong> — 2 équipes<br/><br/>
+        Les phases à élimination directe se déverrouillent au fur et à mesure sur KARMA.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggle(this)">
+        Y a-t-il de l'argent en jeu ?
+        <span class="chevron">▼</span>
+      </div>
+      <div class="faq-answer">
+        <strong>Non !</strong> KARMA est un jeu de pronostics 100% gratuit et sans enjeu financier. On joue pour la gloire, le fun et l'honneur d'être le meilleur analyste de Krialys ! 🏆
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import './js/auth.js';
+
+    window.addEventListener('load', () => {
+      const u = localStorage.getItem('karma_user');
+      const user = u ? JSON.parse(u) : null;
+      if (!user) { window.location.href = 'index.html'; return; }
+
+      document.getElementById('mode-badge').textContent = user.mode;
+      const avatar = document.getElementById('avatar');
+      avatar.textContent = user.login.substring(0, 2).toUpperCase();
+      avatar.onclick = () => {
+        localStorage.removeItem('karma_user');
+        window.location.href = 'index.html';
+      };
+
+      if (user.role === 'ADMIN') {
+        document.getElementById('admin-link').style.display = 'block';
+      }
+    });
+
+    window.toggle = function(el) {
+      el.classList.toggle('open');
+      el.nextElementSibling.classList.toggle('open');
+    }
+  </script>
+</body>
+</html>
