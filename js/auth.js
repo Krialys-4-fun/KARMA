@@ -49,7 +49,7 @@ window.handleLogin = async function () {
 // ========== DÉCONNEXION ==========
 window.handleLogout = function () {
   localStorage.removeItem('karma_user');
-  window.location.href = 'login.html';
+  window.location.href = 'index.html';
 }
 
 // ========== UTILITAIRES ==========
