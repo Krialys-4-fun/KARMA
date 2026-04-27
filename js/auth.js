@@ -41,7 +41,7 @@ window.handleLogin = async function () {
     if (user.mode_modifiable) {
       window.location.href = 'onboarding.html';
     } else {
-      window.location.href = 'index.html';
+      window.location.href = 'home.html';
     }
   }
 }
@@ -66,7 +66,7 @@ window.requireAuth = function () {
 
 window.requireAdmin = function () {
   const user = window.getUser();
-  if (!user || user.role !== 'ADMIN') window.location.href = 'index.html';
+  if (!user || user.role !== 'ADMIN') window.location.href = 'home.html';
   return user;
 }
 
