@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KARMA — Évènements</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar-logo"><span>K</span>ARMA</div>
+    <div class="navbar-links">
+      <a class="navbar-link" href="index.html">Accueil</a>
+      <a class="navbar-link active" href="events.html">Évènements</a>
+    </div>
+    <div class="navbar-user">
+      <span class="mode-badge" id="mode-badge"></span>
+      <div class="avatar" id="avatar" onclick="handleLogout()"></div>
+    </div>
+  </nav>
+
+  <div class="page-body">
+    <div style="font-size:16px; font-weight:500; color:#fff; margin-bottom:20px;">Tous les évènements</div>
+
+    <!-- EN COURS -->
+    <div id="section-encours" style="display:none;">
+      <div class="section-label">En cours</div>
+      <div id="list-encours"></div>
+      <div class="divider"></div>
+    </div>
+
+    <!-- A VENIR -->
+    <div id="section-avenir" style="display:none;">
+      <div class="section-label">À venir</div>
+      <div id="list-avenir"></div>
+      <div class="divider"></div>
+    </div>
+
+    <!-- TERMINES -->
+    <div id="section-termines" style="display:none;">
+      <div class="section-label">Terminés</div>
+      <div id="list-termines"></div>
+    </div>
+
+    <div id="empty-msg" style="display:none; font-size:13px; color:#4a7a9b; text-align:center; padding:40px;">
+      Aucun évènement pour le moment.
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { supabase } from './js/supabase.js';
+    import './js/auth.js';
+
+    const sportIcons = {
+      'Football': '⚽',
+      'Rugby': '🏉',
+      'Autre': '🏅'
+    };
+
+    window.addEventListener('load', async () => {
+      const u = localStorage.getItem('karma_user');
+      const user = u ? JSON.parse(u) : null;
+      if (!user) { window.location.href = 'login.html'; return; }
+
+      document.getElementById('mode-badge').textContent = user.mode;
+      document.getElementById('avatar').textContent = user.login.substring(0, 2).toUpperCase();
+
+      await loadEvents();
+    });
+
+    async function loadEvents() {
+      const { data: events } = await supabase
+        .from('events')
+        .select('*')
+        .order('date_debut', { ascending: false });
+
+      if (!events || events.length === 0) {
+        document.getElementById('empty-msg').style.display = 'block';
+        return;
+      }
+
+      const encours = events.filter(e => e.statut === 'en_cours');
+      const avenir = events.filter(e => e.statut === 'a_venir');
+      const termines = events.filter(e => e.statut === 'termine');
+
+      if (encours.length > 0) {
+        document.getElementById('section-encours').style.display = 'block';
+        document.getElementById('list-encours').innerHTML = encours.map(e => renderCard(e)).join('');
+      }
+
+      if (avenir.length > 0) {
+        document.getElementById('section-avenir').style.display = 'block';
+        document.getElementById('list-avenir').innerHTML = avenir.map(e => renderCard(e)).join('');
+      }
+
+      if (termines.length > 0) {
+        document.getElementById('section-termines').style.display = 'block';
+        document.getElementById('list-termines').innerHTML = termines.map(e => renderCard(e)).join('');
+      }
+
+      if (encours.length === 0 && avenir.length === 0 && termines.length === 0) {
+        document.getElementById('empty-msg').style.display = 'block';
+      }
+    }
+
+    function renderCard(ev) {
+      const badgeClass = ev.statut === 'en_cours' ? 'badge-live' : ev.statut === 'a_venir' ? 'badge-soon' : 'badge-done';
+      const badgeLabel = ev.statut === 'en_cours' ? 'En cours' : ev.statut === 'a_venir' ? 'À venir' : 'Terminé';
+      const icon = sportIcons[ev.sport] || '🏅';
+
+      return `
+        <div class="card card-accent" style="margin-bottom:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+            <div>
+              <div style="font-size:15px; font-weight:500; color:#fff; margin-bottom:4px;">${icon} ${ev.nom}</div>
+              <div style="font-size:12px; color:#4a7a9b; margin-bottom:2px;">${ev.sport} · ${formatDate(ev.date_debut)} — ${formatDate(ev.date_fin)}</div>
+              <div style="font-size:12px; color:#4a7a9b;">${ev.nom_complet || ''}</div>
+            </div>
+            <span class="badge ${badgeClass}">${badgeLabel}</span>
+          </div>
+          <a href="event.html?id=${ev.id}">
+            <button class="${ev.statut === 'termine' ? 'btn-secondary' : ''}" style="width:auto; padding:7px 16px;">
+              ${ev.statut === 'termine' ? 'Voir les résultats' : ev.statut === 'en_cours' ? 'Voter →' : 'Voir →'}
+            </button>
+          </a>
+        </div>`;
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+  </script>
+</body>
+</html>
