@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KARMA — Historique</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar-logo"><span>K</span>ARMA</div>
+    <div class="navbar-links">
+      <a class="navbar-link" href="home.html">Accueil</a>
+      <a class="navbar-link" href="events.html">Évènements</a>
+      <a class="navbar-link active" href="historique.html">Historique</a>
+      <a class="navbar-link" href="faq.html">FAQ</a>
+      <a class="navbar-link" id="admin-link" href="admin.html" style="display:none;">Admin</a>
+    </div>
+    <div class="navbar-user">
+      <span class="mode-badge" id="mode-badge"></span>
+      <div class="avatar" id="avatar"></div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div style="
+    background: rgba(255, 252, 248, 0.92);
+    padding: 28px 32px;
+    border-bottom: 0.5px solid #e8e0d8;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  ">
+    <div style="font-size:11px; color:#f97316; letter-spacing:2px; text-transform:uppercase; font-weight:600; margin-bottom:8px;">KARMA</div>
+    <div style="font-size:24px; font-weight:700; color:#1a1a2e; margin-bottom:6px;">Historique des évènements</div>
+    <div style="font-size:13px; color:#6a6a8a;">Retrouvez les classements et résultats de tous les tournois passés</div>
+  </div>
+
+  <div class="page-body">
+    <div id="historique-list"></div>
+    <div id="empty-msg" style="display:none; font-size:13px; color:#4a7a9b; text-align:center; padding:40px;">
+      Aucun évènement terminé pour le moment.
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase } from './js/supabase.js';
+
+    const sportIcons = { 'Football': '⚽', 'Rugby': '🏉', 'Autre': '🏅' };
+
+    window.addEventListener('load', async () => {
+      const u = localStorage.getItem('karma_user');
+      const user = u ? JSON.parse(u) : null;
+      if (!user) { window.location.href = 'index.html'; return; }
+
+      document.getElementById('mode-badge').textContent = user.mode;
+      const avatar = document.getElementById('avatar');
+      avatar.textContent = user.login.substring(0, 2).toUpperCase();
+      avatar.onclick = () => {
+        localStorage.removeItem('karma_user');
+        window.location.href = 'index.html';
+      };
+
+      if (user.role === 'ADMIN') {
+        document.getElementById('admin-link').style.display = 'block';
+      }
+
+      await loadHistorique(user);
+    });
+
+    async function loadHistorique(currentUser) {
+      const { data: events } = await supabase
+        .from('events')
+        .select('*')
+        .eq('statut', 'termine')
+        .order('date_fin', { ascending: false });
+
+      if (!events || events.length === 0) {
+        document.getElementById('empty-msg').style.display = 'block';
+        return;
+      }
+
+      const container = document.getElementById('historique-list');
+
+      for (const event of events) {
+        const icon = sportIcons[event.sport] || '🏅';
+
+        // Récupérer les matchs terminés
+        const { data: matches } = await supabase
+          .from('matches')
+          .select('*')
+          .eq('event_id', event.id)
+          .eq('statut', 'termine');
+
+        if (!matches || matches.length === 0) continue;
+
+        const matchIds = matches.map(m => m.id);
+        const matchMap = {};
+        matches.forEach(m => { matchMap[m.id] = m; });
+
+        // Récupérer tous les votes
+        const { data: votes } = await supabase
+          .from('votes')
+          .select('*, users!inner(login, mode)')
+          .in('match_id', matchIds);
+
+        // Récupérer vote bonus
+        const { data: votesBonus } = await supabase
+          .from('votes_bonus')
+          .select('*, users!inner(login)')
+          .eq('event_id', event.id);
+
+        // Calcul des points
+        const scores = {};
+        votes?.forEach(v => {
+          const login = v.users.login;
+          const mode = v.users.mode;
+          if (!scores[login]) scores[login] = { login, mode, points: 0, bonus: 0 };
+
+          const match = matchMap[v.match_id];
+          if (!match) return;
+
+          const r1 = match.score_final_1;
+          const r2 = match.score_final_2;
+          const v1 = v.score_vote_1;
+          const v2 = v.score_vote_2;
+
+          const bonGagnant = (r1 > r2 && v1 > v2) || (r1 < r2 && v1 < v2) || (r1 === r2 && v1 === v2);
+          if (bonGagnant) scores[login].points += 3;
+          if (r1 === v1 && r2 === v2) scores[login].points += 1;
+        });
+
+        // Bonus seul Expert
+        matchIds.forEach(matchId => {
+          const match = matchMap[matchId];
+          if (!match) return;
+          const votesMatch = votes?.filter(v => v.match_id === matchId) || [];
+          const exactVotes = votesMatch.filter(v =>
+            v.score_vote_1 === match.score_final_1 &&
+            v.score_vote_2 === match.score_final_2
+          );
+          if (exactVotes.length === 1 && exactVotes[0].users.mode === 'EXPERT') {
+            scores[exactVotes[0].users.login].points += 1;
+          }
+        });
+
+        // Bonus vainqueur tournoi
+        if (event.vainqueur && votesBonus) {
+          votesBonus.forEach(vb => {
+            const login = vb.users?.login;
+            if (login && vb.equipe_gagnante_vote === event.vainqueur) {
+              if (!scores[login]) scores[login] = { login, mode: '', points: 0, bonus: 0 };
+              scores[login].bonus += 10;
+              scores[login].points += 10;
+            }
+          });
+        }
+
+        const ranking = Object.values(scores).sort((a, b) => b.points - a.points);
+
+        // Podium top 3
+        const top3 = ranking.slice(0, 3);
+        const order = top3.length >= 3 ? [1, 0, 2] : top3.length === 2 ? [0, 1] : [0];
+        const medals = ['🥇', '🥈', '🥉'];
+
+        let podiumHtml = `<div style="display:flex; gap:8px; margin-bottom:16px;">`;
+        order.forEach(i => {
+          if (!top3[i]) return;
+          const isFirst = i === 0;
+          podiumHtml += `
+            <div style="flex:1; background:#0a1628; border-radius:8px; padding:12px 8px; text-align:center; border:0.5px solid ${isFirst ? '#f97316' : '#1a3a5c'};">
+              <div style="font-size:20px; margin-bottom:4px;">${medals[i]}</div>
+              <div style="font-size:13px; font-weight:600; color:${isFirst ? '#f97316' : '#fff'};">${top3[i].login}</div>
+              <div style="font-size:11px; color:#4a7a9b; margin-top:2px;">${top3[i].points} pts</div>
+              <div style="font-size:10px; color:#38bdf8; margin-top:1px;">${top3[i].mode}</div>
+            </div>`;
+        });
+        podiumHtml += `</div>`;
+
+        // Classement complet
+        let rankingHtml = `
+          <table class="data-table" style="margin-bottom:12px;">
+            <thead><tr>
+              <th>#</th><th>Joueur</th><th>Mode</th><th style="text-align:right;">Points</th>
+            </tr></thead><tbody>`;
+
+        ranking.forEach((r, i) => {
+          const isMe = r.login === currentUser.login;
+          rankingHtml += `<tr class="${isMe ? 'me' : ''}">
+            <td style="color:#4a7a9b; width:24px;">${i + 1}</td>
+            <td>${r.login}</td>
+            <td><span class="badge badge-${r.mode.toLowerCase()}">${r.mode}</span></td>
+            <td style="text-align:right; font-weight:600;">${r.points}</td>
+          </tr>`;
+        });
+        rankingHtml += `</tbody></table>`;
+
+        // Vainqueur du tournoi
+        const vainqueurHtml = event.vainqueur ? `
+          <div style="background:#0a1628; border-radius:8px; padding:10px 14px; margin-bottom:12px; display:flex; align-items:center; gap:10px;">
+            <span style="font-size:16px;">🏆</span>
+            <div>
+              <div style="font-size:11px; color:#4a7a9b;">Vainqueur du tournoi</div>
+              <div style="font-size:13px; font-weight:600; color:#f97316;">${event.vainqueur}</div>
+            </div>
+          </div>` : '';
+
+        container.innerHTML += `
+          <div style="margin-bottom:32px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+              <div>
+                <div style="font-size:18px; font-weight:700; color:#fff;">${icon} ${event.nom}</div>
+                <div style="font-size:12px; color:#4a7a9b;">${event.sport} · ${formatDate(event.date_debut)} — ${formatDate(event.date_fin)}</div>
+                <div style="font-size:12px; color:#4a7a9b; font-style:italic;">${event.nom_complet || ''}</div>
+              </div>
+              <span class="badge badge-done">Terminé</span>
+            </div>
+            ${vainqueurHtml}
+            ${podiumHtml}
+            <div class="card" style="padding:0; overflow:hidden;">
+              ${rankingHtml}
+            </div>
+            <div style="text-align:right; margin-top:8px;">
+              <a href="event.html?id=${event.id}">
+                <button class="btn-secondary" style="width:auto; padding:6px 16px;">Voir tous les votes →</button>
+              </a>
+            </div>
+            <div class="divider"></div>
+          </div>`;
+      }
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+  </script>
+</body>
+</html>
