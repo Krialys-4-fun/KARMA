@@ -1,15 +1,4 @@
 import { supabase } from './supabase.js';
-import { initNav } from './nav.js';
-
-let currentUser = null;
-
-window.addEventListener('load', async () => {
-  currentUser = initNav();
-  if (!currentUser) return;
-  await loadCurrentEvent();
-  await loadNextEvent();
-  await loadLastEvent();
-});
 
 // ========== DRAPEAUX ==========
 function flag(equipe) {
@@ -31,9 +20,6 @@ function flag(equipe) {
 
 // ========== INIT ==========
 let currentUser = null;
-if (currentUser.role === 'ADMIN') {
-  document.getElementById('admin-link').style.display = 'block';
-}
 
 window.addEventListener('load', async () => {
   const u = localStorage.getItem('karma_user');
@@ -42,6 +28,12 @@ window.addEventListener('load', async () => {
 
   document.getElementById('mode-badge').textContent = currentUser.mode;
   document.getElementById('avatar').textContent = currentUser.login.substring(0, 2).toUpperCase();
+
+  // Afficher le lien Admin si ADMIN
+  if (currentUser.role === 'ADMIN') {
+    const adminLink = document.getElementById('admin-link');
+    if (adminLink) adminLink.style.display = 'block';
+  }
 
   await loadCurrentEvent();
   await loadNextEvent();
@@ -80,7 +72,6 @@ async function loadCurrentEvent() {
 async function loadCurrentRanking(eventId) {
   const container = document.getElementById('current-ranking');
 
-  // Récupérer tous les matchs terminés
   const { data: matches } = await supabase
     .from('matches')
     .select('*')
@@ -92,7 +83,6 @@ async function loadCurrentRanking(eventId) {
     return;
   }
 
-  // Récupérer tous les votes pour ces matchs
   const matchIds = matches.map(m => m.id);
   const { data: votes } = await supabase
     .from('votes')
@@ -104,11 +94,9 @@ async function loadCurrentRanking(eventId) {
     return;
   }
 
-  // Créer un map des matchs
   const matchMap = {};
   matches.forEach(m => { matchMap[m.id] = m; });
 
-  // Calculer les points par joueur
   const scores = {};
   votes.forEach(v => {
     const login = v.users.login;
@@ -125,28 +113,22 @@ async function loadCurrentRanking(eventId) {
 
     const bonGagnant = (r1 > r2 && v1 > v2) || (r1 < r2 && v1 < v2) || (r1 === r2 && v1 === v2);
     if (bonGagnant) scores[login].points += 3;
-
-    const scoreExact = r1 === v1 && r2 === v2;
-    if (scoreExact) scores[login].points += 1;
+    if (r1 === v1 && r2 === v2) scores[login].points += 1;
   });
 
-  // Bonus "seul" pour les Experts
   matchIds.forEach(matchId => {
     const match = matchMap[matchId];
     if (!match) return;
-
     const votesMatch = votes.filter(v => v.match_id === matchId);
     const exactVotes = votesMatch.filter(v =>
       v.score_vote_1 === match.score_final_1 &&
       v.score_vote_2 === match.score_final_2
     );
-
     if (exactVotes.length === 1 && exactVotes[0].users.mode === 'EXPERT') {
       scores[exactVotes[0].users.login].points += 1;
     }
   });
 
-  // Tri par points
   const ranking = Object.values(scores).sort((a, b) => b.points - a.points);
 
   let html = `<table class="data-table">
@@ -207,7 +189,6 @@ async function loadLastEvent() {
   if (!events || events.length === 0) return;
   const event = events[0];
 
-  // Récupérer les matchs terminés
   const { data: matches } = await supabase
     .from('matches')
     .select('*')
@@ -222,7 +203,6 @@ async function loadLastEvent() {
     .select('*, users!inner(login)')
     .in('match_id', matchIds);
 
-  // Calcul points top 3
   const scores = {};
   const matchMap = {};
   matches.forEach(m => { matchMap[m.id] = m; });
