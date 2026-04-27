@@ -155,29 +155,90 @@ async function loadCurrentRanking(eventId) {
 }
 
 // ========== PROCHAIN EVENEMENT ==========
-async function loadNextEvent() {
+async function loadLastEvent() {
   const { data: events } = await supabase
     .from('events')
     .select('*')
-    .eq('statut', 'a_venir')
-    .order('date_debut', { ascending: true })
+    .eq('statut', 'termine')
+    .order('date_fin', { ascending: false })
     .limit(1);
 
   if (!events || events.length === 0) return;
   const event = events[0];
 
-  document.getElementById('next-event-section').style.display = 'block';
-  document.getElementById('next-event-card').innerHTML = `
+  let top3 = [];
+
+  if (event.classement_json) {
+    try {
+      const ranking = JSON.parse(event.classement_json);
+      top3 = ranking.slice(0, 3);
+    } catch(e) { top3 = []; }
+  } else {
+    const { data: matches } = await supabase
+      .from('matches')
+      .select('*')
+      .eq('event_id', event.id)
+      .eq('statut', 'termine');
+
+    if (!matches || matches.length === 0) return;
+
+    const matchIds = matches.map(m => m.id);
+    const { data: votes } = await supabase
+      .from('votes')
+      .select('*, users!inner(login)')
+      .in('match_id', matchIds);
+
+    const scores = {};
+    const matchMap = {};
+    matches.forEach(m => { matchMap[m.id] = m; });
+
+    votes?.forEach(v => {
+      const login = v.users.login;
+      if (!scores[login]) scores[login] = { login, points: 0 };
+      const match = matchMap[v.match_id];
+      if (!match) return;
+      const r1 = match.score_final_1;
+      const r2 = match.score_final_2;
+      const bonGagnant = (r1 > r2 && v.score_vote_1 > v.score_vote_2) ||
+                         (r1 < r2 && v.score_vote_1 < v.score_vote_2) ||
+                         (r1 === r2 && v.score_vote_1 === v.score_vote_2);
+      if (bonGagnant) scores[login].points += 3;
+      if (r1 === v.score_vote_1 && r2 === v.score_vote_2) scores[login].points += 1;
+    });
+
+    top3 = Object.values(scores).sort((a, b) => b.points - a.points).slice(0, 3);
+  }
+
+  if (top3.length === 0) return;
+
+  const medals = ['🥇', '🥈', '🥉'];
+  const order = top3.length >= 3 ? [1, 0, 2] : top3.length === 2 ? [0, 1] : [0];
+
+  let podiumHtml = `<div style="display:flex; gap:8px; margin-bottom:12px;">`;
+  order.forEach(i => {
+    if (!top3[i]) return;
+    const isFirst = i === 0;
+    podiumHtml += `
+      <div style="flex:1; background:#0a1628; border-radius:8px; padding:10px 8px; text-align:center; border:0.5px solid ${isFirst ? '#f97316' : '#1a3a5c'};">
+        <div style="font-size:18px; margin-bottom:4px;">${medals[i]}</div>
+        <div style="font-size:13px; font-weight:600; color:${isFirst ? '#f97316' : '#fff'};">${top3[i].login}</div>
+        <div style="font-size:11px; color:#4a7a9b; margin-top:2px;">${top3[i].points} pts</div>
+      </div>`;
+  });
+  podiumHtml += `</div>`;
+
+  document.getElementById('last-event-section').style.display = 'block';
+  document.getElementById('last-event-card').innerHTML = `
     <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
       <div>
         <div style="font-size:15px; font-weight:500; color:#fff; margin-bottom:4px;">${event.nom}</div>
         <div style="font-size:12px; color:#4a7a9b;">${event.sport} · ${formatDate(event.date_debut)} — ${formatDate(event.date_fin)}</div>
-        <div style="font-size:12px; color:#4a7a9b; margin-top:2px;">${event.nom_complet || ''}</div>
       </div>
-      <span class="badge badge-soon">À venir</span>
+      <span class="badge badge-done">Terminé</span>
     </div>
-    <a href="event.html?id=${event.id}">
-      <button style="margin-top:0;">Voir l'évènement →</button>
+    ${podiumHtml}
+    <a href="historique.html">
+      <button class="btn-secondary" style="margin-top:0; width:auto; padding:7px 16px;">Voir l'historique complet →</button>
     </a>`;
 }
 
