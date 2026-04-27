@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KARMA — Ajouter des matchs</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar-logo"><span>K</span>ARMA</div>
+    <div class="navbar-links">
+      <a class="navbar-link" href="admin.html">← Retour Admin</a>
+    </div>
+    <div class="navbar-user">
+      <span class="badge" style="background:#2a1a0a; color:#f97316; border:0.5px solid #f97316;">Admin</span>
+      <div class="avatar" id="avatar"></div>
+    </div>
+  </nav>
+
+  <div class="page-body">
+    <div style="font-size:16px; font-weight:500; color:#fff; margin-bottom:4px;" id="page-title">Ajouter des matchs</div>
+    <div style="font-size:12px; color:#4a7a9b; margin-bottom:20px;" id="page-subtitle"></div>
+
+    <!-- IMPORT CSV -->
+    <div class="card" style="margin-bottom:16px;">
+      <div style="font-size:13px; font-weight:500; color:#fff; margin-bottom:8px;">📥 Import en masse via CSV</div>
+      <div style="font-size:12px; color:#4a7a9b; margin-bottom:12px;">
+        Format attendu : <code style="color:#38bdf8;">equipe_1,equipe_2,date_heure,phase</code><br/>
+        Exemple : <code style="color:#4a7a9b;">🇫🇷 France,🇺🇾 Uruguay,2026-06-15 21:00,Groupes</code>
+      </div>
+      <input type="file" id="csv-input" accept=".csv" style="display:none;" />
+      <div style="display:flex; gap:8px; align-items:center;">
+        <button onclick="document.getElementById('csv-input').click()" class="btn-secondary" style="width:auto; padding:8px 16px;">
+          Choisir un fichier CSV
+        </button>
+        <span id="csv-filename" style="font-size:12px; color:#4a7a9b;">Aucun fichier choisi</span>
+      </div>
+
+      <!-- APERCU -->
+      <div id="csv-preview" style="display:none; margin-top:16px;">
+        <div style="font-size:12px; color:#4a7a9b; margin-bottom:8px;" id="csv-count"></div>
+        <div style="max-height:200px; overflow:auto; background:#0a1628; border-radius:8px; padding:8px 12px; margin-bottom:12px;">
+          <table class="data-table" id="csv-table">
+            <thead><tr>
+              <th>Équipe 1</th><th>Équipe 2</th><th>Date</th><th>Phase</th><th></th>
+            </tr></thead>
+            <tbody id="csv-tbody"></tbody>
+          </table>
+        </div>
+        <div id="csv-error" class="error-msg" style="display:none;"></div>
+        <button onclick="importCSV()" style="width:auto; padding:8px 16px;">
+          ✅ Importer tous les matchs
+        </button>
+      </div>
+    </div>
+
+    <!-- AJOUT MANUEL -->
+    <div class="card">
+      <div style="font-size:13px; font-weight:500; color:#fff; margin-bottom:12px;">✏️ Ajout manuel</div>
+      <div style="display:flex; gap:12px;">
+        <div class="form-group" style="flex:1;"><label>Équipe 1</label><input type="text" id="eq1" placeholder="ex: 🇫🇷 France"/></div>
+        <div class="form-group" style="flex:1;"><label>Équipe 2</label><input type="text" id="eq2" placeholder="ex: 🇸🇳 Sénégal"/></div>
+      </div>
+      <div style="display:flex; gap:12px;">
+        <div class="form-group" style="flex:1;"><label>Date et heure</label><input type="datetime-local" id="match-date"/></div>
+        <div class="form-group" style="flex:1;"><label>Phase</label><input type="text" id="match-phase"/></div>
+      </div>
+      <div id="match-error" class="error-msg" style="display:none;"></div>
+      <div style="display:flex; gap:8px;">
+        <button onclick="addMatch()" style="width:auto; padding:8px 16px;">Ajouter le match</button>
+        <a href="admin.html"><button class="btn-secondary" style="width:auto; padding:8px 16px;">Terminer</button></a>
+      </div>
+    </div>
+
+    <div class="section-label">Matchs déjà ajoutés</div>
+    <div id="matches-list"></div>
+  </div>
+
+  <script type="module">
+    import { supabase } from './js/supabase.js';
+    import './js/auth.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const eventId = params.get('event');
+    const phase = decodeURIComponent(params.get('phase') || '');
+
+    let csvData = [];
+
+    window.addEventListener('load', () => {
+      const u = localStorage.getItem('karma_user');
+      const user = u ? JSON.parse(u) : null;
+      if (!user || user.role !== 'ADMIN') {
+        window.location.href = 'login.html';
+        return;
+      }
+      document.getElementById('avatar').textContent = user.login.substring(0, 2).toUpperCase();
+      if (phase) document.getElementById('match-phase').value = phase;
+      loadEventInfo();
+      loadMatches();
+      setupCSV();
+    });
+
+    async function loadEventInfo() {
+      if (!eventId) return;
+      const { data } = await supabase.from('events').select('nom').eq('id', eventId).single();
+      if (data) {
+        document.getElementById('page-title').textContent = `Ajouter des matchs — ${data.nom}`;
+        document.getElementById('page-subtitle').textContent = phase ? `Phase : ${phase}` : 'Toutes phases';
+      }
+    }
+
+    // ========== CSV ==========
+    function setupCSV() {
+      const input = document.getElementById('csv-input');
+      input.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        document.getElementById('csv-filename').textContent = file.name;
+
+        const reader = new FileReader();
+        reader.onload = (ev) => parseCSV(ev.target.result);
+        reader.readAsText(file, 'UTF-8');
+      });
+    }
+
+    function parseCSV(text) {
+      const lines = text.trim().split('\n');
+      const headers = lines[0].split(',').map(h => h.trim());
+      csvData = [];
+      const errors = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].split(',');
+        if (cols.length < 4) { errors.push(`Ligne ${i + 1} invalide`); continue; }
+
+        const eq1 = cols[0].trim();
+        const eq2 = cols[1].trim();
+        const dateStr = cols[2].trim();
+        const ph = cols[3].trim();
+
+        if (!eq1 || !eq2 || !dateStr || !ph) {
+          errors.push(`Ligne ${i + 1} : données manquantes`);
+          continue;
+        }
+
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) {
+          errors.push(`Ligne ${i + 1} : date invalide (${dateStr})`);
+          continue;
+        }
+
+        csvData.push({ equipe_1: eq1, equipe_2: eq2, date_heure: date.toISOString(), phase: ph });
+      }
+
+      // Affichage aperçu
+      const tbody = document.getElementById('csv-tbody');
+      tbody.innerHTML = '';
+      csvData.forEach((m, i) => {
+        tbody.innerHTML += `<tr>
+          <td>${m.equipe_1}</td>
+          <td>${m.equipe_2}</td>
+          <td style="font-size:11px;">${formatDate(m.date_heure)}</td>
+          <td>${m.phase}</td>
+          <td><button class="btn-small btn-danger" onclick="removeCSVRow(${i})">✕</button></td>
+        </tr>`;
+      });
+
+      document.getElementById('csv-count').textContent =
+        `${csvData.length} match(s) prêt(s) à importer${errors.length > 0 ? ` — ⚠️ ${errors.length} ligne(s) ignorée(s)` : ''}`;
+
+      const errorDiv = document.getElementById('csv-error');
+      if (errors.length > 0) {
+        errorDiv.textContent = errors.join(' | ');
+        errorDiv.style.display = 'block';
+      } else {
+        errorDiv.style.display = 'none';
+      }
+
+      document.getElementById('csv-preview').style.display = 'block';
+    }
+
+    window.removeCSVRow = function(index) {
+      csvData.splice(index, 1);
+      parseCSVRefresh();
+    }
+
+    function parseCSVRefresh() {
+      const tbody = document.getElementById('csv-tbody');
+      tbody.innerHTML = '';
+      csvData.forEach((m, i) => {
+        tbody.innerHTML += `<tr>
+          <td>${m.equipe_1}</td>
+          <td>${m.equipe_2}</td>
+          <td style="font-size:11px;">${formatDate(m.date_heure)}</td>
+          <td>${m.phase}</td>
+          <td><button class="btn-small btn-danger" onclick="removeCSVRow(${i})">✕</button></td>
+        </tr>`;
+      });
+      document.getElementById('csv-count').textContent = `${csvData.length} match(s) prêt(s) à importer`;
+    }
+
+    window.importCSV = async function() {
+      if (csvData.length === 0) {
+        alert('Aucun match à importer.');
+        return;
+      }
+
+      const rows = csvData.map(m => ({
+        event_id: eventId,
+        equipe_1: m.equipe_1,
+        equipe_2: m.equipe_2,
+        date_heure: m.date_heure,
+        phase: m.phase,
+        statut: 'a_venir'
+      }));
+
+      const { error } = await supabase.from('matches').insert(rows);
+
+      if (error) {
+        const errorDiv = document.getElementById('csv-error');
+        errorDiv.textContent = 'Erreur import : ' + error.message;
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      alert(`✅ ${csvData.length} match(s) importé(s) avec succès !`);
+      csvData = [];
+      document.getElementById('csv-preview').style.display = 'none';
+      document.getElementById('csv-filename').textContent = 'Aucun fichier choisi';
+      document.getElementById('csv-input').value = '';
+      loadMatches();
+    }
+
+    // ========== AJOUT MANUEL ==========
+    window.addMatch = async function() {
+      const eq1 = document.getElementById('eq1').value.trim();
+      const eq2 = document.getElementById('eq2').value.trim();
+      const date = document.getElementById('match-date').value;
+      const ph = document.getElementById('match-phase').value.trim();
+      const errorDiv = document.getElementById('match-error');
+
+      if (!eq1 || !eq2 || !date || !ph) {
+        errorDiv.textContent = 'Merci de remplir tous les champs.';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      const { error } = await supabase.from('matches').insert({
+        event_id: eventId,
+        phase: ph,
+        equipe_1: eq1,
+        equipe_2: eq2,
+        date_heure: new Date(date).toISOString(),
+        statut: 'a_venir'
+      });
+
+      if (error) {
+        errorDiv.textContent = 'Erreur : ' + error.message;
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      document.getElementById('eq1').value = '';
+      document.getElementById('eq2').value = '';
+      document.getElementById('match-date').value = '';
+      errorDiv.style.display = 'none';
+      loadMatches();
+    }
+
+    // ========== LISTE DES MATCHS ==========
+    async function loadMatches() {
+      const query = supabase.from('matches').select('*').eq('event_id', eventId).order('date_heure');
+      if (phase) query.eq('phase', phase);
+      const { data: matches } = await query;
+
+      const list = document.getElementById('matches-list');
+      if (!matches || matches.length === 0) {
+        list.innerHTML = '<div style="font-size:13px; color:#4a7a9b;">Aucun match ajouté.</div>';
+        return;
+      }
+
+      // Grouper par phase
+      const grouped = {};
+      matches.forEach(m => {
+        if (!grouped[m.phase]) grouped[m.phase] = [];
+        grouped[m.phase].push(m);
+      });
+
+      list.innerHTML = '';
+      Object.entries(grouped).forEach(([ph, matchs]) => {
+        list.innerHTML += `<div style="font-size:13px; font-weight:500; color:#38bdf8; margin:12px 0 8px;">${ph} — ${matchs.length} match(s)</div>`;
+        matchs.forEach(m => {
+          list.innerHTML += `
+            <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; margin-bottom:6px;">
+              <div>
+                <div style="font-size:13px; color:#fff;">${m.equipe_1} vs ${m.equipe_2}</div>
+                <div style="font-size:11px; color:#4a7a9b; margin-top:2px;">${formatDate(m.date_heure)}</div>
+              </div>
+              <button class="btn-danger" onclick="deleteMatch('${m.id}')">✕</button>
+            </div>`;
+        });
+      });
+    }
+
+    window.deleteMatch = async function(id) {
+      if (!confirm('Supprimer ce match ?')) return;
+      await supabase.from('matches').delete().eq('id', id);
+      loadMatches();
+    }
+
+    // ========== UTILITAIRES ==========
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+  </script>
+</body>
+</html>
