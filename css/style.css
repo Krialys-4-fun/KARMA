@@ -15,14 +15,14 @@ body {
 
 /* ========== NAVBAR ========== */
 .navbar {
-  background: rgba(255, 252, 248, 0.97);
-  border-bottom: 0.5px solid #e8e0d8;
+  background: rgba(232, 220, 205, 0.98);
+  border-bottom: 1px solid #c8b89a;
   padding: 0 32px;
   height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.12);
   position: sticky;
   top: 0;
   z-index: 100;
