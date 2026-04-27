@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KARMA — FAQ</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .faq-section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #f97316;
+      margin: 32px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #f97316;
+    }
+    .faq-item {
+      background: rgba(13, 31, 60, 0.92);
+      border: 0.5px solid #1a3a5c;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+    .faq-question {
+      padding: 16px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+    .faq-question:hover { color: #38bdf8; }
+    .faq-question .chevron {
+      font-size: 12px;
+      color: #f97316;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+      margin-left: 12px;
+    }
+    .faq-question.open .chevron { transform: rotate(180deg); }
+    .faq-answer {
+      display: none;
+      padding: 0 20px 16px;
+      font-size: 13px;
+      color: #aac0d4;
+      line-height: 1.7;
+      border-top: 0.5px solid #1a3a5c;
+      padding-top: 14px;
+    }
+    .faq-answer.open { display: block; }
+    .faq-answer strong { color: #f97316; }
+    .faq-answer .badge-inline {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 600;
+      margin: 0 2px;
+    }
+    .score-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .score-table th {
+      font-size: 11px;
+      color: #4a7a9b;
+      text-align: left;
+      padding: 6px 10px;
+      border-bottom: 0.5px solid #1a3a5c;
+    }
+    .score-table td {
+      font-size: 13px;
+      color: #ccd6e0;
+      padding: 8px 10px;
+      border-bottom: 0.5px solid #0d1f3c;
+    }
+    .score-table td.pts { color: #f97316; font-weight: 700; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar-logo"><span>K</span>ARMA</div>
+    <div class="navbar-links">
+      <a class="navbar-link" href="home.html">Accueil</a>
+      <a class="navbar-link" href="events.html">Évènements</a>
+      <a class="navbar-link active" href="faq.html">FAQ</a>
+      <a class="navbar-link" id="admin-link" href="admin.html" style="display:none;">Admin</a>
+    </div>
+    <div class="navbar-user">
+      <span class="mode-badge" id="mode-badge"></span>
+      <div class="avatar" id="avatar"></div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div style="
+    background: rgba(255, 252, 248, 0.92);
+    padding: 28px 32px;
+    border-bottom: 0.5px solid #e8e0d8;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  ">
+    <div style="font-size:11px; color:#f97316; letter-spacing:2px; text-transform:uppercase; font-weight:600; margin-bottom:8px;">KARMA</div>
+    <div style="font-size:24px; font-weight:700; color:#1a1a2e; margin-bottom:6px;">Foire Aux Questions</div>
+    <div style="font-size:13px; color:#6a6a8a;">Tout ce que vous devez savoir pour jouer sur KARMA</div>
+  </div>
+
+  <div class="page-body">
+
+    <!-- CONNEXION -->
+    <div class="faq-section-title">🔐 Connexion & Compte</div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggle(this)">
+        Comment me connecter à KARMA ?
+        <span class="chevron">▼</span>
+      </div>
+      <div class="faq-answer">
+        Rendez-vous sur <strong>krialys-4-fun.github.io/KARMA</strong> et saisissez votre <strong>login</strong> et <strong>mot de passe</strong> fournis par l'administrateur. Vous pouvez valider en appuyant sur <strong>Entrée</strong> ou en cliquant sur "Se connecter".
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggle(this)">
+        Je n'ai pas de compte, que faire ?
+        <span class="chevron">▼</span>
+      </div>
+      <div class="faq-answer">
+        Les comptes sont créés par l'administrateur KARMA. Contactez <strong>Adeline</strong> pour qu'elle vous crée un accès. Vous recevrez un login et un mot de passe temporaire.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggle(this)">
+        J'ai oublié mon mot de passe, comment le récupérer ?
+        <span class="chevron">▼</span>
+      </div>
+      <div class="faq-answer">
+        Il n'y a pas de récupération automatique par email. Contactez l'administrateur KARMA qui pourra réinitialiser votre mot de passe depuis la page Admin.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggle(this)">
+        C'est quoi le mode Expert et le mode Mouton ?
+        <span class="chevron">▼</span>
+      </div>
+      <div class="faq-answer">
+        À votre première connexion, vous choisissez votre mode de jeu — ce choix est <strong>définitif</strong> (seul l'admin peut le modifier) :<br/><br/>
+        🧠 <strong>Mode Expert</strong> — Vous jouez en aveugle. Vous ne voyez pas les votes des autres joueurs avant la fermeture des votes. En contrepartie, vous pouvez remporter un bonus supplémentaire si vous êtes le seul à avoir trouvé le score exact.<br/><br/>
+        🐑 <strong>Mode Mouton</strong> — Vous voyez les votes déjà déposés par les autres joueurs avant de voter. En contrepartie, vous ne pouvez pas prétendre au bonus "seul score exact".
+      </div>
+    </div>
+
+    <div class="faq-item">
