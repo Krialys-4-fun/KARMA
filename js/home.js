@@ -1,5 +1,15 @@
 import { supabase } from './supabase.js';
-import './auth.js';
+import { initNav } from './nav.js';
+
+let currentUser = null;
+
+window.addEventListener('load', async () => {
+  currentUser = initNav();
+  if (!currentUser) return;
+  await loadCurrentEvent();
+  await loadNextEvent();
+  await loadLastEvent();
+});
 
 // ========== DRAPEAUX ==========
 function flag(equipe) {
