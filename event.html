@@ -65,7 +65,19 @@
 
   <script type="module">
     import { supabase } from './js/supabase.js';
-    import './js/auth.js';
+    import { initNav } from './js/nav.js';
+    
+    let currentUser = null;
+    
+    window.addEventListener('load', async () => {
+      currentUser = initNav();
+      if (!currentUser) return;
+      if (!eventId) { window.location.href = 'index.html'; return; }
+      await loadEvent();
+      await loadBonus();
+      await loadMatches();
+      await loadLockedPhases();
+    });
 
     // ========== DRAPEAUX ==========
     function flag(equipe) {
