@@ -70,22 +70,19 @@
     // ========== DRAPEAUX ==========
     function flag(equipe) {
       const codes = {
-        'Mexique': 'MX', 'Afrique du Sud': 'ZA', 'Canada': 'CA',
-        'Bosnie-Herzégovine': 'BA', 'Allemagne': 'DE', "Côte d'Ivoire": 'CI',
-        'États-Unis': 'US', 'Paraguay': 'PY', 'Brésil': 'BR', 'Maroc': 'MA',
-        'Qatar': 'QA', 'Suisse': 'CH', 'Argentine': 'AR', 'Slovaquie': 'SK',
-        'Japon': 'JP', 'Sénégal': 'SN', 'Espagne': 'ES', 'Suède': 'SE',
-        'Portugal': 'PT', 'Zimbabwe': 'ZW', 'France': 'FR', 'Uruguay': 'UY',
-        'Belgique': 'BE', 'Tunisie': 'TN', 'Angleterre': 'GB', 'Croatie': 'HR',
-        'Pays-Bas': 'NL', 'Arabie Saoudite': 'SA', 'Australie': 'AU',
-        'Nigeria': 'NG', 'Corée du Sud': 'KR', 'Tchéquie': 'CZ'
+        'Mexique': 'mx', 'Afrique du Sud': 'za', 'Canada': 'ca',
+        'Bosnie-Herzégovine': 'ba', 'Allemagne': 'de', "Côte d'Ivoire": 'ci',
+        'États-Unis': 'us', 'Paraguay': 'py', 'Brésil': 'br', 'Maroc': 'ma',
+        'Qatar': 'qa', 'Suisse': 'ch', 'Argentine': 'ar', 'Slovaquie': 'sk',
+        'Japon': 'jp', 'Sénégal': 'sn', 'Espagne': 'es', 'Suède': 'se',
+        'Portugal': 'pt', 'Zimbabwe': 'zw', 'France': 'fr', 'Uruguay': 'uy',
+        'Belgique': 'be', 'Tunisie': 'tn', 'Angleterre': 'gb-eng', 'Croatie': 'hr',
+        'Pays-Bas': 'nl', 'Arabie Saoudite': 'sa', 'Australie': 'au',
+        'Nigeria': 'ng', 'Corée du Sud': 'kr', 'Tchéquie': 'cz'
       };
       const code = codes[equipe];
       if (!code) return equipe;
-      const emoji = code.split('').map(c =>
-        String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65)
-      ).join('');
-      return emoji + ' ' + equipe;
+      return `<img src="https://flagcdn.com/16x12/${code}.png" style="vertical-align:middle; margin-right:4px;"/> ${equipe}`;
     }
     const params = new URLSearchParams(window.location.search);
     const eventId = params.get('id');
