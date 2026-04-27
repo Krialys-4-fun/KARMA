@@ -6,6 +6,12 @@
   <title>KARMA — Connexion</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
+  <script type="module">
+  import './js/auth.js';
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') window.handleLogin();
+  });
+</script>
 <body class="login-page">
 
   <div class="login-container">
