@@ -8,8 +8,6 @@
 </head>
 <body>
 
-  <div id="navbar-placeholder"></div>
-
   <div class="page-body">
     <div style="font-size:16px; font-weight:500; color:#fff; margin-bottom:4px;" id="page-title">Ajouter des matchs</div>
     <div style="font-size:12px; color:#4a7a9b; margin-bottom:20px;" id="page-subtitle"></div>
@@ -19,7 +17,7 @@
       <div style="font-size:13px; font-weight:500; color:#fff; margin-bottom:8px;">📥 Import en masse via CSV</div>
       <div style="font-size:12px; color:#4a7a9b; margin-bottom:12px;">
         Format attendu : <code style="color:#38bdf8;">equipe_1,equipe_2,date_heure,phase</code><br/>
-        Exemple : <code style="color:#4a7a9b;">🇫🇷 France,🇺🇾 Uruguay,2026-06-15 21:00,Groupes</code>
+        Exemple : <code style="color:#4a7a9b;">France,Uruguay,2026-06-15 21:00,Groupes</code>
       </div>
       <input type="file" id="csv-input" accept=".csv" style="display:none;" />
       <div style="display:flex; gap:8px; align-items:center;">
@@ -29,7 +27,6 @@
         <span id="csv-filename" style="font-size:12px; color:#4a7a9b;">Aucun fichier choisi</span>
       </div>
 
-      <!-- APERCU -->
       <div id="csv-preview" style="display:none; margin-top:16px;">
         <div style="font-size:12px; color:#4a7a9b; margin-bottom:8px;" id="csv-count"></div>
         <div style="max-height:200px; overflow:auto; background:#0a1628; border-radius:8px; padding:8px 12px; margin-bottom:12px;">
@@ -41,9 +38,7 @@
           </table>
         </div>
         <div id="csv-error" class="error-msg" style="display:none;"></div>
-        <button onclick="importCSV()" style="width:auto; padding:8px 16px;">
-          ✅ Importer tous les matchs
-        </button>
+        <button onclick="importCSV()" style="width:auto; padding:8px 16px;">✅ Importer tous les matchs</button>
       </div>
     </div>
 
@@ -51,8 +46,8 @@
     <div class="card">
       <div style="font-size:13px; font-weight:500; color:#fff; margin-bottom:12px;">✏️ Ajout manuel</div>
       <div style="display:flex; gap:12px;">
-        <div class="form-group" style="flex:1;"><label>Équipe 1</label><input type="text" id="eq1" placeholder="ex: 🇫🇷 France"/></div>
-        <div class="form-group" style="flex:1;"><label>Équipe 2</label><input type="text" id="eq2" placeholder="ex: 🇸🇳 Sénégal"/></div>
+        <div class="form-group" style="flex:1;"><label>Équipe 1</label><input type="text" id="eq1" placeholder="ex: France"/></div>
+        <div class="form-group" style="flex:1;"><label>Équipe 2</label><input type="text" id="eq2" placeholder="ex: Uruguay"/></div>
       </div>
       <div style="display:flex; gap:12px;">
         <div class="form-group" style="flex:1;"><label>Date et heure</label><input type="datetime-local" id="match-date"/></div>
@@ -61,7 +56,7 @@
       <div id="match-error" class="error-msg" style="display:none;"></div>
       <div style="display:flex; gap:8px;">
         <button onclick="addMatch()" style="width:auto; padding:8px 16px;">Ajouter le match</button>
-        <a href="admin.html"><button class="btn-secondary" style="width:auto; padding:8px 16px;">Terminer</button></a>
+        <a href="admin.html"><button class="btn-secondary" style="width:auto; padding:8px 16px;">← Retour Admin</button></a>
       </div>
     </div>
 
@@ -71,22 +66,22 @@
 
   <script type="module">
     import { supabase } from './js/supabase.js';
-    import './js/auth.js';
+    import { renderNavbar } from './js/navbar.js';
 
     const params = new URLSearchParams(window.location.search);
     const eventId = params.get('event');
     const phase = decodeURIComponent(params.get('phase') || '');
 
     let csvData = [];
+    let currentUser = null;
 
-    window.addEventListener('load', () => {
-      const u = localStorage.getItem('karma_user');
-      const user = u ? JSON.parse(u) : null;
-      if (!user || user.role !== 'ADMIN') {
-        window.location.href = 'login.html';
+    window.addEventListener('load', async () => {
+      currentUser = renderNavbar('admin');
+      if (!currentUser || currentUser.role !== 'ADMIN') {
+        window.location.href = 'home.html';
         return;
       }
-      document.getElementById('avatar').textContent = user.login.substring(0, 2).toUpperCase();
+
       if (phase) document.getElementById('match-phase').value = phase;
       loadEventInfo();
       loadMatches();
@@ -109,7 +104,6 @@
         const file = e.target.files[0];
         if (!file) return;
         document.getElementById('csv-filename').textContent = file.name;
-
         const reader = new FileReader();
         reader.onload = (ev) => parseCSV(ev.target.result);
         reader.readAsText(file, 'UTF-8');
@@ -118,7 +112,6 @@
 
     function parseCSV(text) {
       const lines = text.trim().split('\n');
-      const headers = lines[0].split(',').map(h => h.trim());
       csvData = [];
       const errors = [];
 
@@ -145,21 +138,7 @@
         csvData.push({ equipe_1: eq1, equipe_2: eq2, date_heure: date.toISOString(), phase: ph });
       }
 
-      // Affichage aperçu
-      const tbody = document.getElementById('csv-tbody');
-      tbody.innerHTML = '';
-      csvData.forEach((m, i) => {
-        tbody.innerHTML += `<tr>
-          <td>${m.equipe_1}</td>
-          <td>${m.equipe_2}</td>
-          <td style="font-size:11px;">${formatDate(m.date_heure)}</td>
-          <td>${m.phase}</td>
-          <td><button class="btn-small btn-danger" onclick="removeCSVRow(${i})">✕</button></td>
-        </tr>`;
-      });
-
-      document.getElementById('csv-count').textContent =
-        `${csvData.length} match(s) prêt(s) à importer${errors.length > 0 ? ` — ⚠️ ${errors.length} ligne(s) ignorée(s)` : ''}`;
+      renderCSVPreview();
 
       const errorDiv = document.getElementById('csv-error');
       if (errors.length > 0) {
@@ -172,12 +151,7 @@
       document.getElementById('csv-preview').style.display = 'block';
     }
 
-    window.removeCSVRow = function(index) {
-      csvData.splice(index, 1);
-      parseCSVRefresh();
-    }
-
-    function parseCSVRefresh() {
+    function renderCSVPreview() {
       const tbody = document.getElementById('csv-tbody');
       tbody.innerHTML = '';
       csvData.forEach((m, i) => {
@@ -192,11 +166,13 @@
       document.getElementById('csv-count').textContent = `${csvData.length} match(s) prêt(s) à importer`;
     }
 
+    window.removeCSVRow = function(index) {
+      csvData.splice(index, 1);
+      renderCSVPreview();
+    }
+
     window.importCSV = async function() {
-      if (csvData.length === 0) {
-        alert('Aucun match à importer.');
-        return;
-      }
+      if (csvData.length === 0) { alert('Aucun match à importer.'); return; }
 
       const rows = csvData.map(m => ({
         event_id: eventId,
@@ -262,9 +238,11 @@
 
     // ========== LISTE DES MATCHS ==========
     async function loadMatches() {
-      const query = supabase.from('matches').select('*').eq('event_id', eventId).order('date_heure');
-      if (phase) query.eq('phase', phase);
-      const { data: matches } = await query;
+      const { data: matches } = await supabase
+        .from('matches')
+        .select('*')
+        .eq('event_id', eventId)
+        .order('date_heure');
 
       const list = document.getElementById('matches-list');
       if (!matches || matches.length === 0) {
@@ -272,7 +250,6 @@
         return;
       }
 
-      // Grouper par phase
       const grouped = {};
       matches.forEach(m => {
         if (!grouped[m.phase]) grouped[m.phase] = [];
@@ -301,7 +278,6 @@
       loadMatches();
     }
 
-    // ========== UTILITAIRES ==========
     function formatDate(dateStr) {
       if (!dateStr) return '';
       const d = new Date(dateStr);
