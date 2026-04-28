@@ -8,21 +8,6 @@
 </head>
 <body>
 
-  <nav class="navbar">
-    <div class="navbar-logo"><span>K</span>ARMA</div>
-    <div class="navbar-links">
-      <a class="navbar-link" href="home.html">Accueil</a>
-      <a class="navbar-link" href="events.html">Évènements</a>
-      <a class="navbar-link active" href="historique.html">Historique</a>
-      <a class="navbar-link" href="faq.html">FAQ</a>
-      <a class="navbar-link" id="admin-link" href="admin.html" style="display:none;">Admin</a>
-    </div>
-    <div class="navbar-user">
-      <span class="mode-badge" id="mode-badge"></span>
-      <div class="avatar" id="avatar"></div>
-    </div>
-  </nav>
-
   <!-- HERO -->
   <div style="
     background: rgba(255, 252, 248, 0.92);
@@ -44,26 +29,13 @@
 
   <script type="module">
     import { supabase } from './js/supabase.js';
+    import { renderNavbar } from './js/navbar.js';
 
     const sportIcons = { 'Football': '⚽', 'Rugby': '🏉', 'Autre': '🏅' };
 
     window.addEventListener('load', async () => {
-      const u = localStorage.getItem('karma_user');
-      const user = u ? JSON.parse(u) : null;
-      if (!user) { window.location.href = 'index.html'; return; }
-
-      document.getElementById('mode-badge').textContent = user.mode;
-      const avatar = document.getElementById('avatar');
-      avatar.textContent = user.login.substring(0, 2).toUpperCase();
-      avatar.onclick = () => {
-        localStorage.removeItem('karma_user');
-        window.location.href = 'index.html';
-      };
-
-      if (user.role === 'ADMIN') {
-        document.getElementById('admin-link').style.display = 'block';
-      }
-
+      const user = renderNavbar('historique');
+      if (!user) return;
       await loadHistorique(user);
     });
 
@@ -88,9 +60,7 @@
         if (event.classement_json) {
           try {
             ranking = JSON.parse(event.classement_json);
-          } catch(e) {
-            ranking = [];
-          }
+          } catch(e) { ranking = []; }
         } else {
           const { data: matches } = await supabase
             .from('matches')
