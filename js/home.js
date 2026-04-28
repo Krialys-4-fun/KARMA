@@ -1,4 +1,5 @@
 import { supabase } from './supabase.js';
+import { renderNavbar } from './navbar.js';
 
 // ========== DRAPEAUX ==========
 function flag(equipe) {
@@ -22,21 +23,8 @@ function flag(equipe) {
 let currentUser = null;
 
 window.addEventListener('load', async () => {
-  const u = localStorage.getItem('karma_user');
-  currentUser = u ? JSON.parse(u) : null;
-  if (!currentUser) { window.location.href = 'login.html'; return; }
-
-  document.getElementById('mode-badge').textContent = currentUser.mode;
-  document.getElementById('avatar').textContent = currentUser.login.substring(0, 2).toUpperCase();
-  document.getElementById('avatar').onclick = () => {
-    localStorage.removeItem('karma_user');
-    window.location.href = 'index.html';
-  };
-
-  if (currentUser.role === 'ADMIN') {
-    const adminLink = document.getElementById('admin-link');
-    if (adminLink) adminLink.style.display = 'block';
-  }
+  currentUser = renderNavbar('home');
+  if (!currentUser) return;
 
   await loadCurrentEvent();
   await loadNextEvent();
