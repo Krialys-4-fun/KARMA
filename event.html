@@ -377,17 +377,25 @@
           const r1 = m.score_final_1;
           const r2 = m.score_final_2;
     
+          // Calculer combien de joueurs ont le score exact pour ce match
+          const nbScoresExacts = votes.filter(v =>
+            v.score_vote_1 === r1 && v.score_vote_2 === r2
+          ).length;
+          
           const votesHtml = votes.length > 0 ? votes.map(v => {
             const isMe = v.user_id === currentUser.id;
             const bonGagnant = (r1 > r2 && v.score_vote_1 > v.score_vote_2) ||
                                (r1 < r2 && v.score_vote_1 < v.score_vote_2) ||
                                (r1 === r2 && v.score_vote_1 === v.score_vote_2);
             const scoreExact = r1 === v.score_vote_1 && r2 === v.score_vote_2;
+            const seulScoreExact = scoreExact && nbScoresExacts === 1 && v.users.mode === 'EXPERT';
             const classe = scoreExact ? 'correct' : bonGagnant ? '' : 'wrong';
-            const pts = scoreExact ? 4 : bonGagnant ? 3 : 0;
+            const pts = seulScoreExact ? 5 : scoreExact ? 4 : bonGagnant ? 3 : 0;
+            const bonus = seulScoreExact ? ' ⭐' : '';
+            
             return `<div class="vote-row">
               <span class="vote-player ${isMe ? 'me' : ''}">${v.users.login}${isMe ? ' (vous)' : ''}</span>
-              <span class="vote-score ${classe}">${v.score_vote_1} — ${v.score_vote_2} · ${pts} pt${pts > 1 ? 's' : ''}</span>
+              <span class="vote-score ${classe}">${v.score_vote_1} — ${v.score_vote_2} · ${pts} pt${pts > 1 ? 's' : ''}${bonus}</span>
             </div>`;
           }).join('') : '<div style="font-size:12px; color:#4a7a9b;">Aucun vote</div>';
     
@@ -412,8 +420,8 @@
               </div>
             </div>`;
         }
-      }
-    }
+                }
+              }
 
     window.saveVote = async function(matchId, existingVoteId) {
       const s1 = parseInt(document.getElementById('s1-' + matchId).value);
