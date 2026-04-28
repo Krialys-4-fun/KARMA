@@ -43,60 +43,21 @@
     .faq-question.open .chevron { transform: rotate(180deg); }
     .faq-answer {
       display: none;
-      padding: 0 20px 16px;
+      padding: 14px 20px 16px;
       font-size: 13px;
       color: #aac0d4;
       line-height: 1.7;
       border-top: 0.5px solid #1a3a5c;
-      padding-top: 14px;
     }
     .faq-answer.open { display: block; }
     .faq-answer strong { color: #f97316; }
-    .faq-answer .badge-inline {
-      display: inline-block;
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-weight: 600;
-      margin: 0 2px;
-    }
-    .score-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-    .score-table th {
-      font-size: 11px;
-      color: #4a7a9b;
-      text-align: left;
-      padding: 6px 10px;
-      border-bottom: 0.5px solid #1a3a5c;
-    }
-    .score-table td {
-      font-size: 13px;
-      color: #ccd6e0;
-      padding: 8px 10px;
-      border-bottom: 0.5px solid #0d1f3c;
-    }
+    .score-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .score-table th { font-size: 11px; color: #4a7a9b; text-align: left; padding: 6px 10px; border-bottom: 0.5px solid #1a3a5c; }
+    .score-table td { font-size: 13px; color: #ccd6e0; padding: 8px 10px; border-bottom: 0.5px solid #0d1f3c; }
     .score-table td.pts { color: #f97316; font-weight: 700; }
   </style>
 </head>
 <body>
-
-  <nav class="navbar">
-    <div class="navbar-logo"><span>K</span>ARMA</div>
-    <div class="navbar-links">
-      <a class="navbar-link" href="home.html">Accueil</a>
-      <a class="navbar-link" href="events.html">Évènements</a>
-      <a class="navbar-link" href="historique.html">Historique</a>
-      <a class="navbar-link active" href="faq.html">FAQ</a>
-      <a class="navbar-link" id="admin-link" href="admin.html" style="display:none;">Admin</a>
-    </div>
-    <div class="navbar-user">
-      <span class="mode-badge" id="mode-badge"></span>
-      <div class="avatar" id="avatar"></div>
-    </div>
-  </nav>
 
   <!-- HERO -->
   <div style="
@@ -112,44 +73,25 @@
 
   <div class="page-body">
 
-    <!-- CONNEXION -->
     <div class="faq-section-title">🔐 Connexion & Compte</div>
 
     <div class="faq-item">
-      <div class="faq-question" onclick="toggle(this)">
-        Comment me connecter à KARMA ?
-        <span class="chevron">▼</span>
-      </div>
-      <div class="faq-answer">
-        Rendez-vous sur <strong>krialys-4-fun.github.io/KARMA</strong> et saisissez votre <strong>login</strong> et <strong>mot de passe</strong> fournis par l'administrateur. Vous pouvez valider en appuyant sur <strong>Entrée</strong> ou en cliquant sur "Se connecter".
-      </div>
+      <div class="faq-question" onclick="toggle(this)">Comment me connecter à KARMA ?<span class="chevron">▼</span></div>
+      <div class="faq-answer">Rendez-vous sur <strong>krialys-4-fun.github.io/KARMA</strong> et saisissez votre <strong>login</strong> et <strong>mot de passe</strong> fournis par l'administrateur. Vous pouvez valider en appuyant sur <strong>Entrée</strong> ou en cliquant sur "Se connecter".</div>
     </div>
 
     <div class="faq-item">
-      <div class="faq-question" onclick="toggle(this)">
-        Je n'ai pas de compte, que faire ?
-        <span class="chevron">▼</span>
-      </div>
-      <div class="faq-answer">
-        Les comptes sont créés par l'administrateur KARMA. Contactez <strong>Adeline</strong> pour qu'elle vous crée un accès. Vous recevrez un login et un mot de passe temporaire.
-      </div>
+      <div class="faq-question" onclick="toggle(this)">Je n'ai pas de compte, que faire ?<span class="chevron">▼</span></div>
+      <div class="faq-answer">Les comptes sont créés par l'administrateur KARMA. Contactez <strong>Adeline</strong> pour qu'elle vous crée un accès. Vous recevrez un login et un mot de passe temporaire.</div>
     </div>
 
     <div class="faq-item">
-      <div class="faq-question" onclick="toggle(this)">
-        J'ai oublié mon mot de passe, comment le récupérer ?
-        <span class="chevron">▼</span>
-      </div>
-      <div class="faq-answer">
-        Il n'y a pas de récupération automatique par email. Contactez l'administrateur KARMA qui pourra réinitialiser votre mot de passe depuis la page Admin.
-      </div>
+      <div class="faq-question" onclick="toggle(this)">J'ai oublié mon mot de passe, comment le récupérer ?<span class="chevron">▼</span></div>
+      <div class="faq-answer">Il n'y a pas de récupération automatique par email. Contactez l'administrateur KARMA qui pourra réinitialiser votre mot de passe depuis la page Admin.</div>
     </div>
 
     <div class="faq-item">
-      <div class="faq-question" onclick="toggle(this)">
-        C'est quoi le mode Expert et le mode Mouton ?
-        <span class="chevron">▼</span>
-      </div>
+      <div class="faq-question" onclick="toggle(this)">C'est quoi le mode Expert et le mode Mouton ?<span class="chevron">▼</span></div>
       <div class="faq-answer">
         À votre première connexion, vous choisissez votre mode de jeu — ce choix est <strong>définitif</strong> (seul l'admin peut le modifier) :<br/><br/>
         🧠 <strong>Mode Expert</strong> — Vous jouez en aveugle. Vous ne voyez pas les votes des autres joueurs avant la fermeture des votes. En contrepartie, vous pouvez remporter un bonus supplémentaire si vous êtes le seul à avoir trouvé le score exact.<br/><br/>
@@ -158,75 +100,41 @@
     </div>
 
     <div class="faq-item">
-      <div class="faq-question" onclick="toggle(this)">
-        Comment me déconnecter ?
-        <span class="chevron">▼</span>
-      </div>
-      <div class="faq-answer">
-        Cliquez sur votre avatar (cercle avec vos initiales) en haut à droite de la page. Cela vous déconnecte immédiatement et vous redirige vers la page de connexion.
-      </div>
+      <div class="faq-question" onclick="toggle(this)">Comment me déconnecter ?<span class="chevron">▼</span></div>
+      <div class="faq-answer">Cliquez sur votre avatar (cercle avec vos initiales) en haut à droite de la page. Cela vous déconnecte immédiatement et vous redirige vers la page de connexion.</div>
     </div>
 
-    <!-- REGLES DU JEU -->
     <div class="faq-section-title">⚽ Règles du jeu — TACLER</div>
 
     <div class="faq-item">
-      <div class="faq-question" onclick="toggle(this)">
-        C'est quoi TACLER ?
-        <span class="chevron">▼</span>
-      </div>
-      <div class="faq-answer">
-        <strong>TACLER</strong> signifie <em>Toujours Analyser Correctement Les Equipes Rivales</em>. C'est le nom de notre évènement de pronostics pour la <strong>Coupe du Monde de Football 2026</strong> qui se déroule du 11 juin au 19 juillet 2026 aux États-Unis, Canada et Mexique. 48 équipes, 104 matchs, et un seul vainqueur KARMA !
-      </div>
+      <div class="faq-question" onclick="toggle(this)">C'est quoi TACLER ?<span class="chevron">▼</span></div>
+      <div class="faq-answer"><strong>TACLER</strong> signifie <em>Toujours Analyser Correctement Les Equipes Rivales</em>. C'est le nom de notre évènement de pronostics pour la <strong>Coupe du Monde de Football 2026</strong> qui se déroule du 11 juin au 19 juillet 2026 aux États-Unis, Canada et Mexique. 48 équipes, 104 matchs, et un seul vainqueur KARMA !</div>
     </div>
 
     <div class="faq-item">
-      <div class="faq-question" onclick="toggle(this)">
-        Comment voter sur un match ?
-        <span class="chevron">▼</span>
-      </div>
-      <div class="faq-answer">
-        Rendez-vous sur la page de l'évènement TACLER, puis saisissez votre pronostic de score pour chaque match ouvert aux votes. Cliquez sur <strong>"Valider mon vote"</strong> pour enregistrer. Vous pouvez modifier votre vote tant que le match n'a pas commencé.
-      </div>
+      <div class="faq-question" onclick="toggle(this)">Comment voter sur un match ?<span class="chevron">▼</span></div>
+      <div class="faq-answer">Rendez-vous sur la page de l'évènement TACLER, puis saisissez votre pronostic de score pour chaque match ouvert aux votes. Cliquez sur <strong>"Valider mon vote"</strong> pour enregistrer. Vous pouvez modifier votre vote tant que le match n'a pas commencé.</div>
     </div>
 
     <div class="faq-item">
-      <div class="faq-question" onclick="toggle(this)">
-        Jusqu'à quand peut-on voter sur un match ?
-        <span class="chevron">▼</span>
-      </div>
-      <div class="faq-answer">
-        Les votes se ferment automatiquement à l'<strong>heure du coup d'envoi</strong> de chaque match. Passé ce délai, il n'est plus possible de voter ni de modifier son pronostic pour ce match.
-      </div>
+      <div class="faq-question" onclick="toggle(this)">Jusqu'à quand peut-on voter sur un match ?<span class="chevron">▼</span></div>
+      <div class="faq-answer">Les votes se ferment automatiquement à l'<strong>heure du coup d'envoi</strong> de chaque match. Passé ce délai, il n'est plus possible de voter ni de modifier son pronostic pour ce match.</div>
     </div>
 
     <div class="faq-item">
-      <div class="faq-question" onclick="toggle(this)">
-        C'est quoi le vote bonus "Vainqueur du tournoi" ?
-        <span class="chevron">▼</span>
-      </div>
-      <div class="faq-answer">
-        En plus des votes sur chaque match, vous pouvez parier sur l'équipe qui remportera la Coupe du Monde. Ce vote rapporte <strong>10 points</strong> si vous avez raison. Il est modifiable jusqu'au coup d'envoi du 1er match (11 juin 2026 à 21h00), puis définitivement verrouillé.
-      </div>
+      <div class="faq-question" onclick="toggle(this)">C'est quoi le vote bonus "Vainqueur du tournoi" ?<span class="chevron">▼</span></div>
+      <div class="faq-answer">En plus des votes sur chaque match, vous pouvez parier sur l'équipe qui remportera la Coupe du Monde. Ce vote rapporte <strong>10 points</strong> si vous avez raison. Il est modifiable jusqu'au coup d'envoi du 1er match (11 juin 2026 à 21h00), puis définitivement verrouillé.</div>
     </div>
 
     <div class="faq-item">
-      <div class="faq-question" onclick="toggle(this)">
-        Comment sont calculés les points ?
-        <span class="chevron">▼</span>
-      </div>
+      <div class="faq-question" onclick="toggle(this)">Comment sont calculés les points ?<span class="chevron">▼</span></div>
       <div class="faq-answer">
         <table class="score-table">
-          <thead>
-            <tr>
-              <th>Situation</th>
-              <th>Points</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Situation</th><th>Points</th></tr></thead>
           <tbody>
             <tr><td>Bon vainqueur ou nul prédit</td><td class="pts">3 pts</td></tr>
             <tr><td>+ Score exact trouvé</td><td class="pts">+ 1 pt</td></tr>
-            <tr><td>+ Seul à avoir le score exact <em>(Mode Expert uniquement)</em></td><td class="pts">+ 1 pt</td></tr>
+            <tr><td>+ Seul à avoir le score exact (Mode Expert uniquement)</td><td class="pts">+ 1 pt</td></tr>
             <tr><td>Vainqueur du tournoi trouvé</td><td class="pts">10 pts</td></tr>
             <tr><td>Mauvais vainqueur</td><td class="pts">0 pt</td></tr>
           </tbody>
@@ -236,12 +144,9 @@
     </div>
 
     <div class="faq-item">
-      <div class="faq-question" onclick="toggle(this)">
-        C'est quoi le bonus "seul score exact" ?
-        <span class="chevron">▼</span>
-      </div>
+      <div class="faq-question" onclick="toggle(this)">C'est quoi le bonus "seul score exact" ?<span class="chevron">▼</span></div>
       <div class="faq-answer">
-        Si vous êtes le <strong>seul joueur</strong> à avoir trouvé le score exact d'un match, vous gagnez un point bonus supplémentaire. <br/><br/>
+        Si vous êtes le <strong>seul joueur</strong> à avoir trouvé le score exact d'un match, vous gagnez un point bonus supplémentaire.<br/><br/>
         ⚠️ Ce bonus s'applique uniquement aux joueurs en <strong>mode Expert</strong>.<br/>
         ⚠️ Si deux joueurs ou plus ont le même score exact, <strong>personne</strong> ne reçoit ce bonus.<br/>
         ⚠️ Ce bonus ne s'applique pas au vote "Vainqueur du tournoi".
@@ -249,10 +154,7 @@
     </div>
 
     <div class="faq-item">
-      <div class="faq-question" onclick="toggle(this)">
-        Quand voit-on les votes des autres joueurs ?
-        <span class="chevron">▼</span>
-      </div>
+      <div class="faq-question" onclick="toggle(this)">Quand voit-on les votes des autres joueurs ?<span class="chevron">▼</span></div>
       <div class="faq-answer">
         Cela dépend de votre mode :<br/><br/>
         🧠 <strong>Mode Expert</strong> — Vous ne voyez jamais les votes des autres avant la fermeture des votes. Une fois le match terminé et le résultat saisi, vous voyez tous les votes.<br/><br/>
@@ -261,13 +163,20 @@
     </div>
 
     <div class="faq-item">
-      <div class="faq-question" onclick="toggle(this)">
-        Comment s'organise le tournoi ?
-        <span class="chevron">▼</span>
+      <div class="faq-question" onclick="toggle(this)">Comment est déterminé le résultat d'un match en phase à élimination directe ?<span class="chevron">▼</span></div>
+      <div class="faq-answer">
+        Le résultat pris en compte est toujours celui à l'issue du <strong>temps réglementaire (90 minutes)</strong>, quelle que soit la suite.<br/><br/>
+        ✅ France 1-1 Argentine après 90 min, puis Argentine gagne aux tirs au but → le résultat officiel KARMA est <strong>match nul 1-1</strong><br/>
+        ✅ Brésil 1-0 Espagne après 90 min, puis prolongations → le résultat officiel KARMA est <strong>Brésil gagne 1-0</strong><br/><br/>
+        ⚠️ Les prolongations et les tirs au but ne sont <strong>pas pris en compte</strong> dans le calcul des points.
       </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggle(this)">Comment s'organise le tournoi ?<span class="chevron">▼</span></div>
       <div class="faq-answer">
         La Coupe du Monde 2026 se déroule en plusieurs phases :<br/><br/>
-        1. <strong>Phase de groupes</strong> — 48 équipes réparties en 12 groupes de 4. Les 2 premiers de chaque groupe + les 8 meilleurs 3es se qualifient.<br/>
+        1. <strong>Phase de groupes</strong> — 48 équipes réparties en 12 groupes de 4<br/>
         2. <strong>Seizièmes de finale</strong> — 32 équipes<br/>
         3. <strong>Huitièmes de finale</strong> — 16 équipes<br/>
         4. <strong>Quarts de finale</strong> — 8 équipes<br/>
@@ -278,50 +187,18 @@
     </div>
 
     <div class="faq-item">
-      <div class="faq-question" onclick="toggle(this)">
-        Comment est déterminé le résultat d'un match en phase à élimination directe ?
-        <span class="chevron">▼</span>
-      </div>
-      <div class="faq-answer">
-        Le résultat pris en compte est toujours celui à l'issue du <strong>temps réglementaire (90 minutes)</strong>, quelle que soit la suite.<br/><br/>
-        Exemples :<br/><br/>
-        ✅ France 1-1 Argentine après 90 min, puis Argentine gagne aux tirs au but → le résultat officiel KARMA est <strong>match nul 1-1</strong><br/>
-        ✅ Brésil 1-0 Espagne après 90 min, puis prolongations → le résultat officiel KARMA est <strong>Brésil gagne 1-0</strong><br/><br/>
-        ⚠️ Les prolongations et les tirs au but ne sont <strong>pas pris en compte</strong> dans le calcul des points.
-      </div>
-    </div>
-        
-    <div class="faq-item">
-      <div class="faq-question" onclick="toggle(this)">
-        Y a-t-il de l'argent en jeu ?
-        <span class="chevron">▼</span>
-      </div>
-      <div class="faq-answer">
-        <strong>Non !</strong> KARMA est un jeu de pronostics 100% gratuit et sans enjeu financier. On joue pour la gloire, le fun et l'honneur d'être le meilleur analyste de Krialys ! 🏆
-      </div>
+      <div class="faq-question" onclick="toggle(this)">Y a-t-il de l'argent en jeu ?<span class="chevron">▼</span></div>
+      <div class="faq-answer"><strong>Non !</strong> KARMA est un jeu de pronostics 100% gratuit et sans enjeu financier. On joue pour la gloire, le fun et l'honneur d'être le meilleur analyste de Krialys ! 🏆</div>
     </div>
 
   </div>
 
   <script type="module">
-    import './js/auth.js';
+    import { renderNavbar } from './js/navbar.js';
 
     window.addEventListener('load', () => {
-      const u = localStorage.getItem('karma_user');
-      const user = u ? JSON.parse(u) : null;
-      if (!user) { window.location.href = 'index.html'; return; }
-
-      document.getElementById('mode-badge').textContent = user.mode;
-      const avatar = document.getElementById('avatar');
-      avatar.textContent = user.login.substring(0, 2).toUpperCase();
-      avatar.onclick = () => {
-        localStorage.removeItem('karma_user');
-        window.location.href = 'index.html';
-      };
-
-      if (user.role === 'ADMIN') {
-        document.getElementById('admin-link').style.display = 'block';
-      }
+      const user = renderNavbar('faq');
+      if (!user) return;
     });
 
     window.toggle = function(el) {
