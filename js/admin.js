@@ -124,6 +124,127 @@ window.toggleActif = async function(id, currentActif) {
   loadUsers();
 }
 
+// ========== IMPORT CSV UTILISATEURS ==========
+let csvUsersData = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('csv-users-input');
+  if (input) {
+    input.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => parseUsersCSV(ev.target.result);
+      reader.readAsText(file, 'UTF-8');
+    });
+  }
+});
+
+function parseUsersCSV(text) {
+  const lines = text.trim().split('\n');
+  csvUsersData = [];
+  const errors = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(',');
+    if (cols.length < 2) { errors.push(`Ligne ${i + 1} invalide`); continue; }
+
+    const login = cols[0].trim();
+    const password = cols[1].trim();
+    const role = cols[2] ? cols[2].trim().toUpperCase() : 'USER';
+
+    if (!login || !password) {
+      errors.push(`Ligne ${i + 1} : données manquantes`);
+      continue;
+    }
+
+    if (role !== 'USER' && role !== 'ADMIN') {
+      errors.push(`Ligne ${i + 1} : rôle invalide (USER ou ADMIN)`);
+      continue;
+    }
+
+    csvUsersData.push({ login, password, role });
+  }
+
+  renderUsersCSVPreview();
+
+  const errorDiv = document.getElementById('csv-users-error');
+  if (errors.length > 0) {
+    errorDiv.textContent = errors.join(' | ');
+    errorDiv.style.display = 'block';
+  } else {
+    errorDiv.style.display = 'none';
+  }
+
+  document.getElementById('csv-users-preview').style.display = 'block';
+}
+
+function renderUsersCSVPreview() {
+  const tbody = document.getElementById('csv-users-tbody');
+  tbody.innerHTML = '';
+  csvUsersData.forEach((u, i) => {
+    tbody.innerHTML += `<tr>
+      <td>${u.login}</td>
+      <td style="color:#4a7a9b;">••••••••</td>
+      <td><span class="badge ${u.role === 'ADMIN' ? 'badge-live' : 'badge-soon'}">${u.role}</span></td>
+      <td><button class="btn-small btn-danger" onclick="removeUserCSVRow(${i})">✕</button></td>
+    </tr>`;
+  });
+  document.getElementById('csv-users-count').textContent = `${csvUsersData.length} utilisateur(s) prêt(s) à importer`;
+}
+
+window.removeUserCSVRow = function(index) {
+  csvUsersData.splice(index, 1);
+  renderUsersCSVPreview();
+}
+
+window.cancelUsersCSV = function() {
+  csvUsersData = [];
+  document.getElementById('csv-users-preview').style.display = 'none';
+  document.getElementById('csv-users-input').value = '';
+}
+
+window.importUsersCSV = async function() {
+  if (csvUsersData.length === 0) { alert('Aucun utilisateur à importer.'); return; }
+
+  const errorDiv = document.getElementById('csv-users-error');
+  let errors = [];
+  let success = 0;
+
+  for (const u of csvUsersData) {
+    // Hashage du mot de passe
+    const encoder = new TextEncoder();
+    const data = encoder.encode(u.password);
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hash));
+    const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+    const { error } = await supabase.from('users').insert({
+      login: u.login,
+      mot_de_passe: hashedPassword,
+      role: u.role,
+      mode: 'EXPERT',
+      mode_modifiable: true,
+      actif: true
+    });
+
+    if (error) {
+      errors.push(`${u.login} : ${error.message}`);
+    } else {
+      success++;
+    }
+  }
+
+  if (errors.length > 0) {
+    errorDiv.textContent = `${success} importé(s), ${errors.length} erreur(s) : ${errors.join(' | ')}`;
+    errorDiv.style.display = 'block';
+  } else {
+    alert(`✅ ${success} utilisateur(s) importé(s) avec succès !`);
+    cancelUsersCSV();
+    loadUsers();
+  }
+}
+
 // ========== EVENEMENTS ==========
 async function loadEvents() {
   const { data: events } = await supabase
