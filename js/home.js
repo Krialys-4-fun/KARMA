@@ -266,9 +266,18 @@ function formatDate(dateStr) {
 
 // ========== NOTIFICATIONS ==========
 async function loadNotifications() {
+  // Récupérer l'évènement en cours
+  const { data: eventEnCours } = await supabase
+    .from('events')
+    .select('id')
+    .eq('statut', 'en_cours')
+    .limit(1)
+    .single();
+
+  const eventIdEnCours = eventEnCours?.id || '';
   const notifs = [];
   const hier = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-
+  
   // Nouveaux résultats dans les 24h
   const { data: recentMatches } = await supabase
     .from('matches')
@@ -311,8 +320,8 @@ async function loadNotifications() {
   content.innerHTML = notifs.map(n => `
     <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#ccd6e0;">
       <span>${n}</span>
-      <a href="event.html?id=" style="color:#38bdf8; font-size:12px; white-space:nowrap;">Voter →</a>
-    </div>`).join('');
+      <a href="event.html?id=${eventIdEnCours}" style="color:#38bdf8; font-size:12px; white-space:nowrap;">Voter →</a>
+      </div>`).join('');
 
   banner.style.display = 'block';
 }
