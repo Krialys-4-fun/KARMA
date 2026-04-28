@@ -1,5 +1,14 @@
 import { supabase } from './supabase.js';
 
+// ========== BCRYPT VIA CDN ==========
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hash));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 // ========== CONNEXION ==========
 window.handleLogin = async function () {
   const login = document.getElementById('login').value.trim();
@@ -23,9 +32,18 @@ window.handleLogin = async function () {
 
   const user = users[0];
 
-  if (user.mot_de_passe !== password) {
+  // Vérification — supporte les deux formats (clair et hashé)
+  const hashedInput = await hashPassword(password);
+  const isValid = user.mot_de_passe === password || user.mot_de_passe === hashedInput;
+
+  if (!isValid) {
     showError('Login ou mot de passe incorrect.');
     return;
+  }
+
+  // Si mot de passe encore en clair, on le hashe automatiquement
+  if (user.mot_de_passe === password) {
+    await supabase.from('users').update({ mot_de_passe: hashedInput }).eq('id', user.id);
   }
 
   localStorage.setItem('karma_user', JSON.stringify({
@@ -60,7 +78,7 @@ window.getUser = function () {
 
 window.requireAuth = function () {
   const user = window.getUser();
-  if (!user) window.location.href = 'login.html';
+  if (!user) window.location.href = 'index.html';
   return user;
 }
 
