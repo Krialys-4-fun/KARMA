@@ -127,7 +127,7 @@ window.toggleActif = async function(id, currentActif) {
 // ========== IMPORT CSV UTILISATEURS ==========
 let csvUsersData = [];
 
-document.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('load', () => {
   const input = document.getElementById('csv-users-input');
   if (input) {
     input.addEventListener('change', (e) => {
