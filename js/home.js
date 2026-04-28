@@ -262,3 +262,56 @@ function formatDate(dateStr) {
   const d = new Date(dateStr);
   return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
 }
+
+// ========== NOTIFICATIONS ==========
+async function loadNotifications() {
+  const notifs = [];
+  const hier = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+  // Nouveaux résultats dans les 24h
+  const { data: recentMatches } = await supabase
+    .from('matches')
+    .select('equipe_1, equipe_2, score_final_1, score_final_2, phase')
+    .eq('statut', 'termine')
+    .gte('updated_at', hier)
+    .order('updated_at', { ascending: false })
+    .limit(5);
+
+  if (recentMatches && recentMatches.length > 0) {
+    const scores = recentMatches
+      .map(m => `${m.equipe_1} ${m.score_final_1}-${m.score_final_2} ${m.equipe_2}`)
+      .join(' · ');
+    notifs.push(`🆕 <strong>Nouveaux résultats :</strong> ${scores}`);
+  }
+
+  // Matchs à voter aujourd'hui
+  const demain = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+  const { data: matchsAujourdhui } = await supabase
+    .from('matches')
+    .select('equipe_1, equipe_2, date_heure')
+    .eq('statut', 'a_venir')
+    .gte('date_heure', new Date().toISOString())
+    .lte('date_heure', demain)
+    .order('date_heure')
+    .limit(3);
+
+  if (matchsAujourdhui && matchsAujourdhui.length > 0) {
+    const matchs = matchsAujourdhui
+      .map(m => `${m.equipe_1} vs ${m.equipe_2} à ${new Date(m.date_heure).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`)
+      .join(' · ');
+    notifs.push(`⏰ <strong>Matchs à voter aujourd'hui :</strong> ${matchs}`);
+  }
+
+  if (notifs.length === 0) return;
+
+  const banner = document.getElementById('notif-banner');
+  const content = document.getElementById('notif-content');
+
+  content.innerHTML = notifs.map(n => `
+    <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#ccd6e0;">
+      <span>${n}</span>
+      <a href="event.html?id=" style="color:#38bdf8; font-size:12px; white-space:nowrap;">Voter →</a>
+    </div>`).join('');
+
+  banner.style.display = 'block';
+}
