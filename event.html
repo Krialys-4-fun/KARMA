@@ -240,60 +240,86 @@
     // ========== MATCHS ==========
     async function loadMatches(termineOnly = false) {
       const { data: matches } = await supabase
-        .from('matches').select('*').eq('event_id', eventId).order('date_heure');
-
+        .from('matches')
+        .select('*')
+        .eq('event_id', eventId)
+        .order('date_heure');
+    
       if (!matches) return;
-
+    
       const now = new Date();
       const open = termineOnly ? [] : matches.filter(m => m.statut === 'a_venir' && new Date(m.date_heure) > now);
       const done = matches.filter(m => m.statut === 'termine');
-
+    
+      // Une seule requête pour tous les votes
       const { data: mesVotes } = await supabase
-        .from('votes').select('*').eq('user_id', currentUser.id)
+        .from('votes')
+        .select('*')
+        .eq('user_id', currentUser.id)
         .in('match_id', matches.map(m => m.id));
-
+    
       const votesMap = {};
       mesVotes?.forEach(v => { votesMap[v.match_id] = v; });
-
+    
+      // Une seule requête pour tous les votes de tous les joueurs
+      const { data: tousLesVotes } = await supabase
+        .from('votes')
+        .select('*, users!inner(login, mode)')
+        .in('match_id', matches.map(m => m.id));
+    
+      // Grouper les votes par match_id
+      const tousVotesMap = {};
+      tousLesVotes?.forEach(v => {
+        if (!tousVotesMap[v.match_id]) tousVotesMap[v.match_id] = [];
+        tousVotesMap[v.match_id].push(v);
+      });
+    
       if (open.length > 0) {
         document.getElementById('open-section').style.display = 'block';
-        await renderOpenMatches(open, votesMap);
+        renderOpenMatches(open, votesMap, tousVotesMap);
       }
-
+    
       if (done.length > 0) {
         document.getElementById('done-section').style.display = 'block';
-        await renderDoneMatches(done, votesMap);
+        renderDoneMatches(done, votesMap, tousVotesMap);
       }
     }
 
-    async function renderOpenMatches(matches, votesMap) {
+    function renderOpenMatches(matches, votesMap, tousVotesMap) {
       const container = document.getElementById('open-matches');
       container.innerHTML = '';
+    
       const grouped = {};
       matches.forEach(m => {
         if (!grouped[m.phase]) grouped[m.phase] = [];
         grouped[m.phase].push(m);
       });
-
+    
       for (const [phase, matchs] of Object.entries(grouped)) {
         container.innerHTML += `<div style="font-size:13px; font-weight:500; color:#38bdf8; margin:12px 0 8px; padding-bottom:6px; border-bottom:0.5px solid #1a3a5c;">${phase}</div>`;
+    
         for (const m of matchs) {
           const monVote = votesMap[m.id];
           let votesAutres = '';
+    
           if (currentUser.mode === 'MOUTON') {
-            const { data: votes } = await supabase.from('votes').select('*, users!inner(login)').eq('match_id', m.id);
-            if (votes && votes.length > 0) {
+            const votes = tousVotesMap[m.id] || [];
+            if (votes.length > 0) {
               votesAutres = `<div class="votes-list" style="margin-top:8px;">
                 <div class="votes-list-title">Votes déjà déposés</div>
-                ${votes.map(v => `<div class="vote-row">
-                  <span class="vote-player ${v.user_id === currentUser.id ? 'me' : ''}">${v.users.login}${v.user_id === currentUser.id ? ' (vous)' : ''}</span>
-                  <span class="vote-score">${v.score_vote_1} — ${v.score_vote_2}</span>
-                </div>`).join('')}
+                ${votes.map(v => `
+                  <div class="vote-row">
+                    <span class="vote-player ${v.user_id === currentUser.id ? 'me' : ''}">${v.users.login}${v.user_id === currentUser.id ? ' (vous)' : ''}</span>
+                    <span class="vote-score">${v.score_vote_1} — ${v.score_vote_2}</span>
+                  </div>`).join('')}
               </div>`;
             } else {
-              votesAutres = `<div class="votes-list" style="margin-top:8px;"><div style="font-size:12px; color:#4a7a9b; font-style:italic;">Personne n'a encore voté</div></div>`;
+              votesAutres = `<div class="votes-list" style="margin-top:8px;">
+                <div style="font-size:12px; color:#4a7a9b; font-style:italic;">Personne n'a encore voté</div>
+              </div>`;
             }
           }
+    
           container.innerHTML += `
             <div class="card" style="margin-bottom:8px;">
               <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
@@ -303,16 +329,19 @@
               <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
                 <span style="flex:1; font-size:13px; color:#fff;">${flag(m.equipe_1)}</span>
                 <div style="display:flex; align-items:center; gap:6px;">
-                  <input type="number" min="0" max="20" id="s1-${m.id}" value="${monVote ? monVote.score_vote_1 : ''}"
+                  <input type="number" min="0" max="20" id="s1-${m.id}"
+                    value="${monVote ? monVote.score_vote_1 : ''}"
                     style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; font-size:14px; text-align:center; padding:4px 0;"/>
                   <span style="color:#4a7a9b;">—</span>
-                  <input type="number" min="0" max="20" id="s2-${m.id}" value="${monVote ? monVote.score_vote_2 : ''}"
+                  <input type="number" min="0" max="20" id="s2-${m.id}"
+                    value="${monVote ? monVote.score_vote_2 : ''}"
                     style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; font-size:14px; text-align:center; padding:4px 0;"/>
                 </div>
                 <span style="flex:1; font-size:13px; color:#fff; text-align:right;">${flag(m.equipe_2)}</span>
               </div>
               <button onclick="saveVote('${m.id}', '${monVote ? monVote.id : ''}')"
-                class="${monVote ? 'btn-secondary' : ''}" style="width:auto; padding:6px 14px;">
+                class="${monVote ? 'btn-secondary' : ''}"
+                style="width:auto; padding:6px 14px;">
                 ${monVote ? '✏️ Modifier mon vote' : '✅ Valider mon vote'}
               </button>
               ${votesAutres}
@@ -321,22 +350,25 @@
       }
     }
 
-    async function renderDoneMatches(matches, votesMap) {
+    function renderDoneMatches(matches, votesMap, tousVotesMap) {
       const container = document.getElementById('done-matches');
       container.innerHTML = '';
+    
       const grouped = {};
       matches.forEach(m => {
         if (!grouped[m.phase]) grouped[m.phase] = [];
         grouped[m.phase].push(m);
       });
-
+    
       for (const [phase, matchs] of Object.entries(grouped)) {
         container.innerHTML += `<div style="font-size:13px; font-weight:500; color:#38bdf8; margin:12px 0 8px; padding-bottom:6px; border-bottom:0.5px solid #1a3a5c;">${phase}</div>`;
+    
         for (const m of matchs) {
-          const { data: votes } = await supabase.from('votes').select('*, users!inner(login)').eq('match_id', m.id);
+          const votes = tousVotesMap[m.id] || [];
           const r1 = m.score_final_1;
           const r2 = m.score_final_2;
-          const votesHtml = votes?.map(v => {
+    
+          const votesHtml = votes.length > 0 ? votes.map(v => {
             const isMe = v.user_id === currentUser.id;
             const bonGagnant = (r1 > r2 && v.score_vote_1 > v.score_vote_2) ||
                                (r1 < r2 && v.score_vote_1 < v.score_vote_2) ||
@@ -348,8 +380,8 @@
               <span class="vote-player ${isMe ? 'me' : ''}">${v.users.login}${isMe ? ' (vous)' : ''}</span>
               <span class="vote-score ${classe}">${v.score_vote_1} — ${v.score_vote_2} · ${pts} pt${pts > 1 ? 's' : ''}</span>
             </div>`;
-          }).join('') || '<div style="font-size:12px; color:#4a7a9b;">Aucun vote</div>';
-
+          }).join('') : '<div style="font-size:12px; color:#4a7a9b;">Aucun vote</div>';
+    
           container.innerHTML += `
             <div class="card" style="margin-bottom:8px; border-color:#0f2a1a;">
               <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
