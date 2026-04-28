@@ -8,22 +8,7 @@
 </head>
 <body>
 
-  <nav class="navbar">
-    <div class="navbar-logo"><span>K</span>ARMA</div>
-    <div class="navbar-links">
-      <a class="navbar-link" href="home.html">Accueil</a>
-      <a class="navbar-link" href="events.html">Évènements</a>
-      <a class="navbar-link" href="historique.html">Historique</a>
-      <a class="navbar-link" href="faq.html">FAQ</a>
-      <a class="navbar-link" id="admin-link" href="admin.html" style="display:none;">Admin</a>
-    </div>
-    <div class="navbar-user">
-      <span class="mode-badge" id="mode-badge"></span>
-      <div class="avatar" id="avatar"></div>
-    </div>
-  </nav>
-
-    <div style="
+  <div style="
     background: rgba(255, 252, 248, 0.92);
     padding: 28px 32px;
     border-bottom: 0.5px solid #e8e0d8;
@@ -39,54 +24,54 @@
     <span class="badge" id="event-statut"></span>
   </div>
 
-<div class="page-body">
+  <div class="page-body">
 
-<!-- REGLES -->
-<div class="section-label">Règles du tournoi</div>
-<div class="card" style="margin-bottom:16px;">
-  <div style="display:flex; gap:24px; flex-wrap:wrap;">
-    <div style="flex:1; min-width:200px;">
-      <div style="font-size:12px; font-weight:600; color:#f97316; margin-bottom:10px;">⚽ Système de points</div>
-      <table style="width:100%; border-collapse:collapse;">
-        <tr>
-          <td style="font-size:12px; color:#aac0d4; padding:5px 0; border-bottom:0.5px solid #1a3a5c;">Bon vainqueur ou nul prédit</td>
-          <td style="font-size:12px; color:#f97316; font-weight:700; text-align:right; padding:5px 0; border-bottom:0.5px solid #1a3a5c;">3 pts</td>
-        </tr>
-        <tr>
-          <td style="font-size:12px; color:#aac0d4; padding:5px 0; border-bottom:0.5px solid #1a3a5c;">+ Score exact</td>
-          <td style="font-size:12px; color:#f97316; font-weight:700; text-align:right; padding:5px 0; border-bottom:0.5px solid #1a3a5c;">+ 1 pt</td>
-        </tr>
-        <tr>
-          <td style="font-size:12px; color:#aac0d4; padding:5px 0; border-bottom:0.5px solid #1a3a5c;">+ Seul score exact (Expert uniquement)</td>
-          <td style="font-size:12px; color:#f97316; font-weight:700; text-align:right; padding:5px 0; border-bottom:0.5px solid #1a3a5c;">+ 1 pt</td>
-        </tr>
-        <tr>
-          <td style="font-size:12px; color:#aac0d4; padding:5px 0; border-bottom:0.5px solid #1a3a5c;">Vainqueur du tournoi</td>
-          <td style="font-size:12px; color:#f97316; font-weight:700; text-align:right; padding:5px 0; border-bottom:0.5px solid #1a3a5c;">10 pts</td>
-        </tr>
-        <tr>
-          <td style="font-size:12px; color:#aac0d4; padding:5px 0;">Mauvais vainqueur</td>
-          <td style="font-size:12px; color:#f87171; font-weight:700; text-align:right; padding:5px 0;">0 pt</td>
-        </tr>
-      </table>
+    <!-- REGLES -->
+    <div class="section-label">Règles du tournoi</div>
+    <div class="card" style="margin-bottom:16px;">
+      <div style="display:flex; gap:24px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:200px;">
+          <div style="font-size:12px; font-weight:600; color:#f97316; margin-bottom:10px;">⚽ Système de points</div>
+          <table style="width:100%; border-collapse:collapse;">
+            <tr>
+              <td style="font-size:12px; color:#aac0d4; padding:5px 0; border-bottom:0.5px solid #1a3a5c;">Bon vainqueur ou nul prédit</td>
+              <td style="font-size:12px; color:#f97316; font-weight:700; text-align:right; padding:5px 0; border-bottom:0.5px solid #1a3a5c;">3 pts</td>
+            </tr>
+            <tr>
+              <td style="font-size:12px; color:#aac0d4; padding:5px 0; border-bottom:0.5px solid #1a3a5c;">+ Score exact</td>
+              <td style="font-size:12px; color:#f97316; font-weight:700; text-align:right; padding:5px 0; border-bottom:0.5px solid #1a3a5c;">+ 1 pt</td>
+            </tr>
+            <tr>
+              <td style="font-size:12px; color:#aac0d4; padding:5px 0; border-bottom:0.5px solid #1a3a5c;">+ Seul score exact (Expert uniquement)</td>
+              <td style="font-size:12px; color:#f97316; font-weight:700; text-align:right; padding:5px 0; border-bottom:0.5px solid #1a3a5c;">+ 1 pt</td>
+            </tr>
+            <tr>
+              <td style="font-size:12px; color:#aac0d4; padding:5px 0; border-bottom:0.5px solid #1a3a5c;">Vainqueur du tournoi</td>
+              <td style="font-size:12px; color:#f97316; font-weight:700; text-align:right; padding:5px 0; border-bottom:0.5px solid #1a3a5c;">10 pts</td>
+            </tr>
+            <tr>
+              <td style="font-size:12px; color:#aac0d4; padding:5px 0;">Mauvais vainqueur</td>
+              <td style="font-size:12px; color:#f87171; font-weight:700; text-align:right; padding:5px 0;">0 pt</td>
+            </tr>
+          </table>
+        </div>
+        <div style="flex:1; min-width:200px;">
+          <div style="font-size:12px; font-weight:600; color:#f97316; margin-bottom:10px;">🧠 Modes de jeu</div>
+          <div style="font-size:12px; color:#aac0d4; margin-bottom:8px; line-height:1.6;">
+            <strong style="color:#38bdf8;">Expert</strong> — Joue en aveugle, ne voit pas les votes des autres. Peut remporter le bonus "seul score exact".
+          </div>
+          <div style="font-size:12px; color:#aac0d4; line-height:1.6;">
+            <strong style="color:#4ade80;">Mouton</strong> — Voit les votes déjà déposés avant de voter. Ne peut pas remporter le bonus "seul score exact".
+          </div>
+          <div style="font-size:12px; font-weight:600; color:#f97316; margin-top:14px; margin-bottom:10px;">⏰ Fermeture des votes</div>
+          <div style="font-size:12px; color:#aac0d4; line-height:1.6;">
+            Les votes se ferment automatiquement au <strong style="color:#fff;">coup d'envoi</strong> de chaque match. Le résultat pris en compte est celui à l'issue du <strong style="color:#fff;">temps réglementaire (90 min)</strong>.
+          </div>
+        </div>
+      </div>
     </div>
-    <div style="flex:1; min-width:200px;">
-      <div style="font-size:12px; font-weight:600; color:#f97316; margin-bottom:10px;">🧠 Modes de jeu</div>
-      <div style="font-size:12px; color:#aac0d4; margin-bottom:8px; line-height:1.6;">
-        <strong style="color:#38bdf8;">Expert</strong> — Joue en aveugle, ne voit pas les votes des autres. Peut remporter le bonus "seul score exact".
-      </div>
-      <div style="font-size:12px; color:#aac0d4; line-height:1.6;">
-        <strong style="color:#4ade80;">Mouton</strong> — Voit les votes déjà déposés avant de voter. Ne peut pas remporter le bonus "seul score exact".
-      </div>
-      <div style="font-size:12px; font-weight:600; color:#f97316; margin-top:14px; margin-bottom:10px;">⏰ Fermeture des votes</div>
-      <div style="font-size:12px; color:#aac0d4; line-height:1.6;">
-        Les votes se ferment automatiquement au <strong style="color:#fff;">coup d'envoi</strong> de chaque match. Le résultat pris en compte est celui à l'issue du <strong style="color:#fff;">temps réglementaire (90 min)</strong>.
-      </div>
-    </div>
-  </div>
-</div>
 
-<div id="bonus-section" style="display:none;">
+    <div id="bonus-section" style="display:none;">
       <div class="section-label">Vote bonus — Vainqueur du tournoi</div>
       <div class="card" id="bonus-card" style="border:0.5px solid #f97316;"></div>
     </div>
@@ -112,6 +97,7 @@
 
   <script type="module">
     import { supabase } from './js/supabase.js';
+    import { renderNavbar } from './js/navbar.js';
 
     // ========== DRAPEAUX ==========
     function flag(equipe) {
@@ -136,22 +122,8 @@
     let currentUser = null;
 
     window.addEventListener('load', async () => {
-      const u = localStorage.getItem('karma_user');
-      currentUser = u ? JSON.parse(u) : null;
-      if (!currentUser) { window.location.href = 'index.html'; return; }
-
-      document.getElementById('mode-badge').textContent = currentUser.mode;
-      const avatar = document.getElementById('avatar');
-      avatar.textContent = currentUser.login.substring(0, 2).toUpperCase();
-      avatar.onclick = () => {
-        localStorage.removeItem('karma_user');
-        window.location.href = 'index.html';
-      };
-
-      if (currentUser.role === 'ADMIN') {
-        document.getElementById('admin-link').style.display = 'block';
-      }
-
+      currentUser = renderNavbar('event');
+      if (!currentUser) return;
       if (!eventId) { window.location.href = 'home.html'; return; }
 
       await loadEvent();
@@ -176,7 +148,7 @@
       badge.textContent = statut === 'en_cours' ? 'En cours' : statut === 'a_venir' ? 'À venir' : 'Terminé';
       badge.className = `badge ${statut === 'en_cours' ? 'badge-live' : statut === 'a_venir' ? 'badge-soon' : 'badge-done'}`;
     }
-    
+
     // ========== VOTE BONUS ==========
     async function loadBonus() {
       const section = document.getElementById('bonus-section');
@@ -201,7 +173,6 @@
       const isLocked = firstMatch && new Date() >= new Date(firstMatch.date_heure);
 
       if (existing && isLocked) {
-        // Vote existant + tournoi commencé → verrouillé
         card.innerHTML = `
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <div>
@@ -210,9 +181,7 @@
             </div>
             <span class="badge badge-locked">Verrouillé</span>
           </div>`;
-
       } else if (existing && !isLocked) {
-        // Vote existant + tournoi pas encore commencé → modifiable
         const { data: matches } = await supabase
           .from('matches')
           .select('equipe_1, equipe_2')
@@ -230,15 +199,11 @@
             </select>
           </div>
           <button onclick="saveBonus('${existing.id}')" style="width:auto; padding:7px 16px;">Modifier mon vote bonus</button>`;
-
       } else if (!existing && isLocked) {
-        // Pas de vote + tournoi commencé → trop tard
         card.innerHTML = `
           <div style="font-size:13px; font-weight:500; color:#f97316; margin-bottom:4px;">Vainqueur du tournoi</div>
           <div style="font-size:13px; color:#6a8caa;">⏰ Vote fermé — le tournoi a déjà commencé.</div>`;
-
       } else {
-        // Pas de vote + tournoi pas encore commencé → voter
         const { data: matches } = await supabase
           .from('matches')
           .select('equipe_1, equipe_2')
@@ -480,7 +445,6 @@
       }
     }
 
-    // ========== PHASES VERROUILLEES ==========
     async function loadLockedPhases() {
       const phases = ['Seizièmes de finale', 'Huitièmes de finale', 'Quarts de finale', 'Demi-finales', 'Finale'];
 
@@ -505,7 +469,6 @@
         </div>`).join('');
     }
 
-    // ========== UTILITAIRES ==========
     function formatDate(dateStr) {
       if (!dateStr) return '';
       const d = new Date(dateStr);
