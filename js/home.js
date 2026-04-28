@@ -29,6 +29,7 @@ window.addEventListener('load', async () => {
   await loadCurrentEvent();
   await loadNextEvent();
   await loadLastEvent();
+  await loadNotifications();
 });
 
 // ========== EVENEMENT EN COURS ==========
