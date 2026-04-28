@@ -19,14 +19,29 @@ export function renderNavbar(activePage) {
   const navHtml = `
     <nav class="navbar">
       <div class="navbar-logo"><span>K</span>ARMA</div>
-      <div class="navbar-links">${links}</div>
+
+      <!-- DESKTOP -->
+      <div class="navbar-links" id="nav-desktop">${links}</div>
+
+      <!-- USER + HAMBURGER -->
       <div class="navbar-user">
         <span class="mode-badge">${user.mode}</span>
         <div class="avatar" id="karma-avatar">${user.login.substring(0, 2).toUpperCase()}</div>
+        <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
       </div>
-    </nav>`;
+    </nav>
 
-  // Insérer la navbar
+    <!-- MENU MOBILE -->
+    <div class="mobile-menu" id="mobile-menu">
+      ${links}
+      <div class="mobile-menu-footer">
+        <span class="mode-badge">${user.mode}</span>
+        <button onclick="karmaLogout()" class="btn-secondary" style="width:auto; padding:6px 14px; margin-top:0;">Déconnexion</button>
+      </div>
+    </div>`;
+
   const container = document.getElementById('navbar-container');
   if (container) {
     container.innerHTML = navHtml;
@@ -34,14 +49,33 @@ export function renderNavbar(activePage) {
     document.body.insertAdjacentHTML('afterbegin', navHtml);
   }
 
-  // Attacher le logout après insertion
-  const avatar = document.getElementById('karma-avatar');
-  if (avatar) {
-    avatar.onclick = () => {
-      localStorage.removeItem('karma_user');
-      window.location.href = 'index.html';
-    };
-  }
+  // Logout avatar desktop
+  document.getElementById('karma-avatar').onclick = () => {
+    localStorage.removeItem('karma_user');
+    window.location.href = 'index.html';
+  };
+
+  // Hamburger toggle
+  document.getElementById('hamburger-btn').onclick = () => {
+    const menu = document.getElementById('mobile-menu');
+    menu.classList.toggle('open');
+    document.getElementById('hamburger-btn').classList.toggle('open');
+  };
+
+  // Fermer le menu si on clique ailleurs
+  document.addEventListener('click', (e) => {
+    const menu = document.getElementById('mobile-menu');
+    const btn = document.getElementById('hamburger-btn');
+    if (menu && !menu.contains(e.target) && !btn.contains(e.target)) {
+      menu.classList.remove('open');
+      btn.classList.remove('open');
+    }
+  });
+
+  window.karmaLogout = () => {
+    localStorage.removeItem('karma_user');
+    window.location.href = 'index.html';
+  };
 
   return user;
 }
