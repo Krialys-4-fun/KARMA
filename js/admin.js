@@ -70,8 +70,15 @@ window.addUser = async function() {
     return;
   }
 
+  // Hashage du mot de passe
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hash));
+  const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
   const { error } = await supabase.from('users').insert({
-    login, mot_de_passe: password, role,
+    login, mot_de_passe: hashedPassword, role,
     mode: 'EXPERT', mode_modifiable: true, actif: true
   });
 
@@ -98,7 +105,15 @@ window.toggleMode = async function(id, currentMode) {
 window.resetPassword = async function(id) {
   const newPwd = prompt('Nouveau mot de passe :');
   if (!newPwd) return;
-  await supabase.from('users').update({ mot_de_passe: newPwd }).eq('id', id);
+
+  // Hashage
+  const encoder = new TextEncoder();
+  const data = encoder.encode(newPwd);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hash));
+  const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+  await supabase.from('users').update({ mot_de_passe: hashedPassword }).eq('id', id);
   alert('Mot de passe mis à jour !');
 }
 
