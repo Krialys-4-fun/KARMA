@@ -130,17 +130,10 @@
       if (!currentUser) return;
       if (!eventId) { window.location.href = 'home.html'; return; }
 
-      await loadEvent();
-      await loadBonus();
-      await loadMatches();
-      await loadLockedPhases();
-    });
-
-    // ========== EVENEMENT ==========
-    async function loadEvent() {
       const { data } = await supabase.from('events').select('*').eq('id', eventId).single();
       if (!data) return;
 
+      // Infos évènement
       document.getElementById('event-sport').textContent = data.sport;
       document.getElementById('event-nom').textContent = data.nom;
       document.getElementById('event-nom-complet').textContent = data.nom_complet;
@@ -152,13 +145,15 @@
       badge.textContent = statut === 'en_cours' ? 'En cours' : statut === 'a_venir' ? 'À venir' : 'Terminé';
       badge.className = `badge ${statut === 'en_cours' ? 'badge-live' : statut === 'a_venir' ? 'badge-soon' : 'badge-done'}`;
 
-      // Cacher règles et bonus si terminé
       if (statut === 'termine') {
         document.getElementById('regles-section').style.display = 'none';
-        document.getElementById('bonus-section').style.display = 'none';
-        document.getElementById('locked-section').style.display = 'none';
+        await loadMatches(true);
+      } else {
+        await loadBonus();
+        await loadMatches(false);
+        await loadLockedPhases();
       }
-    }
+    });
 
     // ========== VOTE BONUS ==========
     async function loadBonus() {
@@ -194,12 +189,8 @@
           </div>`;
       } else if (existing && !isLocked) {
         const { data: matches } = await supabase
-          .from('matches')
-          .select('equipe_1, equipe_2')
-          .eq('event_id', eventId);
-
+          .from('matches').select('equipe_1, equipe_2').eq('event_id', eventId);
         const equipes = [...new Set(matches?.flatMap(m => [m.equipe_1, m.equipe_2]) || [])].sort();
-
         card.innerHTML = `
           <div style="font-size:13px; font-weight:500; color:#f97316; margin-bottom:8px;">🏆 Vainqueur du tournoi</div>
           <div style="font-size:12px; color:#4ade80; margin-bottom:10px;">✏️ Vous avez voté <strong>${flag(existing.equipe_gagnante_vote)}</strong> — modifiable jusqu'au 1er match !</div>
@@ -216,12 +207,8 @@
           <div style="font-size:13px; color:#6a8caa;">⏰ Vote fermé — le tournoi a déjà commencé.</div>`;
       } else {
         const { data: matches } = await supabase
-          .from('matches')
-          .select('equipe_1, equipe_2')
-          .eq('event_id', eventId);
-
+          .from('matches').select('equipe_1, equipe_2').eq('event_id', eventId);
         const equipes = [...new Set(matches?.flatMap(m => [m.equipe_1, m.equipe_2]) || [])].sort();
-
         card.innerHTML = `
           <div style="font-size:13px; font-weight:500; color:#f97316; margin-bottom:8px;">🏆 Vainqueur du tournoi</div>
           <div style="font-size:12px; color:#4a7a9b; margin-bottom:10px;">Ce vote sera verrouillé au coup d'envoi du 1er match !</div>
@@ -238,43 +225,31 @@
     window.saveBonus = async function(existingId) {
       const equipe = document.getElementById('bonus-select').value;
       if (!equipe) { alert('Choisissez une équipe !'); return; }
-
       let error;
       if (existingId) {
-        ({ error } = await supabase.from('votes_bonus')
-          .update({ equipe_gagnante_vote: equipe })
-          .eq('id', existingId));
+        ({ error } = await supabase.from('votes_bonus').update({ equipe_gagnante_vote: equipe }).eq('id', existingId));
       } else {
         ({ error } = await supabase.from('votes_bonus').insert({
-          user_id: currentUser.id,
-          event_id: eventId,
-          equipe_gagnante_vote: equipe,
-          verrouille: false
+          user_id: currentUser.id, event_id: eventId, equipe_gagnante_vote: equipe, verrouille: false
         }));
       }
-
       if (error) { alert('Erreur : ' + error.message); return; }
       loadBonus();
     }
 
     // ========== MATCHS ==========
-    async function loadMatches() {
+    async function loadMatches(termineOnly = false) {
       const { data: matches } = await supabase
-        .from('matches')
-        .select('*')
-        .eq('event_id', eventId)
-        .order('date_heure');
+        .from('matches').select('*').eq('event_id', eventId).order('date_heure');
 
       if (!matches) return;
 
       const now = new Date();
-      const open = matches.filter(m => m.statut === 'a_venir' && new Date(m.date_heure) > now);
+      const open = termineOnly ? [] : matches.filter(m => m.statut === 'a_venir' && new Date(m.date_heure) > now);
       const done = matches.filter(m => m.statut === 'termine');
 
       const { data: mesVotes } = await supabase
-        .from('votes')
-        .select('*')
-        .eq('user_id', currentUser.id)
+        .from('votes').select('*').eq('user_id', currentUser.id)
         .in('match_id', matches.map(m => m.id));
 
       const votesMap = {};
@@ -294,7 +269,6 @@
     async function renderOpenMatches(matches, votesMap) {
       const container = document.getElementById('open-matches');
       container.innerHTML = '';
-
       const grouped = {};
       matches.forEach(m => {
         if (!grouped[m.phase]) grouped[m.phase] = [];
@@ -303,33 +277,23 @@
 
       for (const [phase, matchs] of Object.entries(grouped)) {
         container.innerHTML += `<div style="font-size:13px; font-weight:500; color:#38bdf8; margin:12px 0 8px; padding-bottom:6px; border-bottom:0.5px solid #1a3a5c;">${phase}</div>`;
-
         for (const m of matchs) {
           const monVote = votesMap[m.id];
           let votesAutres = '';
-
           if (currentUser.mode === 'MOUTON') {
-            const { data: votes } = await supabase
-              .from('votes')
-              .select('*, users!inner(login)')
-              .eq('match_id', m.id);
-
+            const { data: votes } = await supabase.from('votes').select('*, users!inner(login)').eq('match_id', m.id);
             if (votes && votes.length > 0) {
               votesAutres = `<div class="votes-list" style="margin-top:8px;">
                 <div class="votes-list-title">Votes déjà déposés</div>
-                ${votes.map(v => `
-                  <div class="vote-row">
-                    <span class="vote-player ${v.user_id === currentUser.id ? 'me' : ''}">${v.users.login}${v.user_id === currentUser.id ? ' (vous)' : ''}</span>
-                    <span class="vote-score">${v.score_vote_1} — ${v.score_vote_2}</span>
-                  </div>`).join('')}
+                ${votes.map(v => `<div class="vote-row">
+                  <span class="vote-player ${v.user_id === currentUser.id ? 'me' : ''}">${v.users.login}${v.user_id === currentUser.id ? ' (vous)' : ''}</span>
+                  <span class="vote-score">${v.score_vote_1} — ${v.score_vote_2}</span>
+                </div>`).join('')}
               </div>`;
             } else {
-              votesAutres = `<div class="votes-list" style="margin-top:8px;">
-                <div style="font-size:12px; color:#4a7a9b; font-style:italic;">Personne n'a encore voté</div>
-              </div>`;
+              votesAutres = `<div class="votes-list" style="margin-top:8px;"><div style="font-size:12px; color:#4a7a9b; font-style:italic;">Personne n'a encore voté</div></div>`;
             }
           }
-
           container.innerHTML += `
             <div class="card" style="margin-bottom:8px;">
               <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
@@ -339,19 +303,16 @@
               <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
                 <span style="flex:1; font-size:13px; color:#fff;">${flag(m.equipe_1)}</span>
                 <div style="display:flex; align-items:center; gap:6px;">
-                  <input type="number" min="0" max="20" id="s1-${m.id}"
-                    value="${monVote ? monVote.score_vote_1 : ''}"
+                  <input type="number" min="0" max="20" id="s1-${m.id}" value="${monVote ? monVote.score_vote_1 : ''}"
                     style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; font-size:14px; text-align:center; padding:4px 0;"/>
                   <span style="color:#4a7a9b;">—</span>
-                  <input type="number" min="0" max="20" id="s2-${m.id}"
-                    value="${monVote ? monVote.score_vote_2 : ''}"
+                  <input type="number" min="0" max="20" id="s2-${m.id}" value="${monVote ? monVote.score_vote_2 : ''}"
                     style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; font-size:14px; text-align:center; padding:4px 0;"/>
                 </div>
                 <span style="flex:1; font-size:13px; color:#fff; text-align:right;">${flag(m.equipe_2)}</span>
               </div>
               <button onclick="saveVote('${m.id}', '${monVote ? monVote.id : ''}')"
-                class="${monVote ? 'btn-secondary' : ''}"
-                style="width:auto; padding:6px 14px;">
+                class="${monVote ? 'btn-secondary' : ''}" style="width:auto; padding:6px 14px;">
                 ${monVote ? '✏️ Modifier mon vote' : '✅ Valider mon vote'}
               </button>
               ${votesAutres}
@@ -363,7 +324,6 @@
     async function renderDoneMatches(matches, votesMap) {
       const container = document.getElementById('done-matches');
       container.innerHTML = '';
-
       const grouped = {};
       matches.forEach(m => {
         if (!grouped[m.phase]) grouped[m.phase] = [];
@@ -372,16 +332,10 @@
 
       for (const [phase, matchs] of Object.entries(grouped)) {
         container.innerHTML += `<div style="font-size:13px; font-weight:500; color:#38bdf8; margin:12px 0 8px; padding-bottom:6px; border-bottom:0.5px solid #1a3a5c;">${phase}</div>`;
-
         for (const m of matchs) {
-          const { data: votes } = await supabase
-            .from('votes')
-            .select('*, users!inner(login)')
-            .eq('match_id', m.id);
-
+          const { data: votes } = await supabase.from('votes').select('*, users!inner(login)').eq('match_id', m.id);
           const r1 = m.score_final_1;
           const r2 = m.score_final_2;
-
           const votesHtml = votes?.map(v => {
             const isMe = v.user_id === currentUser.id;
             const bonGagnant = (r1 > r2 && v.score_vote_1 > v.score_vote_2) ||
@@ -390,7 +344,6 @@
             const scoreExact = r1 === v.score_vote_1 && r2 === v.score_vote_2;
             const classe = scoreExact ? 'correct' : bonGagnant ? '' : 'wrong';
             const pts = scoreExact ? 4 : bonGagnant ? 3 : 0;
-
             return `<div class="vote-row">
               <span class="vote-player ${isMe ? 'me' : ''}">${v.users.login}${isMe ? ' (vous)' : ''}</span>
               <span class="vote-score ${classe}">${v.score_vote_1} — ${v.score_vote_2} · ${pts} pt${pts > 1 ? 's' : ''}</span>
@@ -424,29 +377,16 @@
     window.saveVote = async function(matchId, existingVoteId) {
       const s1 = parseInt(document.getElementById('s1-' + matchId).value);
       const s2 = parseInt(document.getElementById('s2-' + matchId).value);
-
-      if (isNaN(s1) || isNaN(s2)) {
-        alert('Merci de saisir les deux scores.');
-        return;
-      }
-
+      if (isNaN(s1) || isNaN(s2)) { alert('Merci de saisir les deux scores.'); return; }
       let error;
       if (existingVoteId) {
-        ({ error } = await supabase.from('votes').update({
-          score_vote_1: s1, score_vote_2: s2
-        }).eq('id', existingVoteId));
+        ({ error } = await supabase.from('votes').update({ score_vote_1: s1, score_vote_2: s2 }).eq('id', existingVoteId));
       } else {
         ({ error } = await supabase.from('votes').insert({
-          user_id: currentUser.id,
-          match_id: matchId,
-          score_vote_1: s1,
-          score_vote_2: s2,
-          verrouille: false
+          user_id: currentUser.id, match_id: matchId, score_vote_1: s1, score_vote_2: s2, verrouille: false
         }));
       }
-
       if (error) { alert('Erreur : ' + error.message); return; }
-
       const btn = document.querySelector(`button[onclick="saveVote('${matchId}', '${existingVoteId}')"]`);
       if (btn) {
         btn.textContent = '✓ Vote enregistré !';
@@ -458,17 +398,10 @@
 
     async function loadLockedPhases() {
       const phases = ['Seizièmes de finale', 'Huitièmes de finale', 'Quarts de finale', 'Demi-finales', 'Finale'];
-
-      const { data: matches } = await supabase
-        .from('matches')
-        .select('phase')
-        .eq('event_id', eventId);
-
+      const { data: matches } = await supabase.from('matches').select('phase').eq('event_id', eventId);
       const phasesActives = [...new Set(matches?.map(m => m.phase) || [])];
       const phasesVerr = phases.filter(p => !phasesActives.includes(p));
-
       if (phasesVerr.length === 0) return;
-
       document.getElementById('locked-section').style.display = 'block';
       const container = document.getElementById('locked-phases');
       container.innerHTML = phasesVerr.map(p => `
