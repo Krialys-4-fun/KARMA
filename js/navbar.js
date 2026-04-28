@@ -16,27 +16,32 @@ export function renderNavbar(activePage) {
     .map(p => `<a class="navbar-link ${p.id === activePage ? 'active' : ''}" href="${p.href}">${p.label}</a>`)
     .join('');
 
-  const navbar = document.createElement('nav');
-  navbar.className = 'navbar';
-  navbar.innerHTML = `
-    <div class="navbar-logo"><span>K</span>ARMA</div>
-    <div class="navbar-links">${links}</div>
-    <div class="navbar-user">
-      <span class="mode-badge">${user.mode}</span>
-      <div class="avatar" id="avatar">${user.login.substring(0, 2).toUpperCase()}</div>
-    </div>`;
+  const navHtml = `
+    <nav class="navbar">
+      <div class="navbar-logo"><span>K</span>ARMA</div>
+      <div class="navbar-links">${links}</div>
+      <div class="navbar-user">
+        <span class="mode-badge">${user.mode}</span>
+        <div class="avatar" id="karma-avatar">${user.login.substring(0, 2).toUpperCase()}</div>
+      </div>
+    </nav>`;
 
-    const container = document.getElementById('navbar-container');
+  // Insérer la navbar
+  const container = document.getElementById('navbar-container');
   if (container) {
-    container.appendChild(navbar);
+    container.innerHTML = navHtml;
   } else {
-    document.body.insertBefore(navbar, document.body.firstChild);
+    document.body.insertAdjacentHTML('afterbegin', navHtml);
   }
 
-  document.getElementById('avatar').onclick = () => {
-    localStorage.removeItem('karma_user');
-    window.location.href = 'index.html';
-  };
+  // Attacher le logout après insertion
+  const avatar = document.getElementById('karma-avatar');
+  if (avatar) {
+    avatar.onclick = () => {
+      localStorage.removeItem('karma_user');
+      window.location.href = 'index.html';
+    };
+  }
 
   return user;
 }
