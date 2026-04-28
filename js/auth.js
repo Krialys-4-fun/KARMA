@@ -26,7 +26,7 @@ window.handleLogin = async function () {
     .eq('actif', true);
 
   if (error || !users || users.length === 0) {
-    showError('Login ou mot de passe incorrect.');
+    showError('');
     return;
   }
 
@@ -37,7 +37,7 @@ window.handleLogin = async function () {
   const isValid = user.mot_de_passe === password || user.mot_de_passe === hashedInput;
 
   if (!isValid) {
-    showError('Login ou mot de passe incorrect.');
+    showError('');
     return;
   }
 
