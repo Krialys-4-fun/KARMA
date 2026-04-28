@@ -249,10 +249,11 @@ window.saveResult = async function(matchId) {
     return;
   }
 
-  const { error } = await supabase.from('matches').update({
+   const { error } = await supabase.from('matches').update({
     score_final_1: s1,
     score_final_2: s2,
-    statut: 'termine'
+    statut: 'termine',
+    updated_at: new Date().toISOString()
   }).eq('id', matchId);
 
   if (error) { alert('Erreur : ' + error.message); return; }
