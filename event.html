@@ -107,14 +107,23 @@
     function flag(equipe) {
       const codes = {
         'Mexique': 'mx', 'Afrique du Sud': 'za', 'Canada': 'ca',
-        'Bosnie-Herzégovine': 'ba', 'Allemagne': 'de', "Côte d'Ivoire": 'ci',
+        'Bosnie-et-Herzégovine': 'ba', 'Bosnie-Herzégovine': 'ba',
+        'Allemagne': 'de', "Côte d'Ivoire": 'ci',
         'États-Unis': 'us', 'Paraguay': 'py', 'Brésil': 'br', 'Maroc': 'ma',
         'Qatar': 'qa', 'Suisse': 'ch', 'Argentine': 'ar', 'Slovaquie': 'sk',
         'Japon': 'jp', 'Sénégal': 'sn', 'Espagne': 'es', 'Suède': 'se',
         'Portugal': 'pt', 'Zimbabwe': 'zw', 'France': 'fr', 'Uruguay': 'uy',
         'Belgique': 'be', 'Tunisie': 'tn', 'Angleterre': 'gb-eng', 'Croatie': 'hr',
-        'Pays-Bas': 'nl', 'Arabie Saoudite': 'sa', 'Australie': 'au',
-        'Nigeria': 'ng', 'Corée du Sud': 'kr', 'Tchéquie': 'cz'
+        'Pays-Bas': 'nl', 'Arabie Saoudite': 'sa', 'Arabie saoudite': 'sa',
+        'Australie': 'au', 'Nigeria': 'ng', 'Corée du Sud': 'kr',
+        'République de Corée': 'kr', 'Tchéquie': 'cz',
+        'Haïti': 'ht', 'Écosse': 'gb-sct', 'Turquie': 'tr',
+        'Curaçao': 'cw', 'Équateur': 'ec', 'Cap-Vert': 'cv',
+        'Égypte': 'eg', 'RI Iran': 'ir', 'Nouvelle-Zélande': 'nz',
+        'Irak': 'iq', 'Norvège': 'no', 'Algérie': 'dz',
+        'Autriche': 'at', 'Jordanie': 'jo', 'RD Congo': 'cd',
+        'Ghana': 'gh', 'Panamá': 'pa', 'Ouzbékistan': 'uz',
+        'Colombie': 'co', 'Slovaquie': 'sk'
       };
       const code = codes[equipe];
       if (!code) return equipe;
