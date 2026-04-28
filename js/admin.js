@@ -1,15 +1,13 @@
 import { supabase } from './supabase.js';
-import './auth.js';
+import { renderNavbar } from './navbar.js';
 
 // ========== INIT ==========
 window.addEventListener('load', () => {
-  const u = localStorage.getItem('karma_user');
-  const user = u ? JSON.parse(u) : null;
+  const user = renderNavbar('admin');
   if (!user || user.role !== 'ADMIN') {
     window.location.href = 'home.html';
     return;
   }
-  document.getElementById('avatar').textContent = user.login.substring(0, 2).toUpperCase();
   loadUsers();
   loadEvents();
   loadEventSelects();
@@ -41,7 +39,7 @@ async function loadUsers() {
   const tbody = document.getElementById('users-tbody');
   tbody.innerHTML = '';
 
-  users.forEach(u => {
+  users?.forEach(u => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${u.login}</td>
@@ -51,7 +49,7 @@ async function loadUsers() {
       <td style="display:flex; gap:6px; flex-wrap:wrap;">
         <button class="btn-small" onclick="toggleMode('${u.id}', '${u.mode}')">Mode</button>
         <button class="btn-small" onclick="resetPassword('${u.id}')">Mdp</button>
-        <button class="btn-small ${u.actif ? 'btn-danger' : ''}" 
+        <button class="btn-small ${u.actif ? 'btn-danger' : ''}"
           onclick="toggleActif('${u.id}', ${u.actif})">
           ${u.actif ? 'Désactiver' : 'Réactiver'}
         </button>
@@ -229,14 +227,14 @@ window.loadMatchesToResult = async function() {
         </div>
         <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
           <span style="flex:1; font-size:13px; color:#fff;">${m.equipe_1}</span>
-          <input type="number" min="0" id="s1-${m.id}" value="${m.score_final_1 ?? ''}" 
+          <input type="number" min="0" id="s1-${m.id}" value="${m.score_final_1 ?? ''}"
             style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; text-align:center; padding:4px;"/>
           <span style="color:#4a7a9b;">—</span>
           <input type="number" min="0" id="s2-${m.id}" value="${m.score_final_2 ?? ''}"
             style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; text-align:center; padding:4px;"/>
           <span style="flex:1; font-size:13px; color:#fff; text-align:right;">${m.equipe_2}</span>
         </div>
-        <button class="btn-secondary" style="width:auto; padding:6px 14px;" 
+        <button class="btn-secondary" style="width:auto; padding:6px 14px;"
           onclick="saveResult('${m.id}')">Enregistrer</button>
       </div>`;
   });
@@ -271,7 +269,7 @@ window.loadPhases = async function() {
   const container = document.getElementById('phases-list');
   if (!eventId) { container.innerHTML = ''; return; }
 
-  const phases = ['Groupes', 'Huitièmes de finale', 'Quarts de finale', 'Demi-finales', 'Finale'];
+  const phases = ['Groupes', 'Seizièmes de finale', 'Huitièmes de finale', 'Quarts de finale', 'Demi-finales', 'Finale'];
 
   const { data: matches } = await supabase
     .from('matches')
@@ -284,8 +282,8 @@ window.loadPhases = async function() {
   phases.forEach(phase => {
     const isActive = phasesActives.includes(phase);
     container.innerHTML += `
-      <div style="display:flex; justify-content:space-between; align-items:center; 
-        background:#0d1f3c; border:0.5px solid #1a3a5c; border-radius:8px; 
+      <div style="display:flex; justify-content:space-between; align-items:center;
+        background:#0d1f3c; border:0.5px solid #1a3a5c; border-radius:8px;
         padding:12px 16px; margin-bottom:8px;">
         <div>
           <div style="font-size:13px; color:#ccd6e0;">${phase}</div>
