@@ -26,7 +26,12 @@ export function renderNavbar(activePage) {
       <div class="avatar" id="avatar">${user.login.substring(0, 2).toUpperCase()}</div>
     </div>`;
 
-  document.body.insertBefore(navbar, document.body.firstChild);
+    const container = document.getElementById('navbar-container');
+  if (container) {
+    container.appendChild(navbar);
+  } else {
+    document.body.insertBefore(navbar, document.body.firstChild);
+  }
 
   document.getElementById('avatar').onclick = () => {
     localStorage.removeItem('karma_user');
