@@ -331,9 +331,66 @@ button:hover { background: #ea6c0a; }
 
 .admin-section { display: block; }
 
+/* ========== HAMBURGER ========== */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  width: auto;
+  margin-top: 0;
+}
+
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #f97316;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  background: rgba(232, 220, 205, 0.98);
+  border-bottom: 1px solid #c8b89a;
+  padding: 12px 24px;
+  gap: 8px;
+  position: sticky;
+  top: 60px;
+  z-index: 99;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.mobile-menu.open { display: flex; }
+
+.mobile-menu .navbar-link {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.mobile-menu-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 0.5px solid #c8b89a;
+  margin-top: 4px;
+}
+
 /* ========== RESPONSIVE ========== */
-@media (max-width: 600px) {
-  .navbar-links { gap: 12px; }
-  .navbar-link { font-size: 12px; }
+@media (max-width: 640px) {
+  .navbar-links { display: none; }
+  .hamburger { display: flex; }
   .page-body { padding: 16px; }
+  .navbar { padding: 0 16px; }
 }
