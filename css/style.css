@@ -395,3 +395,14 @@ button:hover { background: #ea6c0a; }
   .page-body { padding: 16px; }
   .navbar { padding: 0 16px; }
 }
+
+/* ========== SUPPRESSION FLECHES INPUT NUMBER ========== */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
