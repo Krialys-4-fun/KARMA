@@ -26,7 +26,7 @@ window.handleLogin = async function () {
     .eq('actif', true);
 
   if (error || !users || users.length === 0) {
-    showError('');
+    showError('error');
     return;
   }
 
@@ -37,7 +37,7 @@ window.handleLogin = async function () {
   const isValid = user.mot_de_passe === password || user.mot_de_passe === hashedInput;
 
   if (!isValid) {
-    showError('');
+    showError('error');
     return;
   }
 
@@ -91,7 +91,6 @@ window.requireAdmin = function () {
 function showError(msg) {
   const errorDiv = document.getElementById('login-error');
   if (errorDiv) {
-    errorDiv.textContent = msg;
     errorDiv.style.display = 'block';
   }
 }
