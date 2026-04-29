@@ -329,8 +329,9 @@
             }
           }
     
-          container.innerHTML += `
-            <div class="card" style="margin-bottom:8px;">
+          const borderColor = monVote ? '#4ade80' : '#f97316';
+            container.innerHTML += `
+              <div class="card" style="margin-bottom:8px; border-color:${borderColor};">
               <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
                 <span style="font-size:11px; color:#4a7a9b;">${formatDate(m.date_heure)}</span>
                 <span class="badge badge-open" style="font-size:10px; padding:2px 8px;">Votes ouverts</span>
