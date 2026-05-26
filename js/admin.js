@@ -363,10 +363,10 @@ window.loadMatchesToResult = async function() {
         </div>
         <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
           <span style="flex:1; font-size:13px; color:#fff;">${m.equipe_1}</span>
-          <input type="number" min="0" id="s1-${m.id}" value="${m.score_final_1 ?? ''}"
+          <input type="number" min="0" max="99" id="s1-${m.id}" value="${m.score_final_1 ?? ''}"
             style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; text-align:center; padding:4px;"/>
           <span style="color:#4a7a9b;">—</span>
-          <input type="number" min="0" id="s2-${m.id}" value="${m.score_final_2 ?? ''}"
+          <input type="number" min="0" max="99" id="s2-${m.id}" value="${m.score_final_2 ?? ''}"
             style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; text-align:center; padding:4px;"/>
           <span style="flex:1; font-size:13px; color:#fff; text-align:right;">${m.equipe_2}</span>
         </div>
