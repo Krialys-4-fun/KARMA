@@ -82,6 +82,31 @@
 
     <div id="open-section" style="display:none;">
       <div class="section-label">Matchs à voter</div>
+
+    <!-- FILTRES -->
+    <div id="filtres-section" style="display:none; margin-bottom:16px;">
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        
+        <select id="filtre-groupe" onchange="appliquerFiltres()"
+          style="background:#0d1f3c; border:0.5px solid #1a3a5c; border-radius:6px; color:#ccd6e0; font-size:12px; padding:6px 10px;">
+          <option value="">Tous les groupes</option>
+        </select>
+    
+        <select id="filtre-date" onchange="appliquerFiltres()"
+          style="background:#0d1f3c; border:0.5px solid #1a3a5c; border-radius:6px; color:#ccd6e0; font-size:12px; padding:6px 10px;">
+          <option value="">Toutes les dates</option>
+        </select>
+    
+        <input type="text" id="filtre-pays" oninput="appliquerFiltres()" placeholder="🔍 Rechercher un pays..."
+          style="background:#0d1f3c; border:0.5px solid #1a3a5c; border-radius:6px; color:#ccd6e0; font-size:12px; padding:6px 10px; flex:1; min-width:150px;"/>
+    
+        <button onclick="resetFiltres()" class="btn-secondary" style="width:auto; padding:6px 12px; font-size:12px; margin-top:0;">
+          Réinitialiser
+        </button>
+    
+      </div>
+    </div>
+      
       <div id="open-matches"></div>
     </div>
 
@@ -429,6 +454,59 @@
                 }
               }
 
+    // ========== FILTRES ==========
+    let tousMatchsOuverts = [];
+    let tousVotesMap = {};
+    let tousVotesMapGlobal = {};
+    
+    function initFiltres(matches) {
+      // Groupes uniques
+      const groupes = [...new Set(matches.map(m => m.phase))].sort();
+      const selectGroupe = document.getElementById('filtre-groupe');
+      groupes.forEach(g => {
+        selectGroupe.innerHTML += `<option value="${g}">${g}</option>`;
+      });
+    
+      // Dates uniques
+      const dates = [...new Set(matches.map(m => {
+        const d = new Date(m.date_heure);
+        return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/Paris' });
+      }))];
+      const selectDate = document.getElementById('filtre-date');
+      dates.forEach(d => {
+        selectDate.innerHTML += `<option value="${d}">${d}</option>`;
+      });
+    
+      document.getElementById('filtres-section').style.display = 'block';
+    }
+    
+    window.appliquerFiltres = function() {
+      const groupe = document.getElementById('filtre-groupe').value;
+      const date = document.getElementById('filtre-date').value;
+      const pays = document.getElementById('filtre-pays').value.toLowerCase().trim();
+    
+      let matchsFiltres = tousMatchsOuverts.filter(m => {
+        const matchGroupe = !groupe || m.phase === groupe;
+        const dateMatch = new Date(m.date_heure).toLocaleDateString('fr-FR', {
+          day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/Paris'
+        });
+        const matchDate = !date || dateMatch === date;
+        const matchPays = !pays ||
+          m.equipe_1.toLowerCase().includes(pays) ||
+          m.equipe_2.toLowerCase().includes(pays);
+        return matchGroupe && matchDate && matchPays;
+      });
+    
+      renderOpenMatches(matchsFiltres, tousVotesMap, tousVotesMapGlobal);
+    }
+    
+    window.resetFiltres = function() {
+      document.getElementById('filtre-groupe').value = '';
+      document.getElementById('filtre-date').value = '';
+      document.getElementById('filtre-pays').value = '';
+      renderOpenMatches(tousMatchsOuverts, tousVotesMap, tousVotesMapGlobal);
+    }
+    
     window.saveVote = async function(matchId, existingVoteId) {
       const s1 = parseInt(document.getElementById('s1-' + matchId).value);
       const s2 = parseInt(document.getElementById('s2-' + matchId).value);
