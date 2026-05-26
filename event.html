@@ -314,9 +314,13 @@
       });
     
       if (open.length > 0) {
-        document.getElementById('open-section').style.display = 'block';
-        renderOpenMatches(open, votesMap, tousVotesMap);
-      }
+      tousMatchsOuverts = open;
+      tousVotesMap = votesMap;
+      tousVotesMapGlobal = tousLesVotesMap;
+      document.getElementById('open-section').style.display = 'block';
+      initFiltres(open);
+      renderOpenMatches(open, votesMap, tousLesVotesMap);
+    }
     
       if (done.length > 0) {
         document.getElementById('done-section').style.display = 'block';
