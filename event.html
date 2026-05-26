@@ -307,7 +307,7 @@
         .in('match_id', matches.map(m => m.id));
     
       // Grouper les votes par match_id
-      const tousVotesMap = {};
+      let tousVotesMap = {};
       tousLesVotes?.forEach(v => {
         if (!tousVotesMap[v.match_id]) tousVotesMap[v.match_id] = [];
         tousVotesMap[v.match_id].push(v);
