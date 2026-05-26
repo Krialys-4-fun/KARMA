@@ -432,12 +432,16 @@
     window.saveVote = async function(matchId, existingVoteId) {
       const s1 = parseInt(document.getElementById('s1-' + matchId).value);
       const s2 = parseInt(document.getElementById('s2-' + matchId).value);
-      if (isNaN(s1) || isNaN(s2)) { alert('Merci de saisir les deux scores.'); return; }
-
-      // Validation des valeurs
+    
+      if (isNaN(s1) || isNaN(s2)) {
+        alert('Merci de saisir les deux scores.');
+        return;
+      }
+    
       if (s1 < 0 || s1 > 99 || s2 < 0 || s2 > 99) {
         alert('Les scores doivent être compris entre 0 et 99.');
         return;
+      }
     
       let error;
       if (existingVoteId) {
@@ -447,7 +451,9 @@
           user_id: currentUser.id, match_id: matchId, score_vote_1: s1, score_vote_2: s2, verrouille: false
         }));
       }
+    
       if (error) { alert('Erreur : ' + error.message); return; }
+    
       const btn = document.querySelector(`button[onclick="saveVote('${matchId}', '${existingVoteId}')"]`);
       if (btn) {
         btn.textContent = '✓ Vote enregistré !';
