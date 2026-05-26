@@ -290,7 +290,7 @@
       const open = termineOnly ? [] : matches.filter(m => m.statut === 'a_venir' && new Date(m.date_heure) > now);
       const done = matches.filter(m => m.statut === 'termine');
     
-      // Une seule requête pour tous les votes
+      // Une seule requête pour mes votes
       const { data: mesVotes } = await supabase
         .from('votes')
         .select('*')
@@ -306,25 +306,24 @@
         .select('*, users!inner(login, mode)')
         .in('match_id', matches.map(m => m.id));
     
-      // Grouper les votes par match_id
-      let tousVotesMap = {};
+      const tousLesVotesMap = {};
       tousLesVotes?.forEach(v => {
-        if (!tousVotesMap[v.match_id]) tousVotesMap[v.match_id] = [];
-        tousVotesMap[v.match_id].push(v);
+        if (!tousLesVotesMap[v.match_id]) tousLesVotesMap[v.match_id] = [];
+        tousLesVotesMap[v.match_id].push(v);
       });
     
       if (open.length > 0) {
-      tousMatchsOuverts = open;
-      tousVotesMap = votesMap;
-      tousVotesMapGlobal = tousLesVotesMap;
-      document.getElementById('open-section').style.display = 'block';
-      initFiltres(open);
-      renderOpenMatches(open, votesMap, tousLesVotesMap);
-    }
+        tousMatchsOuverts = open;
+        tousVotesMap = votesMap;
+        tousVotesMapGlobal = tousLesVotesMap;
+        document.getElementById('open-section').style.display = 'block';
+        initFiltres(open);
+        renderOpenMatches(open, votesMap, tousLesVotesMap);
+      }
     
       if (done.length > 0) {
         document.getElementById('done-section').style.display = 'block';
-        renderDoneMatches(done, votesMap, tousVotesMap);
+        renderDoneMatches(done, votesMap, tousLesVotesMap);
       }
     }
 
