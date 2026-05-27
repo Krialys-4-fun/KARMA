@@ -86,7 +86,13 @@
     <!-- FILTRES -->
     <div id="filtres-section" style="display:none; margin-bottom:16px;">
       <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-        
+    
+        <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:#ccd6e0; cursor:pointer;">
+          <input type="checkbox" id="regrouper-groupe" onchange="appliquerFiltres()"
+            style="width:14px; height:14px; cursor:pointer;"/>
+          Regrouper par groupe
+        </label>
+    
         <select id="filtre-groupe" onchange="appliquerFiltres()"
           style="background:#0d1f3c; border:0.5px solid #1a3a5c; border-radius:6px; color:#ccd6e0; font-size:12px; padding:6px 10px;">
           <option value="">Tous les groupes</option>
@@ -352,7 +358,7 @@
         tousVotesMapGlobal = tousLesVotesMap;
         document.getElementById('open-section').style.display = 'block';
         initFiltres(open);
-        renderOpenMatches(open, votesMap, tousLesVotesMap);
+        renderOpenMatches(open, votesMap, tousLesVotesMap, false);
       }
 
       if (enCours.length > 0) {
@@ -373,72 +379,87 @@
       }
     }
 
-    function renderOpenMatches(matches, votesMap, tousVotesMap) {
+    function renderOpenMatches(matches, votesMap, tousVotesMapGlobal, regrouperParGroupe = false) {
       const container = document.getElementById('open-matches');
       container.innerHTML = '';
     
-      const grouped = {};
-      matches.forEach(m => {
-        if (!grouped[m.phase]) grouped[m.phase] = [];
-        grouped[m.phase].push(m);
-      });
+      // Tri par date par défaut
+      const matchesTries = [...matches].sort((a, b) => new Date(a.date_heure) - new Date(b.date_heure));
     
-      for (const [phase, matchs] of Object.entries(grouped)) {
-        container.innerHTML += `<div style="font-size:13px; font-weight:500; color:#38bdf8; margin:12px 0 8px; padding-bottom:6px; border-bottom:0.5px solid #1a3a5c;">${phase}</div>`;
+      if (regrouperParGroupe) {
+        // Groupement par phase
+        const grouped = {};
+        matchesTries.forEach(m => {
+          if (!grouped[m.phase]) grouped[m.phase] = [];
+          grouped[m.phase].push(m);
+        });
     
-        for (const m of matchs) {
-          const monVote = votesMap[m.id];
-          let votesAutres = '';
-    
-          if (currentUser.mode === 'MOUTON') {
-            const votes = tousVotesMap[m.id] || [];
-            if (votes.length > 0) {
-              votesAutres = `<div class="votes-list" style="margin-top:8px;">
-                <div class="votes-list-title">Votes déjà déposés</div>
-                ${votes.map(v => `
-                  <div class="vote-row">
-                    <span class="vote-player ${v.user_id === currentUser.id ? 'me' : ''}">${v.users.login}${v.user_id === currentUser.id ? ' (vous)' : ''}</span>
-                    <span class="vote-score">${v.score_vote_1} — ${v.score_vote_2}</span>
-                  </div>`).join('')}
-              </div>`;
-            } else {
-              votesAutres = `<div class="votes-list" style="margin-top:8px;">
-                <div style="font-size:12px; color:#4a7a9b; font-style:italic;">Personne n'a encore voté</div>
-              </div>`;
-            }
+        for (const [phase, matchs] of Object.entries(grouped)) {
+          container.innerHTML += `<div style="font-size:13px; font-weight:500; color:#38bdf8; margin:12px 0 8px; padding-bottom:6px; border-bottom:0.5px solid #1a3a5c;">${phase}</div>`;
+          for (const m of matchs) {
+            container.innerHTML += renderMatchCard(m, votesMap, tousVotesMapGlobal);
           }
-    
-          const borderColor = monVote ? '#4ade80' : '#f97316';
-            container.innerHTML += `
-              <div class="card" style="margin-bottom:8px; border-color:${borderColor};">
-              <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                <span style="font-size:11px; color:#4a7a9b;">${formatDate(m.date_heure)}</span>
-                <span class="badge badge-open" style="font-size:10px; padding:2px 8px;">Votes ouverts</span>
-              </div>
-              <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-                <span style="flex:1; font-size:13px; color:#fff;">${flag(m.equipe_1)}</span>
-                <div style="display:flex; align-items:center; gap:6px;">
-                  <input type="number" min="0" max="99" id="s1-${m.id}"
-                    value="${monVote ? monVote.score_vote_1 : ''}"
-                    style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; font-size:14px; text-align:center; padding:4px 0;"/>
-                  <span style="color:#4a7a9b;">—</span>
-                  <input type="number" min="0" max="99" id="s2-${m.id}"
-                    value="${monVote ? monVote.score_vote_2 : ''}"
-                    style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; font-size:14px; text-align:center; padding:4px 0;"/>
-                </div>
-                <span style="flex:1; font-size:13px; color:#fff; text-align:right;">${flag(m.equipe_2)}</span>
-              </div>
-              <button onclick="saveVote('${m.id}', '${monVote ? monVote.id : ''}')"
-                class="${monVote ? 'btn-secondary' : ''}"
-                style="width:auto; padding:6px 14px;">
-                ${monVote ? '✏️ Modifier mon vote' : '✅ Valider mon vote'}
-              </button>
-              ${votesAutres}
-            </div>`;
+        }
+      } else {
+        // Tri par date uniquement
+        for (const m of matchesTries) {
+          container.innerHTML += renderMatchCard(m, votesMap, tousVotesMapGlobal);
         }
       }
     }
 
+    function renderMatchCard(m, votesMap, tousVotesMapGlobal) {
+      const monVote = votesMap[m.id];
+      let votesAutres = '';
+    
+      if (currentUser.mode === 'MOUTON') {
+        const votes = tousVotesMapGlobal[m.id] || [];
+        if (votes.length > 0) {
+          votesAutres = `<div class="votes-list" style="margin-top:8px;">
+            <div class="votes-list-title">Votes déjà déposés</div>
+            ${votes.map(v => `
+              <div class="vote-row">
+                <span class="vote-player ${v.user_id === currentUser.id ? 'me' : ''}">${v.users.login}${v.user_id === currentUser.id ? ' (vous)' : ''}</span>
+                <span class="vote-score">${v.score_vote_1} — ${v.score_vote_2}</span>
+              </div>`).join('')}
+          </div>`;
+        } else {
+          votesAutres = `<div class="votes-list" style="margin-top:8px;">
+            <div style="font-size:12px; color:#4a7a9b; font-style:italic;">Personne n'a encore voté</div>
+          </div>`;
+        }
+      }
+    
+      const borderColor = monVote ? '#4ade80' : '#f97316';
+    
+      return `
+        <div class="card" style="margin-bottom:8px; border-color:${borderColor};">
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+            <span style="font-size:11px; color:#4a7a9b;">${formatDate(m.date_heure)}${!document.getElementById('regrouper-groupe')?.checked ? ` · <span style="color:#38bdf8;">${m.phase}</span>` : ''}</span>
+            <span class="badge badge-open" style="font-size:10px; padding:2px 8px;">Votes ouverts</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+            <span style="flex:1; font-size:13px; color:#fff;">${flag(m.equipe_1)}</span>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <input type="number" min="0" max="99" id="s1-${m.id}"
+                value="${monVote ? monVote.score_vote_1 : ''}"
+                style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; font-size:14px; text-align:center; padding:4px 0;"/>
+              <span style="color:#4a7a9b;">—</span>
+              <input type="number" min="0" max="99" id="s2-${m.id}"
+                value="${monVote ? monVote.score_vote_2 : ''}"
+                style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; font-size:14px; text-align:center; padding:4px 0;"/>
+            </div>
+            <span style="flex:1; font-size:13px; color:#fff; text-align:right;">${flag(m.equipe_2)}</span>
+          </div>
+          <button onclick="saveVote('${m.id}', '${monVote ? monVote.id : ''}')"
+            class="${monVote ? 'btn-secondary' : ''}"
+            style="width:auto; padding:6px 14px;" id="btn-vote-${m.id}">
+            ${monVote ? '✏️ Modifier mon vote' : '✅ Valider mon vote'}
+          </button>
+          ${votesAutres}
+        </div>`;
+    }
+    
     function renderEnCoursMatches(matches, votesMap, tousVotesMapGlobal) {
       const container = document.getElementById('done-matches');
     
@@ -580,6 +601,7 @@
       const groupe = document.getElementById('filtre-groupe').value;
       const date = document.getElementById('filtre-date').value;
       const pays = document.getElementById('filtre-pays').value.toLowerCase().trim();
+      const regrouperParGroupe = document.getElementById('regrouper-groupe').checked;
     
       let matchsFiltres = tousMatchsOuverts.filter(m => {
         const matchGroupe = !groupe || m.phase === groupe;
@@ -593,14 +615,15 @@
         return matchGroupe && matchDate && matchPays;
       });
     
-      renderOpenMatches(matchsFiltres, tousVotesMap, tousVotesMapGlobal);
+      renderOpenMatches(matchsFiltres, tousVotesMap, tousVotesMapGlobal, regrouperParGroupe);
     }
     
     window.resetFiltres = function() {
       document.getElementById('filtre-groupe').value = '';
       document.getElementById('filtre-date').value = '';
       document.getElementById('filtre-pays').value = '';
-      renderOpenMatches(tousMatchsOuverts, tousVotesMap, tousVotesMapGlobal);
+      document.getElementById('regrouper-groupe').checked = false;
+      renderOpenMatches(tousMatchsOuverts, tousVotesMap, tousVotesMapGlobal, false);
     }
     
     window.saveVote = async function(matchId, existingVoteId) {
