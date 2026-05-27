@@ -264,14 +264,33 @@
     window.saveBonus = async function(existingId) {
       const equipe = document.getElementById('bonus-select').value;
       if (!equipe) { alert('Choisissez une équipe !'); return; }
+    
+      // Vérifier que le 1er match n'a pas encore commencé
+      const { data: firstMatch } = await supabase
+        .from('matches')
+        .select('date_heure')
+        .eq('event_id', eventId)
+        .order('date_heure')
+        .limit(1)
+        .single();
+    
+      if (!firstMatch || new Date() >= new Date(firstMatch.date_heure)) {
+        alert('⏰ Le vote bonus est fermé — le tournoi a déjà commencé !');
+        setTimeout(() => location.reload(), 1000);
+        return;
+      }
+    
       let error;
       if (existingId) {
-        ({ error } = await supabase.from('votes_bonus').update({ equipe_gagnante_vote: equipe }).eq('id', existingId));
+        ({ error } = await supabase.from('votes_bonus')
+          .update({ equipe_gagnante_vote: equipe })
+          .eq('id', existingId));
       } else {
         ({ error } = await supabase.from('votes_bonus').insert({
           user_id: currentUser.id, event_id: eventId, equipe_gagnante_vote: equipe, verrouille: false
         }));
       }
+    
       if (error) { alert('Erreur : ' + error.message); return; }
       loadBonus();
     }
@@ -521,6 +540,19 @@
     
       if (s1 < 0 || s1 > 99 || s2 < 0 || s2 > 99) {
         alert('Les scores doivent être compris entre 0 et 99.');
+        return;
+      }
+    
+      // Vérifier que le match n'a pas encore commencé
+      const { data: matchData } = await supabase
+        .from('matches')
+        .select('date_heure, statut')
+        .eq('id', matchId)
+        .single();
+    
+      if (!matchData || matchData.statut === 'termine' || new Date() >= new Date(matchData.date_heure)) {
+        alert('⏰ Les votes pour ce match sont fermés — le match a déjà commencé !');
+        setTimeout(() => location.reload(), 1000);
         return;
       }
     
