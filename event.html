@@ -322,7 +322,7 @@
       // Une seule requête pour tous les votes de tous les joueurs
       const { data: tousLesVotes } = await supabase
         .from('votes')
-        .select('*, users(login, mode)')
+        .select('*, users(login)')
         .in('match_id', matches.map(m => m.id));
     
       const tousLesVotesMap = {};
