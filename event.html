@@ -200,7 +200,7 @@
         .select('*')
         .eq('user_id', currentUser.id)
         .eq('event_id', eventId)
-        .single();
+        .maybeSingle();
 
       const { data: firstMatch } = await supabase
         .from('matches')
@@ -319,16 +319,30 @@
       const votesMap = {};
       mesVotes?.forEach(v => { votesMap[v.match_id] = v; });
     
-      // Une seule requête pour tous les votes de tous les joueurs
+      // Requête votes sans jointure users
       const { data: tousLesVotes } = await supabase
         .from('votes')
-        .select('*, users(login)')
+        .select('*')
         .in('match_id', matches.map(m => m.id));
-    
+      
+      // Récupérer les users séparément
+      const userIds = [...new Set(tousLesVotes?.map(v => v.user_id) || [])];
+      const { data: usersData } = await supabase
+        .from('users')
+        .select('id, login, mode')
+        .in('id', userIds);
+      
+      const usersMap = {};
+      usersData?.forEach(u => { usersMap[u.id] = u; });
+      
+      // Enrichir les votes avec les infos users
       const tousLesVotesMap = {};
       tousLesVotes?.forEach(v => {
         if (!tousLesVotesMap[v.match_id]) tousLesVotesMap[v.match_id] = [];
-        tousLesVotesMap[v.match_id].push(v);
+        tousLesVotesMap[v.match_id].push({
+          ...v,
+          users: usersMap[v.user_id] || { login: 'Inconnu', mode: 'EXPERT' }
+        });
       });
     
       if (open.length > 0) {
