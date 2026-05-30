@@ -133,7 +133,7 @@ export async function openTableauModal(supabase, eventId) {
                 <td ${tdS} style="text-align:center; color:#4ade80;">${r.v}</td>
                 <td ${tdS} style="text-align:center; color:#aac0d4;">${r.n}</td>
                 <td ${tdS} style="text-align:center; color:#f87171;">${r.d}</td>
-                <td ${tdS} style="text-align:center; color:#aac0d4;">${diff >= 0 ? '+' : ''}${r.diff}</td>
+                <td ${tdS} style="text-align:center; color:#aac0d4;">${r.diff >= 0 ? '+' : ''}${r.diff}</td>
                 <td ${tdS} style="text-align:center; color:#f97316; font-weight:700;">${r.pts}</td>
               </tr>`).join('')}
           </tbody>
