@@ -127,22 +127,34 @@
     </div>
 
     <div class="faq-item">
-      <div class="faq-question" onclick="toggle(this)">Comment sont calculés les points ?<span class="chevron">▼</span></div>
-      <div class="faq-answer">
-        <table class="score-table">
-          <thead><tr><th>Situation</th><th>Points</th></tr></thead>
-          <tbody>
-            <tr><td>Bon vainqueur ou nul prédit</td><td class="pts">3 pts</td></tr>
-            <tr><td>+ Score exact trouvé</td><td class="pts">+ 1 pt</td></tr>
-            <tr><td>+ Seul à avoir le score exact (Mode Expert uniquement)</td><td class="pts">+ 1 pt</td></tr>
-            <tr><td>Vainqueur du tournoi trouvé</td><td class="pts">10 pts</td></tr>
-            <tr><td>Mauvais vainqueur</td><td class="pts">0 pt</td></tr>
-          </tbody>
-        </table>
-        <br/>Le score maximum par match est de <strong>5 pts</strong> (Expert) ou <strong>4 pts</strong> (Mouton).
-      </div>
+
     </div>
 
+    <div class="faq-answer">
+      <table class="score-table">
+        <thead><tr><th>Situation</th><th>Points</th></tr></thead>
+        <tbody>
+          <tr><td>Bon vainqueur ou nul prédit</td><td class="pts">3 pts × phase</td></tr>
+          <tr><td>+ Score exact trouvé</td><td class="pts">+ 1 pt</td></tr>
+          <tr><td>+ Seul à avoir le score exact (Mode Expert uniquement)</td><td class="pts">+ 1 pt</td></tr>
+          <tr><td>Vainqueur du tournoi trouvé</td><td class="pts">10 pts</td></tr>
+          <tr><td>Mauvais vainqueur</td><td class="pts">0 pt</td></tr>
+        </tbody>
+      </table>
+      <br/>
+      <strong>📈 Multiplicateurs par phase :</strong>
+      <table class="score-table" style="margin-top:8px;">
+        <thead><tr><th>Phase</th><th>Multiplicateur</th><th>Bon vainqueur</th><th>Max Expert</th></tr></thead>
+        <tbody>
+          <tr><td>Poules</td><td class="pts">×1</td><td>3 pts</td><td>5 pts</td></tr>
+          <tr><td>Seizièmes / Huitièmes</td><td class="pts">×1.5</td><td>4.5 pts</td><td>6.5 pts</td></tr>
+          <tr><td>Quarts de finale</td><td class="pts">×2</td><td>6 pts</td><td>8 pts</td></tr>
+          <tr><td>Demi-finales / Petite finale</td><td class="pts">×3</td><td>9 pts</td><td>11 pts</td></tr>
+          <tr><td>Finale</td><td class="pts">×4</td><td>12 pts</td><td>14 pts</td></tr>
+        </tbody>
+      </table>
+      <br/>Le score exact (+1 pt) et le bonus seul score exact (+1 pt Expert) ne sont <strong>pas multipliés</strong>.
+    </div>
     <div class="faq-item">
       <div class="faq-question" onclick="toggle(this)">C'est quoi le bonus "seul score exact" ?<span class="chevron">▼</span></div>
       <div class="faq-answer">
