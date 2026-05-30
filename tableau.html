@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KARMA — Tableau de la compétition</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- HERO -->
+  <div style="
+    background: rgba(255, 252, 248, 0.92);
+    padding: 28px 32px;
+    border-bottom: 0.5px solid #e8e0d8;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  ">
+    <div style="font-size:11px; color:#f97316; letter-spacing:2px; text-transform:uppercase; font-weight:600; margin-bottom:8px;">KARMA</div>
+    <div style="font-size:24px; font-weight:700; color:#1a1a2e; margin-bottom:6px;">🏆 Tableau de la compétition</div>
+    <div style="font-size:13px; color:#6a6a8a;" id="hero-subtitle">Chargement...</div>
+  </div>
+
+  <div class="page-body">
+
+    <!-- ONGLETS -->
+    <div style="display:flex; gap:8px; margin-bottom:20px;">
+      <button id="tab-groupes" onclick="switchTab('groupes')"
+        style="flex:1; padding:8px; border-radius:8px; border:0.5px solid #1a3a5c;
+        background:#f97316; color:#fff; font-size:13px; font-weight:600; cursor:pointer;">
+        Phase de groupes
+      </button>
+      <button id="tab-elim" onclick="switchTab('elim')"
+        style="flex:1; padding:8px; border-radius:8px; border:0.5px solid #1a3a5c;
+        background:#0a1628; color:#4a7a9b; font-size:13px; font-weight:600; cursor:pointer;">
+        Phases éliminatoires
+      </button>
+    </div>
+
+    <div id="tab-content-groupes">
+      <div style="font-size:13px; color:#4a7a9b; text-align:center; padding:40px;">Chargement...</div>
+    </div>
+    <div id="tab-content-elim" style="display:none;">
+      <div style="font-size:13px; color:#4a7a9b; text-align:center; padding:40px;">Chargement...</div>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { supabase } from './js/supabase.js';
+    import { renderNavbar } from './js/navbar.js';
+    import { buildTableauHTML } from './js/tableau.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const eventId = params.get('id');
+
+    window.addEventListener('load', async () => {
+      const user = renderNavbar('tableau');
+      if (!user) return;
+      if (!eventId) { window.location.href = 'events.html'; return; }
+
+      const { data: event } = await supabase.from('events').select('*').eq('id', eventId).single();
+      if (!event) return;
+
+      document.getElementById('hero-subtitle').textContent = `${event.nom} — ${event.nom_complet}`;
+
+      const { groupesHtml, elimHtml } = await buildTableauHTML(supabase, eventId);
+      document.getElementById('tab-content-groupes').innerHTML = groupesHtml;
+      document.getElementById('tab-content-elim').innerHTML = elimHtml;
+    });
+
+    window.switchTab = function(tab) {
+      document.getElementById('tab-content-groupes').style.display = tab === 'groupes' ? 'block' : 'none';
+      document.getElementById('tab-content-elim').style.display = tab === 'elim' ? 'block' : 'none';
+      document.getElementById('tab-groupes').style.background = tab === 'groupes' ? '#f97316' : '#0a1628';
+      document.getElementById('tab-groupes').style.color = tab === 'groupes' ? '#fff' : '#4a7a9b';
+      document.getElementById('tab-elim').style.background = tab === 'elim' ? '#f97316' : '#0a1628';
+      document.getElementById('tab-elim').style.color = tab === 'elim' ? '#fff' : '#4a7a9b';
+    };
+  </script>
+</body>
+</html>
