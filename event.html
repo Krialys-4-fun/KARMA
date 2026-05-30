@@ -577,7 +577,7 @@
           const bonus = seulScoreExact ? ' ⭐' : '';
           return `<div class="vote-row">
             <span class="vote-player ${isMe ? 'me' : ''}">${v.users.login}${isMe ? ' (vous)' : ''}</span>
-            <span class="vote-score ${classe}">${v.score_vote_1} — ${v.score_vote_2} · ${pts} pt${pts > 1 ? 's' : ''}${bonus}${mult > 1 ? ` <span style="color:#f97316;font-size:10px;">×${mult}</span>` : ''}</span>
+            <span class="vote-score ${classe}">${v.score_vote_1} — ${v.score_vote_2} · ${Number.isInteger(pts) ? pts : pts.toFixed(1)} pt${pts !== 1 ? 's' : ''}${bonus}${mult > 1 ? ` <span style="color:#f97316;font-size:10px;">×${mult}</span>` : ''}</span>
           </div>`;
         }).join('') : '<div style="font-size:12px; color:#4a7a9b;">Aucun vote</div>';
 
