@@ -46,8 +46,7 @@
   <script type="module">
     import { supabase } from './js/supabase.js';
     import { renderNavbar } from './js/navbar.js';
-    import { openTableauModal } from './js/tableau.js';
-    
+
     const sportIcons = { 'Football': '⚽', 'Rugby': '🏉', 'Autre': '🏅' };
 
     window.addEventListener('load', async () => {
@@ -89,9 +88,9 @@
     }
 
     window.openTableauFromEvents = function(eventId) {
-      openTableauModal(supabase, eventId);
+      window.open(`tableau.html?id=${eventId}`, '_blank');
     };
-    
+
     function renderCard(ev) {
       const badgeClass = ev.statut === 'en_cours' ? 'badge-live' : ev.statut === 'a_venir' ? 'badge-soon' : 'badge-done';
       const badgeLabel = ev.statut === 'en_cours' ? 'En cours' : ev.statut === 'a_venir' ? 'À venir' : 'Terminé';
@@ -99,7 +98,7 @@
       const nomColor = ev.statut === 'en_cours' ? '#ffffff' : '#fff';
       const subColor = ev.statut === 'en_cours' ? '#93c5fd' : '#4a7a9b';
       const nomStyle = ev.statut === 'en_cours' ? 'font-weight:700;' : 'font-weight:500;';
-    
+
       return `
         <div class="card card-accent" style="margin-bottom:10px;">
           <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">

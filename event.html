@@ -79,10 +79,10 @@
     <!-- MATCHS EN COURS -->
     <div id="encours-section" style="display:none;">
       <div class="divider"></div>
-    <div class="section-toggle" onclick="toggleSection('encours')">
-    <div class="section-label">Matchs en cours</div>
-      <span class="section-toggle-btn" id="btn-encours">−</span>
-    </div>
+      <div class="section-toggle" onclick="toggleSection('encours')">
+        <div class="section-label">Matchs en cours</div>
+        <span class="section-toggle-btn" id="btn-encours">−</span>
+      </div>
       <div id="encours-matches"></div>
     </div>
 
@@ -150,11 +150,8 @@
   <script type="module">
     import { supabase } from './js/supabase.js';
     import { renderNavbar } from './js/navbar.js';
-    import { openTableauModal, getPhaseMultiplier } from './js/tableau.js';
+    import { getPhaseMultiplier } from './js/tableau.js';
 
-    window.openTableauModal = openTableauModal;
-    window._openTableau = () => openTableauModal(supabase, eventId);
-    
     // ========== DRAPEAUX ==========
     function flag(equipe) {
       const codes = {
@@ -213,8 +210,9 @@
 
       if (statut !== 'a_venir') {
         document.getElementById('btn-tableau').style.display = 'inline-block';
+        window._openTableau = () => window.open(`tableau.html?id=${eventId}`, '_blank');
       }
-      
+
       if (statut === 'termine') {
         document.getElementById('regles-section').style.display = 'none';
         await loadMatches(true);
@@ -660,7 +658,6 @@
 
       if (error) { alert('Erreur : ' + error.message); return; }
 
-      // Mise à jour sans rechargement
       tousVotesMap[matchId] = { id: newVoteId, match_id: matchId, score_vote_1: s1, score_vote_2: s2, user_id: currentUser.id };
 
       const btn = document.getElementById('btn-vote-' + matchId);
