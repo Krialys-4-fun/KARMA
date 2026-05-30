@@ -63,9 +63,9 @@
     <!-- MATCHS EN COURS -->
     <div id="encours-section" style="display:none;">
       <div class="divider"></div>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; margin-bottom:12px;" onclick="toggleSection('encours')">
         <div class="section-label" style="margin:0;">Matchs en cours</div>
-        <button onclick="toggleGroupe('encours')" id="btn-groupe-encours" class="btn-secondary" style="width:auto; padding:4px 10px; font-size:11px; margin-top:0;">+ Regrouper</button>
+        <span id="btn-encours" style="font-size:16px; color:#38bdf8;">−</span>
       </div>
       <div id="encours-matches"></div>
     </div>
@@ -73,36 +73,53 @@
     <!-- MATCHS A VOTER -->
     <div id="open-section" style="display:none;">
       <div class="divider"></div>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; margin-bottom:8px;" onclick="toggleSection('open')">
         <div class="section-label" style="margin:0;">Matchs à voter</div>
-        <button onclick="toggleGroupe('open')" id="btn-groupe-open" class="btn-secondary" style="width:auto; padding:4px 10px; font-size:11px; margin-top:0;">+ Regrouper</button>
+        <span id="btn-open" style="font-size:16px; color:#38bdf8;">−</span>
       </div>
-      <div id="filtres-section" style="display:none; margin-bottom:12px;">
-        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-          <select id="filtre-groupe" onchange="appliquerFiltres()"
-            style="background:#0d1f3c; border:0.5px solid #1a3a5c; border-radius:6px; color:#ccd6e0; font-size:12px; padding:6px 10px;">
-            <option value="">Tous les groupes</option>
-          </select>
-          <select id="filtre-date" onchange="appliquerFiltres()"
-            style="background:#0d1f3c; border:0.5px solid #1a3a5c; border-radius:6px; color:#ccd6e0; font-size:12px; padding:6px 10px;">
-            <option value="">Toutes les dates</option>
-          </select>
-          <input type="text" id="filtre-pays" oninput="appliquerFiltres()" placeholder="🔍 Rechercher un pays..."
-            style="background:#0d1f3c; border:0.5px solid #1a3a5c; border-radius:6px; color:#ccd6e0; font-size:12px; padding:6px 10px; flex:1; min-width:150px;"/>
-          <button onclick="resetFiltres()" class="btn-secondary" style="width:auto; padding:6px 12px; font-size:12px; margin-top:0;">Réinitialiser</button>
+      <div id="open-filters-and-matches">
+        <div id="filtres-section" style="margin-bottom:12px;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+            <select id="filtre-groupe" onchange="appliquerFiltres()"
+              style="background:#0d1f3c; border:0.5px solid #1a3a5c; border-radius:6px; color:#ccd6e0; font-size:12px; padding:6px 10px;">
+              <option value="">Tous les groupes</option>
+            </select>
+            <select id="filtre-date" onchange="appliquerFiltres()"
+              style="background:#0d1f3c; border:0.5px solid #1a3a5c; border-radius:6px; color:#ccd6e0; font-size:12px; padding:6px 10px;">
+              <option value="">Toutes les dates</option>
+            </select>
+            <input type="text" id="filtre-pays" oninput="appliquerFiltres()" placeholder="🔍 Rechercher un pays..."
+              style="background:#0d1f3c; border:0.5px solid #1a3a5c; border-radius:6px; color:#ccd6e0; font-size:12px; padding:6px 10px; flex:1; min-width:150px;"/>
+            <button onclick="resetFiltres()" class="btn-secondary" style="width:auto; padding:6px 12px; font-size:12px; margin-top:0;">Réinitialiser</button>
+          </div>
         </div>
+        <div id="open-matches"></div>
       </div>
-      <div id="open-matches"></div>
     </div>
 
     <!-- MATCHS TERMINES -->
     <div id="done-section" style="display:none;">
       <div class="divider"></div>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; margin-bottom:12px;" onclick="toggleSection('done')">
         <div class="section-label" style="margin:0;">Matchs terminés</div>
-        <button onclick="toggleGroupe('done')" id="btn-groupe-done" class="btn-secondary" style="width:auto; padding:4px 10px; font-size:11px; margin-top:0;">− Dégrouper</button>
+        <span id="btn-done" style="font-size:16px; color:#38bdf8;">−</span>
       </div>
-      <div id="done-matches"></div>
+      <div id="done-filters-and-matches">
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:12px;">
+          <select id="filtre-groupe-done" onchange="appliquerFiltresDone()"
+            style="background:#0d1f3c; border:0.5px solid #1a3a5c; border-radius:6px; color:#ccd6e0; font-size:12px; padding:6px 10px;">
+            <option value="">Tous les groupes</option>
+          </select>
+          <select id="filtre-date-done" onchange="appliquerFiltresDone()"
+            style="background:#0d1f3c; border:0.5px solid #1a3a5c; border-radius:6px; color:#ccd6e0; font-size:12px; padding:6px 10px;">
+            <option value="">Toutes les dates</option>
+          </select>
+          <input type="text" id="filtre-pays-done" oninput="appliquerFiltresDone()" placeholder="🔍 Rechercher un pays..."
+            style="background:#0d1f3c; border:0.5px solid #1a3a5c; border-radius:6px; color:#ccd6e0; font-size:12px; padding:6px 10px; flex:1; min-width:150px;"/>
+          <button onclick="resetFiltresDone()" class="btn-secondary" style="width:auto; padding:6px 12px; font-size:12px; margin-top:0;">Réinitialiser</button>
+        </div>
+        <div id="done-matches"></div>
+      </div>
     </div>
 
     <!-- PHASES VERROUILLEES -->
@@ -137,8 +154,7 @@
         'Égypte': 'eg', 'RI Iran': 'ir', 'Nouvelle-Zélande': 'nz',
         'Irak': 'iq', 'Norvège': 'no', 'Algérie': 'dz',
         'Autriche': 'at', 'Jordanie': 'jo', 'RD Congo': 'cd',
-        'Ghana': 'gh', 'Panamá': 'pa', 'Ouzbékistan': 'uz',
-        'Colombie': 'co'
+        'Ghana': 'gh', 'Panamá': 'pa', 'Ouzbékistan': 'uz', 'Colombie': 'co'
       };
       const code = codes[equipe];
       if (!code) return equipe;
@@ -155,9 +171,6 @@
     let tousMatchsDone = [];
     let tousVotesMap = {};
     let tousVotesMapGlobal = {};
-    let groupeOpen = false;
-    let groupeEnCours = false;
-    let groupeDone = true;
 
     window.addEventListener('load', async () => {
       currentUser = renderNavbar('event');
@@ -188,6 +201,29 @@
       }
     });
 
+    // ========== TOGGLE SECTION ==========
+    window.toggleSection = function(section) {
+      const ids = {
+        'encours': 'encours-matches',
+        'open': 'open-filters-and-matches',
+        'done': 'done-filters-and-matches'
+      };
+      const btns = {
+        'encours': 'btn-encours',
+        'open': 'btn-open',
+        'done': 'btn-done'
+      };
+      const content = document.getElementById(ids[section]);
+      const btn = document.getElementById(btns[section]);
+      if (content.style.display === 'none') {
+        content.style.display = 'block';
+        btn.textContent = '−';
+      } else {
+        content.style.display = 'none';
+        btn.textContent = '+';
+      }
+    }
+
     // ========== VOTE BONUS ==========
     async function loadBonus() {
       const section = document.getElementById('bonus-section');
@@ -195,19 +231,12 @@
       section.style.display = 'block';
 
       const { data: existing } = await supabase
-        .from('votes_bonus')
-        .select('*')
-        .eq('user_id', currentUser.id)
-        .eq('event_id', eventId)
-        .maybeSingle();
+        .from('votes_bonus').select('*')
+        .eq('user_id', currentUser.id).eq('event_id', eventId).maybeSingle();
 
       const { data: firstMatch } = await supabase
-        .from('matches')
-        .select('date_heure')
-        .eq('event_id', eventId)
-        .order('date_heure')
-        .limit(1)
-        .single();
+        .from('matches').select('date_heure').eq('event_id', eventId)
+        .order('date_heure').limit(1).single();
 
       const isLocked = firstMatch && new Date() >= new Date(firstMatch.date_heure);
 
@@ -326,57 +355,37 @@
       if (enCours.length > 0) {
         tousMatchsEnCours = enCours;
         document.getElementById('encours-section').style.display = 'block';
-        renderEnCoursMatches(enCours, votesMap, tousLesVotesMap, groupeEnCours);
+        renderEnCoursMatches(enCours, tousLesVotesMap);
       }
 
       if (open.length > 0) {
         tousMatchsOuverts = open;
         document.getElementById('open-section').style.display = 'block';
         initFiltres(open);
-        renderOpenMatches(open, votesMap, tousLesVotesMap, groupeOpen);
+        renderOpenMatches(open, votesMap, tousLesVotesMap);
       }
 
       if (done.length > 0) {
         tousMatchsDone = done;
         document.getElementById('done-section').style.display = 'block';
-        renderDoneMatches(done, votesMap, tousLesVotesMap, groupeDone);
+        initFiltresDone(done);
+        renderDoneMatches(done, tousLesVotesMap);
       }
     }
 
-    // ========== TOGGLE GROUPE ==========
-    window.toggleGroupe = function(section) {
-      if (section === 'open') {
-        groupeOpen = !groupeOpen;
-        document.getElementById('btn-groupe-open').textContent = groupeOpen ? '− Dégrouper' : '+ Regrouper';
-        renderOpenMatches(tousMatchsOuverts, tousVotesMap, tousVotesMapGlobal, groupeOpen);
-      } else if (section === 'encours') {
-        groupeEnCours = !groupeEnCours;
-        document.getElementById('btn-groupe-encours').textContent = groupeEnCours ? '− Dégrouper' : '+ Regrouper';
-        renderEnCoursMatches(tousMatchsEnCours, tousVotesMap, tousVotesMapGlobal, groupeEnCours);
-      } else if (section === 'done') {
-        groupeDone = !groupeDone;
-        document.getElementById('btn-groupe-done').textContent = groupeDone ? '− Dégrouper' : '+ Regrouper';
-        renderDoneMatches(tousMatchsDone, tousVotesMap, tousVotesMapGlobal, groupeDone);
-      }
-    }
-
-    // ========== FILTRES ==========
+    // ========== FILTRES OPEN ==========
     function initFiltres(matches) {
       const groupes = [...new Set(matches.map(m => m.phase))].sort();
       const selectGroupe = document.getElementById('filtre-groupe');
       selectGroupe.innerHTML = '<option value="">Tous les groupes</option>';
       groupes.forEach(g => { selectGroupe.innerHTML += `<option value="${g}">${g}</option>`; });
 
-      const dates = [...new Set(matches.map(m => {
-        return new Date(m.date_heure).toLocaleDateString('fr-FR', {
-          day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/Paris'
-        });
-      }))];
+      const dates = [...new Set(matches.map(m => new Date(m.date_heure).toLocaleDateString('fr-FR', {
+        day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/Paris'
+      })))];
       const selectDate = document.getElementById('filtre-date');
       selectDate.innerHTML = '<option value="">Toutes les dates</option>';
       dates.forEach(d => { selectDate.innerHTML += `<option value="${d}">${d}</option>`; });
-
-      document.getElementById('filtres-section').style.display = 'block';
     }
 
     window.appliquerFiltres = function() {
@@ -384,106 +393,129 @@
       const date = document.getElementById('filtre-date').value;
       const pays = document.getElementById('filtre-pays').value.toLowerCase().trim();
 
-      let matchsFiltres = tousMatchsOuverts.filter(m => {
+      const matchsFiltres = tousMatchsOuverts.filter(m => {
         const matchGroupe = !groupe || m.phase === groupe;
         const dateMatch = new Date(m.date_heure).toLocaleDateString('fr-FR', {
           day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/Paris'
         });
         const matchDate = !date || dateMatch === date;
-        const matchPays = !pays ||
-          m.equipe_1.toLowerCase().includes(pays) ||
-          m.equipe_2.toLowerCase().includes(pays);
+        const matchPays = !pays || m.equipe_1.toLowerCase().includes(pays) || m.equipe_2.toLowerCase().includes(pays);
         return matchGroupe && matchDate && matchPays;
       });
 
-      renderOpenMatches(matchsFiltres, tousVotesMap, tousVotesMapGlobal, groupeOpen);
+      renderOpenMatches(matchsFiltres, tousVotesMap, tousVotesMapGlobal);
     }
 
     window.resetFiltres = function() {
       document.getElementById('filtre-groupe').value = '';
       document.getElementById('filtre-date').value = '';
       document.getElementById('filtre-pays').value = '';
-      renderOpenMatches(tousMatchsOuverts, tousVotesMap, tousVotesMapGlobal, groupeOpen);
+      renderOpenMatches(tousMatchsOuverts, tousVotesMap, tousVotesMapGlobal);
+    }
+
+    // ========== FILTRES DONE ==========
+    function initFiltresDone(matches) {
+      const groupes = [...new Set(matches.map(m => m.phase))].sort();
+      const selectGroupe = document.getElementById('filtre-groupe-done');
+      selectGroupe.innerHTML = '<option value="">Tous les groupes</option>';
+      groupes.forEach(g => { selectGroupe.innerHTML += `<option value="${g}">${g}</option>`; });
+
+      const dates = [...new Set(matches.map(m => new Date(m.date_heure).toLocaleDateString('fr-FR', {
+        day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/Paris'
+      })))];
+      const selectDate = document.getElementById('filtre-date-done');
+      selectDate.innerHTML = '<option value="">Toutes les dates</option>';
+      dates.forEach(d => { selectDate.innerHTML += `<option value="${d}">${d}</option>`; });
+    }
+
+    window.appliquerFiltresDone = function() {
+      const groupe = document.getElementById('filtre-groupe-done').value;
+      const date = document.getElementById('filtre-date-done').value;
+      const pays = document.getElementById('filtre-pays-done').value.toLowerCase().trim();
+
+      const matchsFiltres = tousMatchsDone.filter(m => {
+        const matchGroupe = !groupe || m.phase === groupe;
+        const dateMatch = new Date(m.date_heure).toLocaleDateString('fr-FR', {
+          day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/Paris'
+        });
+        const matchDate = !date || dateMatch === date;
+        const matchPays = !pays || m.equipe_1.toLowerCase().includes(pays) || m.equipe_2.toLowerCase().includes(pays);
+        return matchGroupe && matchDate && matchPays;
+      });
+
+      renderDoneMatches(matchsFiltres, tousVotesMapGlobal);
+    }
+
+    window.resetFiltresDone = function() {
+      document.getElementById('filtre-groupe-done').value = '';
+      document.getElementById('filtre-date-done').value = '';
+      document.getElementById('filtre-pays-done').value = '';
+      renderDoneMatches(tousMatchsDone, tousVotesMapGlobal);
     }
 
     // ========== RENDER OPEN MATCHES ==========
-    function renderOpenMatches(matches, votesMap, tousVotesMapGlobal, regrouperParGroupe = false) {
+    function renderOpenMatches(matches, votesMap, tousVotesMapGlobal) {
       const container = document.getElementById('open-matches');
       container.innerHTML = '';
 
       const matchesTries = [...matches].sort((a, b) => new Date(a.date_heure) - new Date(b.date_heure));
 
-      if (regrouperParGroupe) {
-        const grouped = {};
-        matchesTries.forEach(m => {
-          if (!grouped[m.phase]) grouped[m.phase] = [];
-          grouped[m.phase].push(m);
-        });
-        for (const [phase, matchs] of Object.entries(grouped)) {
-          container.innerHTML += `<div style="font-size:13px; font-weight:500; color:#38bdf8; margin:12px 0 8px; padding-bottom:6px; border-bottom:0.5px solid #1a3a5c;">${phase}</div>`;
-          for (const m of matchs) { container.innerHTML += renderMatchCard(m, votesMap, tousVotesMapGlobal, true); }
+      for (const m of matchesTries) {
+        const monVote = votesMap[m.id];
+        let votesAutres = '';
+
+        if (currentUser.mode === 'MOUTON') {
+          const votes = tousVotesMapGlobal[m.id] || [];
+          if (votes.length > 0) {
+            votesAutres = `<div class="votes-list" style="margin-top:8px;">
+              <div class="votes-list-title">Votes déjà déposés</div>
+              ${votes.map(v => `<div class="vote-row">
+                <span class="vote-player ${v.user_id === currentUser.id ? 'me' : ''}">${v.users.login}${v.user_id === currentUser.id ? ' (vous)' : ''}</span>
+                <span class="vote-score">${v.score_vote_1} — ${v.score_vote_2}</span>
+              </div>`).join('')}
+            </div>`;
+          } else {
+            votesAutres = `<div class="votes-list" style="margin-top:8px;"><div style="font-size:12px; color:#4a7a9b; font-style:italic;">Personne n'a encore voté</div></div>`;
+          }
         }
-      } else {
-        for (const m of matchesTries) { container.innerHTML += renderMatchCard(m, votesMap, tousVotesMapGlobal, false); }
-      }
-    }
 
-    function renderMatchCard(m, votesMap, tousVotesMapGlobal, regroupe) {
-      const monVote = votesMap[m.id];
-      let votesAutres = '';
+        const borderColor = monVote ? '#4ade80' : '#f97316';
 
-      if (currentUser.mode === 'MOUTON') {
-        const votes = tousVotesMapGlobal[m.id] || [];
-        if (votes.length > 0) {
-          votesAutres = `<div class="votes-list" style="margin-top:8px;">
-            <div class="votes-list-title">Votes déjà déposés</div>
-            ${votes.map(v => `<div class="vote-row">
-              <span class="vote-player ${v.user_id === currentUser.id ? 'me' : ''}">${v.users.login}${v.user_id === currentUser.id ? ' (vous)' : ''}</span>
-              <span class="vote-score">${v.score_vote_1} — ${v.score_vote_2}</span>
-            </div>`).join('')}
-          </div>`;
-        } else {
-          votesAutres = `<div class="votes-list" style="margin-top:8px;"><div style="font-size:12px; color:#4a7a9b; font-style:italic;">Personne n'a encore voté</div></div>`;
-        }
-      }
-
-      const borderColor = monVote ? '#4ade80' : '#f97316';
-      const phaseLabel = !regroupe ? ` · <span style="color:#38bdf8;">${m.phase}</span>` : '';
-
-      return `
-        <div class="card" style="margin-bottom:8px; border-color:${borderColor};">
-          <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-            <span style="font-size:11px; color:#4a7a9b;">${formatDate(m.date_heure)}${phaseLabel}</span>
-            <span class="badge badge-open" style="font-size:10px; padding:2px 8px;">Votes ouverts</span>
-          </div>
-          <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-            <span style="flex:1; font-size:13px; color:#fff;">${flag(m.equipe_1)}</span>
-            <div style="display:flex; align-items:center; gap:6px;">
-              <input type="number" min="0" max="99" id="s1-${m.id}" value="${monVote ? monVote.score_vote_1 : ''}"
-                style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; font-size:14px; text-align:center; padding:4px 0;"/>
-              <span style="color:#4a7a9b;">—</span>
-              <input type="number" min="0" max="99" id="s2-${m.id}" value="${monVote ? monVote.score_vote_2 : ''}"
-                style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; font-size:14px; text-align:center; padding:4px 0;"/>
+        container.innerHTML += `
+          <div class="card" style="margin-bottom:8px; border-color:${borderColor};">
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+              <span style="font-size:11px; color:#4a7a9b;">${formatDate(m.date_heure)} · <span style="color:#38bdf8;">${m.phase}</span></span>
+              <span class="badge badge-open" style="font-size:10px; padding:2px 8px;">Votes ouverts</span>
             </div>
-            <span style="flex:1; font-size:13px; color:#fff; text-align:right;">${flag(m.equipe_2)}</span>
-          </div>
-          <button onclick="saveVote('${m.id}', '${monVote ? monVote.id : ''}')"
-            class="${monVote ? 'btn-secondary' : ''}"
-            style="width:auto; padding:6px 14px;" id="btn-vote-${m.id}">
-            ${monVote ? '✏️ Modifier mon vote' : '✅ Valider mon vote'}
-          </button>
-          ${votesAutres}
-        </div>`;
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+              <span style="flex:1; font-size:13px; color:#fff;">${flag(m.equipe_1)}</span>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <input type="number" min="0" max="99" id="s1-${m.id}" value="${monVote ? monVote.score_vote_1 : ''}"
+                  style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; font-size:14px; text-align:center; padding:4px 0;"/>
+                <span style="color:#4a7a9b;">—</span>
+                <input type="number" min="0" max="99" id="s2-${m.id}" value="${monVote ? monVote.score_vote_2 : ''}"
+                  style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; font-size:14px; text-align:center; padding:4px 0;"/>
+              </div>
+              <span style="flex:1; font-size:13px; color:#fff; text-align:right;">${flag(m.equipe_2)}</span>
+            </div>
+            <button onclick="saveVote('${m.id}', '${monVote ? monVote.id : ''}')"
+              class="${monVote ? 'btn-secondary' : ''}"
+              style="width:auto; padding:6px 14px;" id="btn-vote-${m.id}">
+              ${monVote ? '✏️ Modifier mon vote' : '✅ Valider mon vote'}
+            </button>
+            ${votesAutres}
+          </div>`;
+      }
     }
 
     // ========== RENDER EN COURS ==========
-    function renderEnCoursMatches(matches, votesMap, tousVotesMapGlobal, regrouperParGroupe = false) {
+    function renderEnCoursMatches(matches, tousVotesMapGlobal) {
       const container = document.getElementById('encours-matches');
       container.innerHTML = '';
 
       const matchesTries = [...matches].sort((a, b) => new Date(a.date_heure) - new Date(b.date_heure));
 
-      const renderMatch = (m, regroupe) => {
+      for (const m of matchesTries) {
         const votes = tousVotesMapGlobal[m.id] || [];
         const votesHtml = votes.length > 0 ? votes.map(v => {
           const isMe = v.user_id === currentUser.id;
@@ -493,12 +525,10 @@
           </div>`;
         }).join('') : '<div style="font-size:12px; color:#4a7a9b;">Aucun vote</div>';
 
-        const phaseLabel = !regroupe ? ` · <span style="color:#38bdf8;">${m.phase}</span>` : '';
-
-        return `
+        container.innerHTML += `
           <div class="card" style="margin-bottom:8px; border-color:#1a3a5c;">
             <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-              <span style="font-size:11px; color:#4a7a9b;">${formatDate(m.date_heure)}${phaseLabel}</span>
+              <span style="font-size:11px; color:#4a7a9b;">${formatDate(m.date_heure)} · <span style="color:#38bdf8;">${m.phase}</span></span>
               <span class="badge badge-live" style="font-size:10px; padding:2px 8px;">En cours</span>
             </div>
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
@@ -515,31 +545,17 @@
               ${votesHtml}
             </div>
           </div>`;
-      };
-
-      if (regrouperParGroupe) {
-        const grouped = {};
-        matchesTries.forEach(m => {
-          if (!grouped[m.phase]) grouped[m.phase] = [];
-          grouped[m.phase].push(m);
-        });
-        for (const [phase, matchs] of Object.entries(grouped)) {
-          container.innerHTML += `<div style="font-size:13px; font-weight:500; color:#38bdf8; margin:12px 0 8px; padding-bottom:6px; border-bottom:0.5px solid #1a3a5c;">${phase}</div>`;
-          matchs.forEach(m => { container.innerHTML += renderMatch(m, true); });
-        }
-      } else {
-        matchesTries.forEach(m => { container.innerHTML += renderMatch(m, false); });
       }
     }
 
-    // ========== RENDER DONE MATCHES ==========
-    function renderDoneMatches(matches, votesMap, tousVotesMapGlobal, regrouperParGroupe = true) {
+    // ========== RENDER DONE ==========
+    function renderDoneMatches(matches, tousVotesMapGlobal) {
       const container = document.getElementById('done-matches');
       container.innerHTML = '';
 
       const matchesTries = [...matches].sort((a, b) => new Date(b.date_heure) - new Date(a.date_heure));
 
-      const renderMatch = (m, regroupe) => {
+      for (const m of matchesTries) {
         const votes = tousVotesMapGlobal[m.id] || [];
         const r1 = m.score_final_1;
         const r2 = m.score_final_2;
@@ -561,12 +577,10 @@
           </div>`;
         }).join('') : '<div style="font-size:12px; color:#4a7a9b;">Aucun vote</div>';
 
-        const phaseLabel = !regroupe ? ` · <span style="color:#38bdf8;">${m.phase}</span>` : '';
-
-        return `
+        container.innerHTML += `
           <div class="card" style="margin-bottom:8px; border-color:#0f2a1a;">
             <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-              <span style="font-size:11px; color:#4a7a9b;">${formatDate(m.date_heure)}${phaseLabel}</span>
+              <span style="font-size:11px; color:#4a7a9b;">${formatDate(m.date_heure)} · <span style="color:#38bdf8;">${m.phase}</span></span>
               <span class="badge badge-done" style="font-size:10px; padding:2px 8px;">Terminé</span>
             </div>
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
@@ -583,20 +597,6 @@
               ${votesHtml}
             </div>
           </div>`;
-      };
-
-      if (regrouperParGroupe) {
-        const grouped = {};
-        matchesTries.forEach(m => {
-          if (!grouped[m.phase]) grouped[m.phase] = [];
-          grouped[m.phase].push(m);
-        });
-        for (const [phase, matchs] of Object.entries(grouped)) {
-          container.innerHTML += `<div style="font-size:13px; font-weight:500; color:#38bdf8; margin:12px 0 8px; padding-bottom:6px; border-bottom:0.5px solid #1a3a5c;">${phase}</div>`;
-          matchs.forEach(m => { container.innerHTML += renderMatch(m, true); });
-        }
-      } else {
-        matchesTries.forEach(m => { container.innerHTML += renderMatch(m, false); });
       }
     }
 
@@ -618,39 +618,36 @@
       }
 
       let error;
+      let newVoteId = existingVoteId;
+
       if (existingVoteId) {
         ({ error } = await supabase.from('votes').update({ score_vote_1: s1, score_vote_2: s2 }).eq('id', existingVoteId));
       } else {
-        ({ error } = await supabase.from('votes').insert({
+        const { data: newVote, error: insertError } = await supabase.from('votes').insert({
           user_id: currentUser.id, match_id: matchId, score_vote_1: s1, score_vote_2: s2, verrouille: false
-        }));
+        }).select().single();
+        error = insertError;
+        if (newVote) newVoteId = newVote.id;
       }
 
       if (error) { alert('Erreur : ' + error.message); return; }
 
       // Mise à jour sans rechargement
+      tousVotesMap[matchId] = { id: newVoteId, match_id: matchId, score_vote_1: s1, score_vote_2: s2, user_id: currentUser.id };
+
       const btn = document.getElementById('btn-vote-' + matchId);
       if (btn) {
         btn.textContent = '✓ Enregistré !';
         btn.style.background = '#4ade80';
         btn.style.color = '#0a1628';
-        // Mettre à jour le vote en mémoire
-        if (!existingVoteId) {
-          tousVotesMap[matchId] = { match_id: matchId, score_vote_1: s1, score_vote_2: s2, user_id: currentUser.id };
-        } else {
-          tousVotesMap[matchId].score_vote_1 = s1;
-          tousVotesMap[matchId].score_vote_2 = s2;
-        }
-        // Mettre à jour la bordure
         const card = btn.closest('.card');
         if (card) card.style.borderColor = '#4ade80';
-        // Réactiver le bouton après 2 secondes
         setTimeout(() => {
           btn.textContent = '✏️ Modifier mon vote';
           btn.className = 'btn-secondary';
           btn.style.background = '';
           btn.style.color = '';
-          btn.setAttribute('onclick', `saveVote('${matchId}', '${existingVoteId || tousVotesMap[matchId]?.id || ''}')`);
+          btn.setAttribute('onclick', `saveVote('${matchId}', '${newVoteId}')`);
         }, 2000);
       }
     }
