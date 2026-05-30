@@ -75,7 +75,14 @@
     <div id="encours-section" style="display:none;">
       <div class="divider"></div>
     <div class="section-toggle" onclick="toggleSection('encours')">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
       <div class="section-label" style="margin:0;">Matchs en cours</div>
+      <button onclick="openTableauModal(supabase, eventId)"
+        class="btn-secondary"
+        style="width:auto; padding:6px 14px; font-size:12px; margin-top:0;">
+        🏆 Tableau
+      </button>
+    </div>
       <span class="section-toggle-btn" id="btn-encours">−</span>
     </div>
       <div id="encours-matches"></div>
@@ -145,6 +152,7 @@
   <script type="module">
     import { supabase } from './js/supabase.js';
     import { renderNavbar } from './js/navbar.js';
+    import { openTableauModal } from './js/tableau.js';
 
     // ========== DRAPEAUX ==========
     function flag(equipe) {
