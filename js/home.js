@@ -1,5 +1,6 @@
 import { supabase } from './supabase.js';
 import { renderNavbar } from './navbar.js';
+import { getPhaseMultiplier } from './tableau.js';
 
 // ========== DRAPEAUX ==========
 function flag(equipe) {
