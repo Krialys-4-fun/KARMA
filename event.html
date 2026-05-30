@@ -63,19 +63,19 @@
     <!-- MATCHS EN COURS -->
     <div id="encours-section" style="display:none;">
       <div class="divider"></div>
-      <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; margin-bottom:12px;" onclick="toggleSection('encours')">
-        <div class="section-label" style="margin:0;">Matchs en cours</div>
-        <span id="btn-encours" style="font-size:16px; color:#38bdf8;">−</span>
-      </div>
+    <div class="section-toggle" onclick="toggleSection('encours')">
+      <div class="section-label" style="margin:0;">Matchs en cours</div>
+      <span class="section-toggle-btn" id="btn-encours">−</span>
+    </div>
       <div id="encours-matches"></div>
     </div>
 
     <!-- MATCHS A VOTER -->
     <div id="open-section" style="display:none;">
       <div class="divider"></div>
-      <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; margin-bottom:8px;" onclick="toggleSection('open')">
+      <div class="section-toggle" onclick="toggleSection('open')">
         <div class="section-label" style="margin:0;">Matchs à voter</div>
-        <span id="btn-open" style="font-size:16px; color:#38bdf8;">−</span>
+        <span class="section-toggle-btn" id="btn-open">−</span>
       </div>
       <div id="open-filters-and-matches">
         <div id="filtres-section" style="margin-bottom:12px;">
@@ -100,9 +100,9 @@
     <!-- MATCHS TERMINES -->
     <div id="done-section" style="display:none;">
       <div class="divider"></div>
-      <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; margin-bottom:12px;" onclick="toggleSection('done')">
+      <div class="section-toggle" onclick="toggleSection('done')">
         <div class="section-label" style="margin:0;">Matchs terminés</div>
-        <span id="btn-done" style="font-size:16px; color:#38bdf8;">−</span>
+        <span class="section-toggle-btn" id="btn-done">−</span>
       </div>
       <div id="done-filters-and-matches">
         <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:12px;">
