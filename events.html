@@ -99,7 +99,7 @@
       const nomColor = ev.statut === 'en_cours' ? '#ffffff' : '#fff';
       const subColor = ev.statut === 'en_cours' ? '#93c5fd' : '#4a7a9b';
       const nomStyle = ev.statut === 'en_cours' ? 'font-weight:700;' : 'font-weight:500;';
-
+    
       return `
         <div class="card card-accent" style="margin-bottom:10px;">
           <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
@@ -122,7 +122,7 @@
               🏆 Tableau
             </button>` : ''}
           </div>
-        </div>`; 
+        </div>`;
     }
 
     function formatDate(dateStr) {
