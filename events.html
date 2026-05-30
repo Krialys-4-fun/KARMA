@@ -46,7 +46,8 @@
   <script type="module">
     import { supabase } from './js/supabase.js';
     import { renderNavbar } from './js/navbar.js';
-
+    import { openTableauModal } from './js/tableau.js';
+    
     const sportIcons = { 'Football': '⚽', 'Rugby': '🏉', 'Autre': '🏅' };
 
     window.addEventListener('load', async () => {
@@ -87,6 +88,10 @@
       }
     }
 
+    window.openTableauFromEvents = function(eventId) {
+      openTableauModal(supabase, eventId);
+    };
+    
     function renderCard(ev) {
       const badgeClass = ev.statut === 'en_cours' ? 'badge-live' : ev.statut === 'a_venir' ? 'badge-soon' : 'badge-done';
       const badgeLabel = ev.statut === 'en_cours' ? 'En cours' : ev.statut === 'a_venir' ? 'À venir' : 'Terminé';
@@ -105,12 +110,19 @@
             </div>
             <span class="badge ${badgeClass}">${badgeLabel}</span>
           </div>
-          <a href="event.html?id=${ev.id}">
-            <button class="${ev.statut === 'termine' ? 'btn-secondary' : ''}" style="width:auto; padding:7px 16px;">
-              ${ev.statut === 'termine' ? 'Voir les résultats' : ev.statut === 'en_cours' ? 'Voter →' : 'Voir →'}
-            </button>
-          </a>
-        </div>`;
+          <div style="display:flex; gap:8px;">
+            <a href="event.html?id=${ev.id}">
+              <button class="${ev.statut === 'termine' ? 'btn-secondary' : ''}" style="width:auto; padding:7px 16px;">
+                ${ev.statut === 'termine' ? 'Voir les résultats' : ev.statut === 'en_cours' ? 'Voter →' : 'Voir →'}
+              </button>
+            </a>
+            ${ev.statut !== 'a_venir' ? `
+            <button class="btn-secondary" style="width:auto; padding:7px 14px; font-size:12px;"
+              onclick="openTableauFromEvents('${ev.id}')">
+              🏆 Tableau
+            </button>` : ''}
+          </div>
+        </div>`; 
     }
 
     function formatDate(dateStr) {
