@@ -103,17 +103,15 @@ async function loadCurrentRanking(eventId) {
     const login = v.users.login;
     const mode = v.users.mode;
     if (!scores[login]) scores[login] = { login, mode, points: 0 };
-
     const match = matchMap[v.match_id];
     if (!match) return;
-
     const r1 = match.score_final_1;
     const r2 = match.score_final_2;
     const v1 = v.score_vote_1;
     const v2 = v.score_vote_2;
-
+    const mult = getPhaseMultiplier(match.phase);
     const bonGagnant = (r1 > r2 && v1 > v2) || (r1 < r2 && v1 < v2) || (r1 === r2 && v1 === v2);
-    if (bonGagnant) scores[login].points += 3;
+    if (bonGagnant) scores[login].points += 3 * mult;
     if (r1 === v1 && r2 === v2) scores[login].points += 1;
   });
 
@@ -143,7 +141,7 @@ async function loadCurrentRanking(eventId) {
       <td style="color:#4a7a9b; width:24px;">${i + 1}</td>
       <td>${r.login}</td>
       <td><span class="badge badge-${r.mode.toLowerCase()}">${r.mode}</span></td>
-      <td style="text-align:right; font-weight:500;">${r.points}</td>
+      <td style="text-align:right; font-weight:500;">${Number.isInteger(r.points) ? r.points : r.points.toFixed(1)}</td>
     </tr>`;
   });
 
