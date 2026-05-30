@@ -1,3 +1,17 @@
+// ========== MULTIPLICATEUR DE PHASE ==========
+export function getPhaseMultiplier(phase) {
+  if (!phase) return 1;
+  const p = phase.toLowerCase();
+  if (p.startsWith('groupe') || p.startsWith('poule')) return 1;
+  if (p.includes('seizi')) return 1.5;
+  if (p.includes('huiti')) return 1.5;
+  if (p.includes('quart')) return 2;
+  if (p.includes('demi')) return 3;
+  if (p.includes('petite')) return 3;
+  if (p.includes('finale')) return 4;
+  return 1;
+}
+
 // ========== TABLEAU DE COMPÉTITION KARMA ==========
 
 const GROUPES_FIFA = {
