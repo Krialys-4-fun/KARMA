@@ -388,6 +388,38 @@ button:hover { background: #ea6c0a; }
   margin-top: 4px;
 }
 
+/* ========== TOGGLE SECTION ========== */
+.section-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px 0;
+  border-bottom: 0.5px solid #1a3a5c;
+  margin-bottom: 12px;
+  user-select: none;
+}
+
+.section-toggle:hover .section-label {
+  color: #38bdf8;
+}
+
+.section-toggle-btn {
+  font-size: 20px;
+  color: #f97316;
+  font-weight: 300;
+  line-height: 1;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(249, 115, 22, 0.15);
+  border: 0.5px solid #f97316;
+  flex-shrink: 0;
+}
+
 /* ========== RESPONSIVE ========== */
 @media (max-width: 640px) {
   .navbar-links { display: none; }
