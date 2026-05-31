@@ -194,26 +194,23 @@ export async function buildBracketHTML(supabase, eventId) {
       </div>`;
   }
 
-  // Centres de positionnement (grille de rows de 14px chacune)
-  // 16 seizièmes espacés de 3 rows chacun → centres à 3,6,9,...48
-  const seiC = Array.from({length:16}, (_,i) => 3 + i*3);
-  // Huitièmes : centre entre les deux seizièmes parents
+  // Centres de positionnement (grille de rows de 20px chacune)
+  // 16 seizièmes espacés de 5 rows chacun → centres à 3,8,13,...78
+  const STEP = 5;
+  const seiC = Array.from({length:16}, (_,i) => 3 + i*STEP);
   const huiC = Array.from({length:8},  (_,i) => Math.round((seiC[i*2]+seiC[i*2+1])/2));
-  // Quarts : centre entre les deux huitièmes parents
   const quaC = Array.from({length:4},  (_,i) => Math.round((huiC[i*2]+huiC[i*2+1])/2));
-  // Demis : centre entre les deux quarts parents
   const demC = Array.from({length:2},  (_,i) => Math.round((quaC[i*2]+quaC[i*2+1])/2));
-  // Finale : centre entre les deux demis
   const finC = Math.round((demC[0]+demC[1])/2);
-  const tplC = finC + 4;
-  const ROWS = seiC[15] + 3;
+  const tplC = finC + 6;
+  const ROWS = seiC[15] + 4;
 
   let cells = '';
 
   // Seizièmes (col 1)
   SEI_INFO.forEach((s,i) => {
     const m = byPhase['Seizièmes de finale'][i] || null;
-    cells += `<div style="grid-column:1;grid-row:${seiC[i]-1}/${seiC[i]+2};display:flex;align-items:center;">
+    cells += `<div style="grid-column:1;grid-row:${seiC[i]-2}/${seiC[i]+3};display:flex;align-items:center;">
       ${card(m, s[1], s[2], s[3])}
     </div>`;
   });
@@ -229,7 +226,7 @@ export async function buildBracketHTML(supabase, eventId) {
   // Huitièmes (col 3)
   HUI_INFO.forEach((h,i) => {
     const m = byPhase['Huitièmes de finale'][i] || null;
-    cells += `<div style="grid-column:3;grid-row:${huiC[i]-1}/${huiC[i]+2};display:flex;align-items:center;">
+    cells += `<div style="grid-column:3;grid-row:${huiC[i]-2}/${huiC[i]+3};display:flex;align-items:center;">
       ${card(m, h[1], `V N°${SEI_INFO[i*2][0]}`, `V N°${SEI_INFO[i*2+1][0]}`)}
     </div>`;
   });
@@ -244,7 +241,7 @@ export async function buildBracketHTML(supabase, eventId) {
   // Quarts (col 5)
   QUA_INFO.forEach((q,i) => {
     const m = byPhase['Quarts de finale'][i] || null;
-    cells += `<div style="grid-column:5;grid-row:${quaC[i]-1}/${quaC[i]+2};display:flex;align-items:center;">
+    cells += `<div style="grid-column:5;grid-row:${quaC[i]-2}/${quaC[i]+3};display:flex;align-items:center;">
       ${card(m, q[1], `V N°${HUI_INFO[i*2][0]}`, `V N°${HUI_INFO[i*2+1][0]}`)}
     </div>`;
   });
@@ -259,7 +256,7 @@ export async function buildBracketHTML(supabase, eventId) {
   // Demis (col 7)
   DEM_INFO.forEach((d,i) => {
     const m = byPhase['Demi-finales'][i] || null;
-    cells += `<div style="grid-column:7;grid-row:${demC[i]-1}/${demC[i]+2};display:flex;align-items:center;">
+    cells += `<div style="grid-column:7;grid-row:${demC[i]-2}/${demC[i]+3};display:flex;align-items:center;">
       ${card(m, d[1], `V N°${QUA_INFO[i*2][0]}`, `V N°${QUA_INFO[i*2+1][0]}`)}
     </div>`;
   });
@@ -271,13 +268,13 @@ export async function buildBracketHTML(supabase, eventId) {
 
   // Finale (col 9)
   const mFin = byPhase['Finale'][0] || null;
-  cells += `<div style="grid-column:9;grid-row:${finC-1}/${finC+2};display:flex;align-items:center;">
+  cells += `<div style="grid-column:9;grid-row:${finC-2}/${finC+3};display:flex;align-items:center;">
     ${card(mFin, '19 juil. 21:00', 'Vainqueur demi 1', 'Vainqueur demi 2')}
   </div>`;
 
   // Petite finale (col 9, sous la finale)
   const mTpl = byPhase['Petite finale'][0] || null;
-  cells += `<div style="grid-column:9;grid-row:${tplC-1}/${tplC+2};display:flex;flex-direction:column;align-items:center;gap:4px;">
+  cells += `<div style="grid-column:9;grid-row:${tplC-2}/${tplC+3};display:flex;flex-direction:column;align-items:center;gap:4px;">
     <div style="font-size:10px;color:#4a7a9b;font-weight:600;">🥉 Petite finale</div>
     ${card(mTpl, '18 juil. 23:00', 'Perdant demi 1', 'Perdant demi 2')}
   </div>`;
@@ -288,7 +285,7 @@ export async function buildBracketHTML(supabase, eventId) {
       .bk-grid {
         display:grid;
         grid-template-columns: 145px 18px 145px 18px 145px 18px 145px 18px 155px;
-        grid-template-rows: repeat(${ROWS}, 14px);
+        grid-template-rows: repeat(${ROWS}, 20px);
         min-width: 840px;
         width: max-content;
       }
