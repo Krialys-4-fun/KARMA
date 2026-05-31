@@ -107,8 +107,8 @@ export async function buildTableauHTML(supabase, eventId) {
 
   // ── BUILD HTML ──
   const tdS = 'style="padding:6px 8px; font-size:12px; border-bottom:0.5px solid #1a3a5c;"';
-  const thS = 'style="padding:6px 8px; font-size:11px; color:#4a7a9b; text-align:left; border-bottom:0.5px solid #1a3a5c; white-space:nowrap;"';
-
+  const thS = 'style="padding:6px 8px; font-size:11px; color:#4a7a9b; text-align:left; border-bottom:0.5px solid #1a3a5c;"';
+  
   // Groupes HTML
   let groupesHtml = '';
   for (const [groupe, equipes] of Object.entries(GROUPES_FIFA)) {
@@ -125,17 +125,17 @@ export async function buildTableauHTML(supabase, eventId) {
     groupesHtml += `
       <div style="margin-bottom:20px;">
         <div style="font-size:12px; font-weight:700; color:#f97316; margin-bottom:8px;">${groupe}</div>
-        <table style="width:100%; border-collapse:collapse;">
+        <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
           <thead>
             <tr>
-              <th ${thS}>#</th>
+              <th ${thS} style="width:24px;">#</th>
               <th ${thS}>Équipe</th>
-              <th ${thS} style="text-align:center;">J</th>
-              <th ${thS} style="text-align:center;">V</th>
-              <th ${thS} style="text-align:center;">N</th>
-              <th ${thS} style="text-align:center;">D</th>
-              <th ${thS} style="text-align:center;">Diff</th>
-              <th ${thS} style="text-align:center; color:#f97316;">Pts</th>
+              <th ${thS} style="width:28px; text-align:center;">J</th>
+              <th ${thS} style="width:28px; text-align:center;">V</th>
+              <th ${thS} style="width:28px; text-align:center;">N</th>
+              <th ${thS} style="width:28px; text-align:center;">D</th>
+              <th ${thS} style="width:40px; text-align:center;">Diff</th>
+              <th ${thS} style="width:36px; text-align:center; color:#f97316;">Pts</th>
             </tr>
           </thead>
           <tbody>
