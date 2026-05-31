@@ -57,8 +57,8 @@ function flagUrl(equipe) {
   return code ? `<img src="https://flagcdn.com/16x12/${code}.png" style="margin-right:5px; vertical-align:middle;">` : '';
 }
 
-export async function openTableauModal(supabase, eventId) {
-  // Récupérer tous les matchs terminés de l'événement
+// ========== BUILD HTML (partagé entre modal et page dédiée) ==========
+export async function buildTableauHTML(supabase, eventId) {
   const { data: matches } = await supabase
     .from('matches')
     .select('*')
@@ -78,7 +78,7 @@ export async function openTableauModal(supabase, eventId) {
 
   for (const m of matchesTermines) {
     if (!m.phase.startsWith('Groupe')) continue;
-    const groupe = m.phase; // ex: "Groupe A"
+    const groupe = m.phase;
     if (!classements[groupe]) continue;
     const { equipe_1, equipe_2, score_final_1: s1, score_final_2: s2 } = m;
     if (!classements[groupe][equipe_1]) classements[groupe][equipe_1] = { v: 0, n: 0, d: 0, bp: 0, bc: 0 };
@@ -184,8 +184,13 @@ export async function openTableauModal(supabase, eventId) {
     }
   }
 
-  // ── MODAL ──
-  // Supprimer modal existant si déjà ouvert
+  return { groupesHtml, elimHtml };
+}
+
+// ========== MODAL (conservé pour compatibilité events.html) ==========
+export async function openTableauModal(supabase, eventId) {
+  const { groupesHtml, elimHtml } = await buildTableauHTML(supabase, eventId);
+
   document.getElementById('karma-tableau-modal')?.remove();
 
   const modal = document.createElement('div');
@@ -208,8 +213,6 @@ export async function openTableauModal(supabase, eventId) {
         <button onclick="document.getElementById('karma-tableau-modal').remove()"
           style="background:none; border:none; color:#4a7a9b; font-size:20px; cursor:pointer; line-height:1;">✕</button>
       </div>
-
-      <!-- ONGLETS -->
       <div style="display:flex; gap:8px; margin-bottom:20px;">
         <button id="tab-groupes" onclick="switchTab('groupes')"
           style="flex:1; padding:8px; border-radius:8px; border:0.5px solid #1a3a5c;
@@ -222,21 +225,16 @@ export async function openTableauModal(supabase, eventId) {
           Phases éliminatoires
         </button>
       </div>
-
       <div id="tab-content-groupes">${groupesHtml}</div>
       <div id="tab-content-elim" style="display:none;">${elimHtml}</div>
-
       <div style="font-size:11px; color:#4a7a9b; margin-top:12px; text-align:center;">
         Les 2 premiers de chaque groupe sont qualifiés (surlignés en bleu)
       </div>
     </div>`;
 
   document.body.appendChild(modal);
-
-  // Fermer en cliquant sur le fond
   modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
 
-  // Onglets
   window.switchTab = function(tab) {
     document.getElementById('tab-content-groupes').style.display = tab === 'groupes' ? 'block' : 'none';
     document.getElementById('tab-content-elim').style.display = tab === 'elim' ? 'block' : 'none';
