@@ -106,8 +106,8 @@ export async function buildTableauHTML(supabase, eventId) {
   })).filter(p => p.matchs.length > 0);
 
   // ── BUILD HTML ──
-  const tdS = 'style="padding:6px 8px; font-size:12px; border-bottom:0.5px solid #1a3a5c;"';
-  const thS = 'style="padding:6px 8px; font-size:11px; color:#4a7a9b; text-align:left; border-bottom:0.5px solid #1a3a5c;"';
+  const tdS = (extra = '') => `style="padding:6px 8px; font-size:12px; border-bottom:0.5px solid #1a3a5c; ${extra}"`;
+  const thS = (extra = '') => `style="padding:6px 8px; font-size:11px; color:#4a7a9b; text-align:left; border-bottom:0.5px solid #1a3a5c; ${extra}"`;
   
   // Groupes HTML
   let groupesHtml = '';
@@ -126,30 +126,30 @@ export async function buildTableauHTML(supabase, eventId) {
       <div style="margin-bottom:20px;">
         <div style="font-size:12px; font-weight:700; color:#f97316; margin-bottom:8px;">${groupe}</div>
         <table style="width:100%; border-collapse:collapse; table-layout:fixed;"> 
-          <thead>
-            <tr>
-              <th ${thS} style="width:20px;">#</th>
-              <th ${thS}>Équipe</th>
-              <th ${thS} style="width:22px; text-align:center;">J</th>
-              <th ${thS} style="width:22px; text-align:center;">V</th>
-              <th ${thS} style="width:22px; text-align:center;">N</th>
-              <th ${thS} style="width:22px; text-align:center;">D</th>
-              <th ${thS} style="width:34px; text-align:center;">Diff</th>
-              <th ${thS} style="width:28px; text-align:center; color:#f97316;">Pts</th>
-            </tr>
-          </thead>
+        <thead>
+          <tr>
+            <th ${thS('width:20px;')}>#</th>
+            <th ${thS('overflow:hidden; text-overflow:ellipsis; white-space:nowrap;')}>Équipe</th>
+            <th ${thS('width:22px; text-align:center;')}>J</th>
+            <th ${thS('width:22px; text-align:center;')}>V</th>
+            <th ${thS('width:22px; text-align:center;')}>N</th>
+            <th ${thS('width:22px; text-align:center;')}>D</th>
+            <th ${thS('width:34px; text-align:center;')}>Diff</th>
+            <th ${thS('width:28px; text-align:center; color:#f97316;')}>Pts</th>
+          </tr>
+        </thead>
           
           <tbody>
             ${rows.map((r, i) => `
               <tr style="${i < 2 ? 'background:rgba(56,189,248,0.07);' : ''}">
-                <td ${tdS} style="color:#4a7a9b;">${i + 1}</td>
-                <td ${tdS} style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${flagUrl(r.eq)}${r.eq}</td>
-                <td ${tdS} style="text-align:center; color:#aac0d4;">${r.joues}</td>
-                <td ${tdS} style="text-align:center; color:#4ade80;">${r.v}</td>
-                <td ${tdS} style="text-align:center; color:#aac0d4;">${r.n}</td>
-                <td ${tdS} style="text-align:center; color:#f87171;">${r.d}</td>
-                <td ${tdS} style="text-align:center; color:#aac0d4;">${r.diff >= 0 ? '+' : ''}${r.diff}</td>
-                <td ${tdS} style="text-align:center; color:#f97316; font-weight:700;">${r.pts}</td>
+                <td ${tdS('color:#4a7a9b;')}>${i + 1}</td>
+                <td ${tdS('overflow:hidden; text-overflow:ellipsis; white-space:nowrap;')}>${flagUrl(r.eq)}${r.eq}</td>
+                <td ${tdS('text-align:center; color:#aac0d4;')}>${r.joues}</td>
+                <td ${tdS('text-align:center; color:#4ade80;')}>${r.v}</td>
+                <td ${tdS('text-align:center; color:#aac0d4;')}>${r.n}</td>
+                <td ${tdS('text-align:center; color:#f87171;')}>${r.d}</td>
+                <td ${tdS('text-align:center; color:#aac0d4;')}>${r.diff >= 0 ? '+' : ''}${r.diff}</td>
+                <td ${tdS('text-align:center; color:#f97316; font-weight:700;')}>${r.pts}</td>
               </tr>`).join('')}
           </tbody>
         </table>
