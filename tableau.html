@@ -48,7 +48,7 @@
   <script type="module">
     import { supabase } from './js/supabase.js';
     import { renderNavbar } from './js/navbar.js';
-    import { buildTableauHTML } from './js/tableau.js';
+    import { buildTableauHTML, buildBracketHTML } from './js/tableau.js';
 
     const params = new URLSearchParams(window.location.search);
     const eventId = params.get('id');
@@ -63,9 +63,12 @@
 
       document.getElementById('hero-subtitle').textContent = `${event.nom} — ${event.nom_complet}`;
 
-      const { groupesHtml, elimHtml } = await buildTableauHTML(supabase, eventId);
+      const [{ groupesHtml }, bracketHtml] = await Promise.all([
+        buildTableauHTML(supabase, eventId),
+        buildBracketHTML(supabase, eventId),
+      ]);
       document.getElementById('tab-content-groupes').innerHTML = groupesHtml;
-      document.getElementById('tab-content-elim').innerHTML = elimHtml;
+      document.getElementById('tab-content-elim').innerHTML = bracketHtml;
     });
 
     window.switchTab = function(tab) {
