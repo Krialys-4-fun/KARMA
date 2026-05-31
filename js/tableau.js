@@ -121,36 +121,42 @@ export async function buildTableauHTML(supabase, eventId) {
 
 // Structure des matchs : [num, date heure française, label eq1, label eq2]
 const SEI_INFO = [
-  [73,  '28 juin 21:00', '2A',         '2B'          ],
-  [74,  '29 juin 22:30', '1E',         '3e ABCDF'    ],
-  [77,  '30 juin 23:00', '1I',         '3e CDFGH'    ],
-  [75,  '30 juin 03:00', '1F',         '2C'          ],
-  [83,  '3 juil. 01:00', '2K',         '2L'          ],
-  [84,  '2 juil. 21:00', '1H',         '2J'          ],
-  [81,  '2 juil. 02:00', '1D',         '3e BEFIJ'    ],
-  [82,  '1 juil. 22:00', '1G',         '3e AEHIJ'    ],
-  [76,  '29 juin 19:00', '1C',         '3e AEFIJ'    ],
-  [78,  '30 juin 19:00', '2E',         '3e BGHIJ'    ],
-  [79,  '1 juil. 03:00', '1A',         '3e CEFHI'    ],
-  [80,  '1 juil. 18:00', '1L',         '3e EHIJK'    ],
-  [86,  '4 juil. 00:00', '1J',         '3e DEIKL'    ],
-  [88,  '3 juil. 20:00', '2D',         '2G'          ],
-  [85,  '3 juil. 05:00', '1B',         '3e EFGIJ'    ],
-  [87,  '4 juil. 03:30', '1K',         '3e DEIJL'    ],
+  [73,  '28 juin 21:00', '2A',          '2B'         ],
+  [76,  '29 juin 19:00', '1C',          '2F'         ],
+  [74,  '29 juin 22:30', '1E',          '3e ABCDF'   ],
+  [75,  '30 juin 03:00', '1F',          '2C'         ],
+  [78,  '30 juin 19:00', '2E',          '2I'         ],
+  [77,  '30 juin 23:00', '1I',          '3e CDFGH'   ],
+  [79,  '1 juil. 03:00', '1A',          '3e CEFHI'   ],
+  [80,  '1 juil. 18:00', '1L',          '3e EHIJK'   ],
+  [82,  '1 juil. 22:00', '1G',          '3e AEHIJ'   ],
+  [81,  '2 juil. 02:00', '1D',          '3e BEFIJ'   ],
+  [84,  '2 juil. 21:00', '1H',          '2J'         ],
+  [83,  '3 juil. 01:00', '2K',          '2L'         ],
+  [85,  '3 juil. 05:00', '1B',          '3e EFGIJ'   ],
+  [88,  '3 juil. 20:00', '2D',          '2G'         ],
+  [86,  '4 juil. 00:00', '1J',          '2H'         ],
+  [87,  '4 juil. 03:30', '1K',          '3e DEIJL'   ],
 ];
 const HUI_INFO = [
-  [89, '4 juil. 23:00'], [90, '4 juil. 19:00'],
-  [93, '6 juil. 21:00'], [94, '7 juil. 02:00'],
-  [91, '5 juil. 22:00'], [92, '6 juil. 02:00'],
-  [95, '7 juil. 18:00'], [96, '7 juil. 22:00'],
+  [90, '4 juil. 19:00',  'V73', 'V75'],
+  [89, '4 juil. 23:00',  'V74', 'V77'],
+  [91, '5 juil. 22:00',  'V76', 'V78'],
+  [92, '6 juil. 02:00',  'V79', 'V80'],
+  [93, '6 juil. 21:00',  'V83', 'V84'],
+  [94, '7 juil. 02:00',  'V81', 'V82'],
+  [95, '7 juil. 18:00',  'V86', 'V88'],
+  [96, '7 juil. 22:00',  'V85', 'V87'],
 ];
 const QUA_INFO = [
-  [97,  '9 juil. 22:00'], [98, '10 juil. 21:00'],
-  [99, '11 juil. 23:00'], [100,'12 juil. 03:00'],
+  [97,  '9 juil. 22:00',  'V89', 'V90'],
+  [98,  '10 juil. 21:00', 'V93', 'V94'],
+  [99,  '11 juil. 23:00', 'V91', 'V92'],
+  [100, '12 juil. 03:00', 'V95', 'V96'],
 ];
 const DEM_INFO = [
-  [101, '14 juil. 21:00'],
-  [102, '15 juil. 21:00'],
+  [101, '14 juil. 21:00', 'V97',  'V98' ],
+  [102, '15 juil. 21:00', 'V99',  'V100'],
 ];
 
 export async function buildBracketHTML(supabase, eventId) {
@@ -227,7 +233,7 @@ export async function buildBracketHTML(supabase, eventId) {
   HUI_INFO.forEach((h,i) => {
     const m = byPhase['Huitièmes de finale'][i] || null;
     cells += `<div style="grid-column:3;grid-row:${huiC[i]-2}/${huiC[i]+3};display:flex;align-items:center;">
-      ${card(m, h[1], `V N°${SEI_INFO[i*2][0]}`, `V N°${SEI_INFO[i*2+1][0]}`)}
+      ${card(m, h[1], h[2], h[3])}
     </div>`;
   });
 
@@ -242,7 +248,7 @@ export async function buildBracketHTML(supabase, eventId) {
   QUA_INFO.forEach((q,i) => {
     const m = byPhase['Quarts de finale'][i] || null;
     cells += `<div style="grid-column:5;grid-row:${quaC[i]-2}/${quaC[i]+3};display:flex;align-items:center;">
-      ${card(m, q[1], `V N°${HUI_INFO[i*2][0]}`, `V N°${HUI_INFO[i*2+1][0]}`)}
+      ${card(m, q[1], q[2], q[3])}
     </div>`;
   });
 
@@ -257,7 +263,7 @@ export async function buildBracketHTML(supabase, eventId) {
   DEM_INFO.forEach((d,i) => {
     const m = byPhase['Demi-finales'][i] || null;
     cells += `<div style="grid-column:7;grid-row:${demC[i]-2}/${demC[i]+3};display:flex;align-items:center;">
-      ${card(m, d[1], `V N°${QUA_INFO[i*2][0]}`, `V N°${QUA_INFO[i*2+1][0]}`)}
+      ${card(m, d[1], d[2], d[3])}
     </div>`;
   });
 
@@ -269,14 +275,14 @@ export async function buildBracketHTML(supabase, eventId) {
   // Finale (col 9)
   const mFin = byPhase['Finale'][0] || null;
   cells += `<div style="grid-column:9;grid-row:${finC-2}/${finC+3};display:flex;align-items:center;">
-    ${card(mFin, '19 juil. 21:00', 'Vainqueur demi 1', 'Vainqueur demi 2')}
+    ${card(mFin, '19 juil. 21:00', 'V101', 'V102')}
   </div>`;
 
   // Petite finale (col 9, sous la finale)
   const mTpl = byPhase['Petite finale'][0] || null;
   cells += `<div style="grid-column:9;grid-row:${tplC-2}/${tplC+3};display:flex;flex-direction:column;align-items:center;gap:4px;">
     <div style="font-size:10px;color:#4a7a9b;font-weight:600;">🥉 Petite finale</div>
-    ${card(mTpl, '18 juil. 23:00', 'Perdant demi 1', 'Perdant demi 2')}
+    ${card(mTpl, '18 juil. 23:00', 'P101', 'P102')}
   </div>`;
 
   return `
