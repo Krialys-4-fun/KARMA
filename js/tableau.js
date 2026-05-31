@@ -122,41 +122,41 @@ export async function buildTableauHTML(supabase, eventId) {
 // Structure des matchs : [num, date heure française, label eq1, label eq2]
 const SEI_INFO = [
   [73,  '28 juin 21:00', '2A',          '2B'          ],
-  [76,  '29 juin 19:00', '1C',          '2F'          ],
-  [74,  '29 juin 22:30', '1E',          '3e ABCDF'    ],
   [75,  '30 juin 03:00', '1F',          '2C'          ],
-  [78,  '30 juin 19:00', '2E',          '2I'          ],
+  [74,  '29 juin 22:30', '1E',          '3e ABCDF'    ],
   [77,  '30 juin 23:00', '1I',          '3e CDFGH'    ],
+  [83,  '3 juil. 01:00', '2K',          '2L'          ],
+  [84,  '2 juil. 21:00', '1H',          '2J'          ],
+  [81,  '2 juil. 02:00', '1D',          '3e BEFIJ'    ],
+  [82,  '1 juil. 22:00', '1G',          '3e AEHIJ'    ],
+  [76,  '29 juin 19:00', '1C',          '2F'          ],
+  [78,  '30 juin 19:00', '2E',          '2I'          ],
   [79,  '1 juil. 03:00', '1A',          '3e CEFHI'    ],
   [80,  '1 juil. 18:00', '1L',          '3e EHIJK'    ],
-  [82,  '1 juil. 22:00', '1G',          '3e AEHIJ'    ],
-  [81,  '2 juil. 02:00', '1D',          '3e BEFIJ'    ],
-  [84,  '2 juil. 21:00', '1H',          '2J'          ],
-  [83,  '3 juil. 01:00', '2K',          '2L'          ],
-  [85,  '3 juil. 05:00', '1B',          '3e EFGIJ'    ],
-  [88,  '3 juil. 20:00', '2D',          '2G'          ],
   [86,  '4 juil. 00:00', '1J',          '2H'          ],
+  [88,  '3 juil. 20:00', '2D',          '2G'          ],
+  [85,  '3 juil. 05:00', '1B',          '3e EFGIJ'    ],
   [87,  '4 juil. 03:30', '1K',          '3e DEIJL'    ],
 ];
 const HUI_INFO = [
-  [90, '4 juil. 19:00',  'V73', 'V76'],
-  [89, '4 juil. 23:00',  'V74', 'V75'],
-  [91, '5 juil. 22:00',  'V78', 'V77'],
+  [90, '4 juil. 19:00',  'V73', 'V75'],
+  [89, '4 juil. 23:00',  'V74', 'V77'],
+  [93, '6 juil. 21:00',  'V83', 'V84'],
+  [94, '7 juil. 02:00',  'V81', 'V82'],
+  [91, '5 juil. 22:00',  'V76', 'V78'],
   [92, '6 juil. 02:00',  'V79', 'V80'],
-  [94, '7 juil. 02:00',  'V82', 'V81'],
-  [93, '6 juil. 21:00',  'V84', 'V83'],
-  [96, '7 juil. 22:00',  'V85', 'V88'],
-  [95, '7 juil. 18:00',  'V86', 'V87'],
+  [95, '7 juil. 18:00',  'V86', 'V88'],
+  [96, '7 juil. 22:00',  'V85', 'V87'],
 ];
 const QUA_INFO = [
   [97,  '9 juil. 22:00',  'V89', 'V90'],
-  [99,  '11 juil. 23:00', 'V91', 'V92'],
   [98,  '10 juil. 21:00', 'V93', 'V94'],
+  [99,  '11 juil. 23:00', 'V91', 'V92'],
   [100, '12 juil. 03:00', 'V95', 'V96'],
 ];
 const DEM_INFO = [
-  [101, '14 juil. 21:00', 'V97',  'V99' ],
-  [102, '15 juil. 21:00', 'V98',  'V100'],
+  [101, '14 juil. 21:00', 'V97',  'V98' ],
+  [102, '15 juil. 21:00', 'V99',  'V100'],
 ];
 
 export async function buildBracketHTML(supabase, eventId) {
