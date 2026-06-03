@@ -115,7 +115,7 @@
                 ${ev.statut === 'termine' ? 'Voir les résultats' : ev.statut === 'en_cours' ? 'Voter →' : 'Voir →'}
               </button>
             </a>
-            ${ev.statut !== 'a_venir' ? `
+            ${ev.has_tableau && ev.statut !== 'a_venir' ? `
             <button class="btn-secondary" style="width:auto; padding:7px 14px; font-size:12px;"
               onclick="openTableauFromEvents('${ev.id}')">
               🏆 Tableau
