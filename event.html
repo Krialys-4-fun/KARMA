@@ -208,7 +208,7 @@
       badge.textContent = statut === 'en_cours' ? 'En cours' : statut === 'a_venir' ? 'À venir' : 'Terminé';
       badge.className = `badge ${statut === 'en_cours' ? 'badge-live' : statut === 'a_venir' ? 'badge-soon' : 'badge-done'}`;
 
-      if (statut !== 'a_venir') {
+      if (data.has_tableau && statut !== 'a_venir') {
         document.getElementById('btn-tableau').style.display = 'inline-block';
         window._openTableau = () => window.open(`tableau.html?id=${eventId}`, '_blank');
       }
