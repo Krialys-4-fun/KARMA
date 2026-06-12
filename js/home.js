@@ -88,13 +88,23 @@ async function loadCurrentRanking(eventId) {
   const matchIds = matches.map(m => m.id);
   const { data: votes } = await supabase
     .from('votes')
-    .select('*, users!inner(login, mode)')
+    .select('*')
     .in('match_id', matchIds);
-
+  
   if (!votes || votes.length === 0) {
     container.innerHTML = '<div style="font-size:13px; color:#4a7a9b; text-align:center; padding:12px;">Aucun vote enregistré pour l\'instant</div>';
     return;
   }
+  
+  const userIds = [...new Set(votes.map(v => v.user_id))];
+  const { data: usersData } = await supabase
+    .from('users')
+    .select('id, login, mode')
+    .in('id', userIds);
+  
+  const usersMap = {};
+  usersData?.forEach(u => { usersMap[u.id] = u; });
+  votes.forEach(v => { v.users = usersMap[v.user_id] || { login: 'Inconnu', mode: 'EXPERT' }; });
 
   const matchMap = {};
   matches.forEach(m => { matchMap[m.id] = m; });
