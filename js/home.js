@@ -136,10 +136,16 @@ async function loadCurrentRanking(eventId) {
       <th>#</th><th>Joueur</th><th>Mode</th><th style="text-align:right;">Points</th>
     </tr></thead><tbody>`;
 
+  let lastPoints = null;
+  let lastRank = 0;
   ranking.forEach((r, i) => {
     const isMe = r.login === currentUser.login;
+    if (r.points !== lastPoints) {
+      lastRank = i + 1;
+      lastPoints = r.points;
+    }
     html += `<tr class="${isMe ? 'me' : ''}">
-      <td style="color:#4a7a9b; width:24px;">${i + 1}</td>
+      <td style="color:#4a7a9b; width:24px;">${lastRank}</td>
       <td>${r.login}</td>
       <td><span class="badge badge-${r.mode.toLowerCase()}">${r.mode}</span></td>
       <td style="text-align:right; font-weight:500;">${Number.isInteger(r.points) ? r.points : r.points.toFixed(1)}</td>
