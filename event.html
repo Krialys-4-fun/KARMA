@@ -656,7 +656,14 @@
         if (newVote) newVoteId = newVote.id;
       }
 
-      if (error) { alert('Erreur : ' + error.message); return; }
+      if (error) {
+        if (error.code === '23505') {
+          // Doublon dû à un double-clic : le premier insert a réussi, on continue normalement
+        } else {
+          alert('Erreur : ' + error.message);
+          return;
+        }
+      }
 
       tousVotesMap[matchId] = { id: newVoteId, match_id: matchId, score_vote_1: s1, score_vote_2: s2, user_id: currentUser.id };
 
