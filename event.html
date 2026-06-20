@@ -581,7 +581,7 @@
         const votes = tousVotesMapGlobal[m.id] || [];
         const r1 = m.score_final_1;
         const r2 = m.score_final_2;
-        const nbScoresExacts = votes.filter(v => v.score_vote_1 === r1 && v.score_vote_2 === r2).length;
+        const nbScoresExacts = votes.filter(v => v.score_vote_1 === r1 && v.score_vote_2 === r2 && v.users.mode === 'EXPERT').length;
 
         const votesHtml = votes.length > 0 ? votes.map(v => {
           const isMe = v.user_id === currentUser.id;
