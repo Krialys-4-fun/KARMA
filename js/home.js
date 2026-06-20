@@ -122,9 +122,10 @@ async function loadCurrentRanking(eventId) {
     const votesMatch = votes.filter(v => v.match_id === matchId);
     const exactVotes = votesMatch.filter(v =>
       v.score_vote_1 === match.score_final_1 &&
-      v.score_vote_2 === match.score_final_2
+      v.score_vote_2 === match.score_final_2 &&
+      v.users.mode === 'EXPERT'
     );
-    if (exactVotes.length === 1 && exactVotes[0].users.mode === 'EXPERT') {
+    if (exactVotes.length === 1) {
       scores[exactVotes[0].users.login].points += 1;
     }
   });
