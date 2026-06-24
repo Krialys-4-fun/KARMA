@@ -45,8 +45,8 @@ const GROUPES_FIFA = {
   'Groupe H': ['Espagne', 'Cap-Vert', 'Arabie saoudite', 'Uruguay'],
   'Groupe I': ['France', 'Sénégal', 'Irak', 'Norvège'],
   'Groupe J': ['Argentine', 'Algérie', 'Autriche', 'Jordanie'],
-  'Groupe K': ['Portugal', 'RD Congo', 'Ghana', 'Panamá'],
-  'Groupe L': ['Angleterre', 'Croatie', 'Ouzbékistan', 'Colombie'],
+  'Groupe K': ['Portugal', 'RD Congo', 'Ouzbékistan', 'Colombie'],
+  'Groupe L': ['Angleterre', 'Croatie', 'Ghana', 'Panamá'],
 };
 
 export async function buildTableauHTML(supabase, eventId) {
