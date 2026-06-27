@@ -358,7 +358,7 @@
 
       const userIds = [...new Set(tousLesVotes?.map(v => v.user_id) || [])];
       const { data: usersData } = userIds.length > 0 ? await supabase
-        .from('users').select('id, login, mode').in('id', userIds) : { data: [] };
+        .from('users').select('id, login, mode').in('id', userIds).limit(100) : { data: [] };
 
       const usersMap = {};
       usersData?.forEach(u => { usersMap[u.id] = u; });
