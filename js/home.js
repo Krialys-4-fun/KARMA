@@ -87,9 +87,10 @@ async function loadCurrentRanking(eventId) {
 
   const matchIds = matches.map(m => m.id);
   const { data: votes } = await supabase
-    .from('votes')
-    .select('*, users!inner(login, mode)')
-    .in('match_id', matchIds);
+   .from('votes')
+   .select('*, users!inner(login, mode)')
+   .in('match_id', matchIds)
+   .limit(10000);
   
   if (!votes || votes.length === 0) {
     container.innerHTML = '<div style="font-size:13px; color:#4a7a9b; text-align:center; padding:12px;">Aucun vote enregistré pour l\'instant</div>';
@@ -214,9 +215,10 @@ async function loadLastEvent() {
 
     const matchIds = matches.map(m => m.id);
     const { data: votes } = await supabase
-      .from('votes')
-      .select('*, users!inner(login)')
-      .in('match_id', matchIds);
+     .from('votes')
+     .select('*, users!inner(login)')
+     .in('match_id', matchIds)
+     .limit(10000);
 
     const scores = {};
     const matchMap = {};
