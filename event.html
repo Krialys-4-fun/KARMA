@@ -346,15 +346,15 @@
       const enCours = termineOnly ? [] : matches.filter(m => m.statut === 'a_venir' && new Date(m.date_heure) <= now);
       const done = matches.filter(m => m.statut === 'termine');
 
-      const { data: mesVotes } = await supabase
+     const { data: mesVotes } = await supabase
         .from('votes').select('*').eq('user_id', currentUser.id)
-        .in('match_id', matches.map(m => m.id));
-
+        .in('match_id', matches.map(m => m.id)).limit(10000);
+      
       const votesMap = {};
       mesVotes?.forEach(v => { votesMap[v.match_id] = v; });
 
       const { data: tousLesVotes } = await supabase
-        .from('votes').select('*').in('match_id', matches.map(m => m.id));
+        .from('votes').select('*').in('match_id', matches.map(m => m.id)).limit(10000);
 
       const userIds = [...new Set(tousLesVotes?.map(v => v.user_id) || [])];
       const { data: usersData } = userIds.length > 0 ? await supabase
