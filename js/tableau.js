@@ -148,10 +148,10 @@ const SEI_INFO = [
   ['Espagne',        'Autriche',             '2 juil. 21:00'],
   ['Portugal',       'Croatie',              '3 juil. 01:00'],
   // S12-S13 -> H6 (7 juil. 18:00)
-  ['Suisse',         'Algérie',              '3 juil. 05:00'],
+  ['Australie',      'Égypte',               '3 juil. 20:00'],
   ['Argentine',      'Cap-Vert',             '4 juil. 00:00'],
   // S14-S15 -> H7 (7 juil. 22:00)
-  ['Australie',      'Égypte',               '3 juil. 20:00'],
+  ['Suisse',         'Algérie',              '3 juil. 05:00'],
   ['Colombie',       'Ghana',                '4 juil. 03:30'],
 ];
 
