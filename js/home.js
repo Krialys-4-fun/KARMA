@@ -86,11 +86,20 @@ async function loadCurrentRanking(eventId) {
   }
 
   const matchIds = matches.map(m => m.id);
-  const { data: votes } = await supabase
-   .from('votes')
-   .select('*, users!inner(login, mode)')
-   .in('match_id', matchIds)
-   .limit(10000);
+  let votes = [];
+  let from = 0;
+  const pageSize = 1000;
+  while (true) {
+    const { data: page } = await supabase
+      .from('votes')
+      .select('*, users!inner(login, mode)')
+      .in('match_id', matchIds)
+      .range(from, from + pageSize - 1);
+    if (!page || page.length === 0) break;
+    votes = votes.concat(page);
+    if (page.length < pageSize) break;
+    from += pageSize;
+  }
   
   if (!votes || votes.length === 0) {
     container.innerHTML = '<div style="font-size:13px; color:#4a7a9b; text-align:center; padding:12px;">Aucun vote enregistré pour l\'instant</div>';
