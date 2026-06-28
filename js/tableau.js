@@ -140,18 +140,18 @@ const SEI_INFO = [
   ["Côte d\'Ivoire",'Norvège',              '30 juin 19:00'],
   // S6-S7 -> H3 (6 juil. 02:00)
   ['Mexique',        'Équateur',             '1 juil. 03:00'],
-  ['Espagne',        'Autriche',             '2 juil. 21:00'],
+  ['Angleterre',     'RD Congo',             '1 juil. 18:00'],
   // S8-S9 -> H4 (6 juil. 21:00)
   ['Belgique',       'Sénégal',              '1 juil. 22:00'],
-  ['Angleterre',     'RD Congo',             '1 juil. 18:00'],
-  // S10-S11 -> H5 (7 juil. 02:00)
   ['États-Unis',     'Bosnie-et-Herzégovine','2 juil. 02:00'],
+  // S10-S11 -> H5 (7 juil. 02:00)
+  ['Espagne',        'Autriche',             '2 juil. 21:00'],
   ['Portugal',       'Croatie',              '3 juil. 01:00'],
   // S12-S13 -> H6 (7 juil. 18:00)
   ['Suisse',         'Algérie',              '3 juil. 05:00'],
-  ['Australie',      'Égypte',               '3 juil. 20:00'],
-  // S14-S15 -> H7 (7 juil. 22:00)
   ['Argentine',      'Cap-Vert',             '4 juil. 00:00'],
+  // S14-S15 -> H7 (7 juil. 22:00)
+  ['Australie',      'Égypte',               '3 juil. 20:00'],
   ['Colombie',       'Ghana',                '4 juil. 03:30'],
 ];
 
