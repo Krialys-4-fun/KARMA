@@ -129,33 +129,33 @@ export async function buildTableauHTML(supabase, eventId) {
 // Finale : D0 vs D1
 
 const SEI_INFO = [
-  // S0-S1 -> H0
+  // S0-S1 -> H0 (4 juil. 19:00)
   ['Afrique du Sud', 'Canada',               '28 juin 21:00'],
-  ['Brésil',         'Japon',                '29 juin 19:00'],
-  // S2-S3 -> H1
+  ['Pays-Bas',       'Maroc',                '30 juin 03:00'],
+  // S2-S3 -> H1 (4 juil. 23:00)
   ['Allemagne',      'Paraguay',             '29 juin 22:30'],
   ['France',         'Suède',                '30 juin 23:00'],
-  // S4-S5 -> H2
-  ['Belgique',       'Sénégal',              '1 juil. 22:00'],
-  ['Angleterre',     'RD Congo',             '1 juil. 18:00'],
-  // S6-S7 -> H3
-  ['États-Unis',     'Bosnie-et-Herzégovine','2 juil. 02:00'],
-  ['Colombie',       'Ghana',                '4 juil. 03:30'],
-  // S8-S9 -> H4
-  ['Pays-Bas',       'Maroc',                '30 juin 03:00'],
+  // S4-S5 -> H2 (5 juil. 22:00)
+  ['Brésil',         'Japon',                '29 juin 19:00'],
   ["Côte d\'Ivoire",'Norvège',              '30 juin 19:00'],
-  // S10-S11 -> H5
+  // S6-S7 -> H3 (6 juil. 02:00)
   ['Mexique',        'Équateur',             '1 juil. 03:00'],
   ['Espagne',        'Autriche',             '2 juil. 21:00'],
-  // S12-S13 -> H6
+  // S8-S9 -> H4 (6 juil. 21:00)
+  ['Belgique',       'Sénégal',              '1 juil. 22:00'],
+  ['Angleterre',     'RD Congo',             '1 juil. 18:00'],
+  // S10-S11 -> H5 (7 juil. 02:00)
+  ['États-Unis',     'Bosnie-et-Herzégovine','2 juil. 02:00'],
   ['Portugal',       'Croatie',              '3 juil. 01:00'],
+  // S12-S13 -> H6 (7 juil. 18:00)
   ['Suisse',         'Algérie',              '3 juil. 05:00'],
-  // S14-S15 -> H7
   ['Australie',      'Égypte',               '3 juil. 20:00'],
+  // S14-S15 -> H7 (7 juil. 22:00)
   ['Argentine',      'Cap-Vert',             '4 juil. 00:00'],
+  ['Colombie',       'Ghana',                '4 juil. 03:30'],
 ];
 
-const HUI_DATES = ['4 juil. 19:00','4 juil. 23:00','6 juil. 21:00','7 juil. 02:00','5 juil. 22:00','6 juil. 02:00','7 juil. 18:00','7 juil. 22:00'];
+const HUI_DATES = ['4 juil. 19:00','4 juil. 23:00','5 juil. 22:00','6 juil. 02:00','6 juil. 21:00','7 juil. 02:00','7 juil. 18:00','7 juil. 22:00'];
 const QUA_DATES = ['9 juil. 22:00','10 juil. 21:00','11 juil. 23:00','12 juil. 03:00'];
 const DEM_DATES = ['14 juil. 21:00','15 juil. 21:00'];
 
