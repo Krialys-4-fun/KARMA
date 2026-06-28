@@ -353,8 +353,19 @@
       const votesMap = {};
       mesVotes?.forEach(v => { votesMap[v.match_id] = v; });
 
-      const { data: tousLesVotes } = await supabase
-        .from('votes').select('*').in('match_id', matches.map(m => m.id)).limit(10000);
+      let tousLesVotes = [];
+      let from = 0;
+      const pageSize = 1000;
+      while (true) {
+        const { data: page } = await supabase
+          .from('votes').select('*')
+          .in('match_id', matches.map(m => m.id))
+          .range(from, from + pageSize - 1);
+        if (!page || page.length === 0) break;
+        tousLesVotes = tousLesVotes.concat(page);
+        if (page.length < pageSize) break;
+        from += pageSize;
+      }
 
       const userIds = [...new Set(tousLesVotes?.map(v => v.user_id) || [])];
       const { data: usersData } = userIds.length > 0 ? await supabase
