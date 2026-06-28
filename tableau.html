@@ -24,22 +24,22 @@
 
     <!-- ONGLETS -->
     <div style="display:flex; gap:8px; margin-bottom:20px;">
-      <button id="tab-groupes" onclick="switchTab('groupes')"
-        style="flex:1; padding:8px; border-radius:8px; border:0.5px solid #1a3a5c;
-        background:#f97316; color:#fff; font-size:13px; font-weight:600; cursor:pointer;">
-        Phase de groupes
-      </button>
       <button id="tab-elim" onclick="switchTab('elim')"
         style="flex:1; padding:8px; border-radius:8px; border:0.5px solid #1a3a5c;
-        background:#0a1628; color:#4a7a9b; font-size:13px; font-weight:600; cursor:pointer;">
+        background:#f97316; color:#fff; font-size:13px; font-weight:600; cursor:pointer;">
         Phases éliminatoires
+      </button>
+      <button id="tab-groupes" onclick="switchTab('groupes')"
+        style="flex:1; padding:8px; border-radius:8px; border:0.5px solid #1a3a5c;
+        background:#0a1628; color:#4a7a9b; font-size:13px; font-weight:600; cursor:pointer;">
+        Phase de groupes
       </button>
     </div>
 
-    <div id="tab-content-groupes">
+    <div id="tab-content-elim">
       <div style="font-size:13px; color:#4a7a9b; text-align:center; padding:40px;">Chargement...</div>
     </div>
-    <div id="tab-content-elim" style="display:none;">
+    <div id="tab-content-groupes" style="display:none;">
       <div style="font-size:13px; color:#4a7a9b; text-align:center; padding:40px;">Chargement...</div>
     </div>
 
@@ -67,17 +67,17 @@
         buildTableauHTML(supabase, eventId),
         buildBracketHTML(supabase, eventId),
       ]);
-      document.getElementById('tab-content-groupes').innerHTML = groupesHtml;
       document.getElementById('tab-content-elim').innerHTML = bracketHtml;
+      document.getElementById('tab-content-groupes').innerHTML = groupesHtml;
     });
 
     window.switchTab = function(tab) {
       document.getElementById('tab-content-groupes').style.display = tab === 'groupes' ? 'block' : 'none';
       document.getElementById('tab-content-elim').style.display = tab === 'elim' ? 'block' : 'none';
-      document.getElementById('tab-groupes').style.background = tab === 'groupes' ? '#f97316' : '#0a1628';
-      document.getElementById('tab-groupes').style.color = tab === 'groupes' ? '#fff' : '#4a7a9b';
       document.getElementById('tab-elim').style.background = tab === 'elim' ? '#f97316' : '#0a1628';
       document.getElementById('tab-elim').style.color = tab === 'elim' ? '#fff' : '#4a7a9b';
+      document.getElementById('tab-groupes').style.background = tab === 'groupes' ? '#f97316' : '#0a1628';
+      document.getElementById('tab-groupes').style.color = tab === 'groupes' ? '#fff' : '#4a7a9b';
     };
   </script>
 </body>
