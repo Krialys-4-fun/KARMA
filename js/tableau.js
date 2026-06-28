@@ -18,7 +18,7 @@ const FLAG_CODES = {
   'Canada':'ca','Bosnie-et-Herzégovine':'ba','Qatar':'qa','Suisse':'ch',
   'Brésil':'br','Maroc':'ma','Haïti':'ht','Écosse':'gb-sct',
   'États-Unis':'us','Paraguay':'py','Australie':'au','Turquie':'tr',
-  'Allemagne':'de','Curaçao':'cw',"Côte d'Ivoire":'ci','Équateur':'ec',
+  'Allemagne':'de','Curaçao':'cw',"Côte d\'Ivoire":'ci','Équateur':'ec',
   'Pays-Bas':'nl','Japon':'jp','Suède':'se','Tunisie':'tn',
   'Belgique':'be','Égypte':'eg','RI Iran':'ir','Nouvelle-Zélande':'nz',
   'Espagne':'es','Cap-Vert':'cv','Arabie saoudite':'sa','Uruguay':'uy',
@@ -39,7 +39,7 @@ const GROUPES_FIFA = {
   'Groupe B': ['Canada', 'Bosnie-et-Herzégovine', 'Qatar', 'Suisse'],
   'Groupe C': ['Brésil', 'Maroc', 'Haïti', 'Écosse'],
   'Groupe D': ['États-Unis', 'Paraguay', 'Australie', 'Turquie'],
-  'Groupe E': ['Allemagne', 'Curaçao', "Côte d'Ivoire", 'Équateur'],
+  'Groupe E': ['Allemagne', 'Curaçao', "Côte d\'Ivoire", 'Équateur'],
   'Groupe F': ['Pays-Bas', 'Japon', 'Suède', 'Tunisie'],
   'Groupe G': ['Belgique', 'Égypte', 'RI Iran', 'Nouvelle-Zélande'],
   'Groupe H': ['Espagne', 'Cap-Vert', 'Arabie saoudite', 'Uruguay'],
@@ -73,7 +73,6 @@ export async function buildTableauHTML(supabase, eventId) {
     else { classements[g][e1].n++; classements[g][e2].n++; }
   }
 
-  // Style helpers — UNE seule déclaration style par élément
   const th = (w, extra='') => `style="padding:6px 8px;font-size:11px;color:#4a7a9b;text-align:left;border-bottom:0.5px solid #1a3a5c;${w?`width:${w};`:''}${extra}"`;
   const td = (extra='') => `style="padding:6px 8px;font-size:12px;border-bottom:0.5px solid #1a3a5c;${extra}"`;
 
@@ -117,47 +116,48 @@ export async function buildTableauHTML(supabase, eventId) {
   return { groupesHtml };
 }
 
-// ========== BRACKET PHASES ÉLIMINATOIRES ==========
+// ========== BRACKET PHASES ELIMINATOIRES ==========
+// Ordre chronologique FIFA officiel avec propagation automatique des vainqueurs
+//
+// Paires seiziemes vers huitiemes :
+// (S0,S1)->H0  (S2,S3)->H1  (S4,S5)->H2  (S6,S7)->H3
+// (S8,S9)->H4  (S10,S11)->H5  (S12,S13)->H6  (S14,S15)->H7
+// Paires huitiemes vers quarts :
+// (H0,H1)->Q0  (H2,H3)->Q1  (H4,H5)->Q2  (H6,H7)->Q3
+// Paires quarts vers demis :
+// (Q0,Q1)->D0  (Q2,Q3)->D1
+// Finale : D0 vs D1
 
-// Structure des matchs : [num, date heure française, label eq1, label eq2]
 const SEI_INFO = [
-  [73,  '28 juin 21:00', '2A',          '2B'          ],
-  [75,  '30 juin 03:00', '1F',          '2C'          ],
-  [74,  '29 juin 22:30', '1E',          '3e ABCDF'    ],
-  [77,  '30 juin 23:00', '1I',          '3e CDFGH'    ],
-  [83,  '3 juil. 01:00', '2K',          '2L'          ],
-  [84,  '2 juil. 21:00', '1H',          '2J'          ],
-  [81,  '2 juil. 02:00', '1D',          '3e BEFIJ'    ],
-  [82,  '1 juil. 22:00', '1G',          '3e AEHIJ'    ],
-  [76,  '29 juin 19:00', '1C',          '2F'          ],
-  [78,  '30 juin 19:00', '2E',          '2I'          ],
-  [79,  '1 juil. 03:00', '1A',          '3e CEFHI'    ],
-  [80,  '1 juil. 18:00', '1L',          '3e EHIJK'    ],
-  [86,  '4 juil. 00:00', '1J',          '2H'          ],
-  [88,  '3 juil. 20:00', '2D',          '2G'          ],
-  [85,  '3 juil. 05:00', '1B',          '3e EFGIJ'    ],
-  [87,  '4 juil. 03:30', '1K',          '3e DEIJL'    ],
+  // S0-S1 -> H0
+  ['Afrique du Sud', 'Canada',               '28 juin 21:00'],
+  ['Brésil',         'Japon',                '29 juin 19:00'],
+  // S2-S3 -> H1
+  ['Allemagne',      'Paraguay',             '29 juin 22:30'],
+  ['France',         'Suède',                '30 juin 23:00'],
+  // S4-S5 -> H2
+  ['Belgique',       'Sénégal',              '1 juil. 22:00'],
+  ['Angleterre',     'RD Congo',             '1 juil. 18:00'],
+  // S6-S7 -> H3
+  ['États-Unis',     'Bosnie-et-Herzégovine','2 juil. 02:00'],
+  ['Colombie',       'Ghana',                '4 juil. 03:30'],
+  // S8-S9 -> H4
+  ['Pays-Bas',       'Maroc',                '30 juin 03:00'],
+  ["Côte d\'Ivoire",'Norvège',              '30 juin 19:00'],
+  // S10-S11 -> H5
+  ['Mexique',        'Équateur',             '1 juil. 03:00'],
+  ['Espagne',        'Autriche',             '2 juil. 21:00'],
+  // S12-S13 -> H6
+  ['Portugal',       'Croatie',              '3 juil. 01:00'],
+  ['Suisse',         'Algérie',              '3 juil. 05:00'],
+  // S14-S15 -> H7
+  ['Australie',      'Égypte',               '3 juil. 20:00'],
+  ['Argentine',      'Cap-Vert',             '4 juil. 00:00'],
 ];
-const HUI_INFO = [
-  [90, '4 juil. 19:00',  'V73', 'V75'],
-  [89, '4 juil. 23:00',  'V74', 'V77'],
-  [93, '6 juil. 21:00',  'V83', 'V84'],
-  [94, '7 juil. 02:00',  'V81', 'V82'],
-  [91, '5 juil. 22:00',  'V76', 'V78'],
-  [92, '6 juil. 02:00',  'V79', 'V80'],
-  [95, '7 juil. 18:00',  'V86', 'V88'],
-  [96, '7 juil. 22:00',  'V85', 'V87'],
-];
-const QUA_INFO = [
-  [97,  '9 juil. 22:00',  'V89', 'V90'],
-  [98,  '10 juil. 21:00', 'V93', 'V94'],
-  [99,  '11 juil. 23:00', 'V91', 'V92'],
-  [100, '12 juil. 03:00', 'V95', 'V96'],
-];
-const DEM_INFO = [
-  [101, '14 juil. 21:00', 'V97',  'V98' ],
-  [102, '15 juil. 21:00', 'V99',  'V100'],
-];
+
+const HUI_DATES = ['4 juil. 19:00','4 juil. 23:00','6 juil. 21:00','7 juil. 02:00','5 juil. 22:00','6 juil. 02:00','7 juil. 18:00','7 juil. 22:00'];
+const QUA_DATES = ['9 juil. 22:00','10 juil. 21:00','11 juil. 23:00','12 juil. 03:00'];
+const DEM_DATES = ['14 juil. 21:00','15 juil. 21:00'];
 
 export async function buildBracketHTML(supabase, eventId) {
   const PHASES = ['Seizièmes de finale','Huitièmes de finale','Quarts de finale','Demi-finales','Petite finale','Finale'];
@@ -169,15 +169,60 @@ export async function buildBracketHTML(supabase, eventId) {
   (matches || []).forEach(m => { if (byPhase[m.phase]) byPhase[m.phase].push(m); });
   PHASES.forEach(p => { byPhase[p].sort((a,b) => new Date(a.date_heure)-new Date(b.date_heure)); });
 
+  function getWinner(m) {
+    if (!m || m.statut !== 'termine') return null;
+    if (m.score_final_1 > m.score_final_2) return m.equipe_1;
+    if (m.score_final_1 < m.score_final_2) return m.equipe_2;
+    return null;
+  }
+
+  function getLoser(m) {
+    if (!m || m.statut !== 'termine') return null;
+    if (m.score_final_1 > m.score_final_2) return m.equipe_2;
+    if (m.score_final_1 < m.score_final_2) return m.equipe_1;
+    return null;
+  }
+
+  function findMatch(phaseMatches, e1, e2) {
+    if (!e1 || !e2) return null;
+    return phaseMatches.find(m =>
+      (m.equipe_1 === e1 && m.equipe_2 === e2) ||
+      (m.equipe_1 === e2 && m.equipe_2 === e1)
+    ) || null;
+  }
+
+  function findSeiMatch(idx) {
+    const [e1, e2] = SEI_INFO[idx];
+    return findMatch(byPhase['Seizièmes de finale'], e1, e2);
+  }
+
+  const seiWinners = SEI_INFO.map((_, i) => getWinner(findSeiMatch(i)));
+  const huiResults = HUI_DATES.map((_, i) => {
+    const m = findMatch(byPhase['Huitièmes de finale'], seiWinners[i*2], seiWinners[i*2+1]);
+    return { winner: getWinner(m), loser: getLoser(m), m };
+  });
+  const huiWinners = huiResults.map(r => r.winner);
+  const quaResults = QUA_DATES.map((_, i) => {
+    const m = findMatch(byPhase['Quarts de finale'], huiWinners[i*2], huiWinners[i*2+1]);
+    return { winner: getWinner(m), m };
+  });
+  const quaWinners = quaResults.map(r => r.winner);
+  const demResults = DEM_DATES.map((_, i) => {
+    const m = findMatch(byPhase['Demi-finales'], quaWinners[i*2], quaWinners[i*2+1]);
+    return { winner: getWinner(m), loser: getLoser(m), m };
+  });
+  const demWinners = demResults.map(r => r.winner);
+  const demLosers = demResults.map(r => r.loser);
+
   function fmt(dateStr) {
     return new Date(dateStr).toLocaleDateString('fr-FR',{
       day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Paris'
     });
   }
 
-  function card(m, fallbackDate, l1, l2) {
-    const e1 = m?.equipe_1 || null;
-    const e2 = m?.equipe_2 || null;
+  function card(m, fallbackDate, e1Known, e2Known, l1, l2) {
+    const e1 = m?.equipe_1 || e1Known || null;
+    const e2 = m?.equipe_2 || e2Known || null;
     const done = m?.statut === 'termine';
     const w = done ? (m.score_final_1>m.score_final_2 ? e1 : m.score_final_1<m.score_final_2 ? e2 : null) : null;
     const d = m ? fmt(m.date_heure) : fallbackDate;
@@ -188,7 +233,7 @@ export async function buildBracketHTML(supabase, eventId) {
         font-weight:${isW?700:400};">
         ${eq
           ? flagUrl(eq)+`<span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${eq}</span>`
-          : `<span style="flex:1;color:#4a7a9b;font-style:italic;font-size:10px;">${lbl}</span>`
+          : `<span style="flex:1;color:#4a7a9b;font-style:italic;font-size:10px;">${lbl||'?'}</span>`
         }
         ${sc!=null ? `<span style="color:#f97316;font-weight:700;margin-left:4px;">${sc}</span>` : ''}
       </div>`;
@@ -200,8 +245,6 @@ export async function buildBracketHTML(supabase, eventId) {
       </div>`;
   }
 
-  // Centres de positionnement (grille de rows de 20px chacune)
-  // 16 seizièmes espacés de 5 rows chacun → centres à 3,8,13,...78
   const STEP = 5;
   const seiC = Array.from({length:16}, (_,i) => 3 + i*STEP);
   const huiC = Array.from({length:8},  (_,i) => Math.round((seiC[i*2]+seiC[i*2+1])/2));
@@ -213,76 +256,77 @@ export async function buildBracketHTML(supabase, eventId) {
 
   let cells = '';
 
-  // Seizièmes (col 1)
-  SEI_INFO.forEach((s,i) => {
-    const m = byPhase['Seizièmes de finale'][i] || null;
+  // Seiziemes (col 1)
+  SEI_INFO.forEach(([e1, e2, date], i) => {
+    const m = findSeiMatch(i);
     cells += `<div style="grid-column:1;grid-row:${seiC[i]-2}/${seiC[i]+3};display:flex;align-items:center;">
-      ${card(m, s[1], s[2], s[3])}
+      ${card(m, date, e1, e2, e1, e2)}
     </div>`;
   });
 
-  // Connecteurs sei→hui (col 2)
+  // Connecteurs sei->hui (col 2)
   for (let i=0; i<8; i++) {
-    const r1 = seiC[i*2], r2 = seiC[i*2+1];
-    const rMid = huiC[i];
-    cells += `<div style="grid-column:2;grid-row:${r1}/${r2+2};
+    cells += `<div style="grid-column:2;grid-row:${seiC[i*2]}/${seiC[i*2+1]+2};
       border-right:1px solid #2a4a6c;border-top:1px solid #2a4a6c;border-bottom:1px solid #2a4a6c;"></div>`;
   }
 
-  // Huitièmes (col 3)
-  HUI_INFO.forEach((h,i) => {
-    const m = byPhase['Huitièmes de finale'][i] || null;
+  // Huitiemes (col 3)
+  HUI_DATES.forEach((date, i) => {
+    const e1 = seiWinners[i*2];
+    const e2 = seiWinners[i*2+1];
+    const m = findMatch(byPhase['Huitièmes de finale'], e1, e2);
     cells += `<div style="grid-column:3;grid-row:${huiC[i]-2}/${huiC[i]+3};display:flex;align-items:center;">
-      ${card(m, h[1], h[2], h[3])}
+      ${card(m, date, e1, e2, 'V S'+(i*2+1), 'V S'+(i*2+2))}
     </div>`;
   });
 
-  // Connecteurs hui→qua (col 4)
+  // Connecteurs hui->qua (col 4)
   for (let i=0; i<4; i++) {
-    const r1 = huiC[i*2], r2 = huiC[i*2+1];
-    cells += `<div style="grid-column:4;grid-row:${r1}/${r2+2};
+    cells += `<div style="grid-column:4;grid-row:${huiC[i*2]}/${huiC[i*2+1]+2};
       border-right:1px solid #2a4a6c;border-top:1px solid #2a4a6c;border-bottom:1px solid #2a4a6c;"></div>`;
   }
 
   // Quarts (col 5)
-  QUA_INFO.forEach((q,i) => {
-    const m = byPhase['Quarts de finale'][i] || null;
+  QUA_DATES.forEach((date, i) => {
+    const e1 = huiWinners[i*2];
+    const e2 = huiWinners[i*2+1];
+    const m = findMatch(byPhase['Quarts de finale'], e1, e2);
     cells += `<div style="grid-column:5;grid-row:${quaC[i]-2}/${quaC[i]+3};display:flex;align-items:center;">
-      ${card(m, q[1], q[2], q[3])}
+      ${card(m, date, e1, e2, 'V H'+(i*2+1), 'V H'+(i*2+2))}
     </div>`;
   });
 
-  // Connecteurs qua→dem (col 6)
+  // Connecteurs qua->dem (col 6)
   for (let i=0; i<2; i++) {
-    const r1 = quaC[i*2], r2 = quaC[i*2+1];
-    cells += `<div style="grid-column:6;grid-row:${r1}/${r2+2};
+    cells += `<div style="grid-column:6;grid-row:${quaC[i*2]}/${quaC[i*2+1]+2};
       border-right:1px solid #2a4a6c;border-top:1px solid #2a4a6c;border-bottom:1px solid #2a4a6c;"></div>`;
   }
 
   // Demis (col 7)
-  DEM_INFO.forEach((d,i) => {
-    const m = byPhase['Demi-finales'][i] || null;
+  DEM_DATES.forEach((date, i) => {
+    const e1 = quaWinners[i*2];
+    const e2 = quaWinners[i*2+1];
+    const m = findMatch(byPhase['Demi-finales'], e1, e2);
     cells += `<div style="grid-column:7;grid-row:${demC[i]-2}/${demC[i]+3};display:flex;align-items:center;">
-      ${card(m, d[1], d[2], d[3])}
+      ${card(m, date, e1, e2, 'V Q'+(i*2+1), 'V Q'+(i*2+2))}
     </div>`;
   });
 
-  // Connecteurs dem→fin (col 8)
-  const r1d = demC[0], r2d = demC[1];
-  cells += `<div style="grid-column:8;grid-row:${r1d}/${r2d+2};
+  // Connecteur dem->fin (col 8)
+  cells += `<div style="grid-column:8;grid-row:${demC[0]}/${demC[1]+2};
     border-right:1px solid #2a4a6c;border-top:1px solid #2a4a6c;border-bottom:1px solid #2a4a6c;"></div>`;
 
   // Finale (col 9)
-  const mFin = byPhase['Finale'][0] || null;
+  const mFin = findMatch(byPhase['Finale'], demWinners[0], demWinners[1]);
   cells += `<div style="grid-column:9;grid-row:${finC-2}/${finC+3};display:flex;align-items:center;">
-    ${card(mFin, '19 juil. 21:00', 'V101', 'V102')}
+    ${card(mFin, '19 juil. 21:00', demWinners[0], demWinners[1], 'V D1', 'V D2')}
   </div>`;
 
-  // Petite finale (col 9, sous la finale)
-  const mTpl = byPhase['Petite finale'][0] || null;
+  // Petite finale (col 9)
+  const mTpl = findMatch(byPhase['Petite finale'], demLosers[0], demLosers[1]);
   cells += `<div style="grid-column:9;grid-row:${tplC-2}/${tplC+3};display:flex;flex-direction:column;align-items:center;gap:4px;">
-    <div style="font-size:10px;color:#4a7a9b;font-weight:600;">🥉 Petite finale</div>
-    ${card(mTpl, '18 juil. 23:00', 'P101', 'P102')}
+    <div style="font-size:10px;color:#4a7a9b;font-weight:600;">&#127949; Petite finale</div>
+    ${card(mTpl, '18 juil. 23:00', demLosers[0], demLosers[1], 'Perdant D1', 'Perdant D2')}
   </div>`;
 
   return `
@@ -308,7 +352,7 @@ export async function buildBracketHTML(supabase, eventId) {
       </div>
     </div>
     <div style="font-size:11px;color:#4a7a9b;text-align:center;margin-top:8px;">
-      Les équipes s'affichent dès qu'elles sont qualifiées
+      Les vainqueurs s\'affichent automatiquement au fur et à mesure
     </div>`;
 }
 
@@ -324,15 +368,15 @@ export async function openTableauModal(supabase, eventId) {
   modal.innerHTML = `
     <div style="background:#0d1f3c;border:0.5px solid #1a3a5c;border-radius:14px;width:100%;max-width:680px;padding:24px;position:relative;margin:auto;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <div style="font-size:16px;font-weight:700;color:#fff;">🏆 Tableau de la compétition</div>
-        <button onclick="document.getElementById('karma-tableau-modal').remove()"
-          style="background:none;border:none;color:#4a7a9b;font-size:20px;cursor:pointer;line-height:1;">✕</button>
+        <div style="font-size:16px;font-weight:700;color:#fff;">&#127942; Tableau de la compétition</div>
+        <button onclick="document.getElementById(\'karma-tableau-modal\').remove()"
+          style="background:none;border:none;color:#4a7a9b;font-size:20px;cursor:pointer;line-height:1;">&#x2715;</button>
       </div>
       <div style="display:flex;gap:8px;margin-bottom:20px;">
-        <button id="tab-groupes" onclick="switchTab('groupes')"
+        <button id="tab-groupes" onclick="switchTab(\'groupes\')"
           style="flex:1;padding:8px;border-radius:8px;border:0.5px solid #1a3a5c;background:#f97316;color:#fff;font-size:13px;font-weight:600;cursor:pointer;">
           Phase de groupes</button>
-        <button id="tab-elim" onclick="switchTab('elim')"
+        <button id="tab-elim" onclick="switchTab(\'elim\')"
           style="flex:1;padding:8px;border-radius:8px;border:0.5px solid #1a3a5c;background:#0a1628;color:#4a7a9b;font-size:13px;font-weight:600;cursor:pointer;">
           Phases éliminatoires</button>
       </div>
