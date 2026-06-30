@@ -360,6 +360,7 @@
         const { data: page } = await supabase
           .from('votes').select('*')
           .in('match_id', matches.map(m => m.id))
+          .order('id')
           .range(from, from + pageSize - 1);
         if (!page || page.length === 0) break;
         tousLesVotes = tousLesVotes.concat(page);
