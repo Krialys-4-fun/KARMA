@@ -355,8 +355,13 @@ window.loadMatchesToResult = async function() {
   container.innerHTML = '';
   matches.forEach(m => {
     const isTermine = m.statut === 'termine';
+    // Phase de groupes : jamais de tirs au but, donc pas de sélecteur de qualification
+    const isGroupe = m.phase.startsWith('Groupe');
+    const scoresEgaux = m.score_final_1 != null && m.score_final_2 != null && m.score_final_1 === m.score_final_2;
+    const showQualif = !isGroupe && scoresEgaux;
+
     container.innerHTML += `
-      <div class="card" style="margin-bottom:8px;">
+      <div class="card" style="margin-bottom:8px;" data-groupe="${isGroupe ? '1' : '0'}">
         <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
           <span style="font-size:11px; color:#4a7a9b;">${formatDate(m.date_heure)} · ${m.phase}</span>
           <span class="badge ${isTermine ? 'badge-done' : 'badge-live'}">${isTermine ? 'Terminé' : 'À saisir'}</span>
@@ -364,16 +369,51 @@ window.loadMatchesToResult = async function() {
         <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
           <span style="flex:1; font-size:13px; color:#fff;">${m.equipe_1}</span>
           <input type="number" min="0" max="99" id="s1-${m.id}" value="${m.score_final_1 ?? ''}"
+            oninput="checkQualifNeeded('${m.id}')"
             style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; text-align:center; padding:4px;"/>
           <span style="color:#4a7a9b;">—</span>
           <input type="number" min="0" max="99" id="s2-${m.id}" value="${m.score_final_2 ?? ''}"
+            oninput="checkQualifNeeded('${m.id}')"
             style="width:40px; background:#0a1628; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; text-align:center; padding:4px;"/>
           <span style="flex:1; font-size:13px; color:#fff; text-align:right;">${m.equipe_2}</span>
+        </div>
+        <div id="qualif-${m.id}" style="display:${showQualif ? 'flex' : 'none'}; align-items:center; gap:8px;
+          margin-bottom:10px; padding:8px 10px; background:#0a1628; border-radius:6px; border:0.5px solid #1a3a5c;">
+          <span style="font-size:11px; color:#f97316; flex-shrink:0;">⚠️ Nul à 90 min — qualifié (prol./tab) :</span>
+          <select id="qualif-select-${m.id}"
+            style="flex:1; background:#0d1f3c; border:0.5px solid #1a3a5c; border-radius:6px; color:#fff; padding:4px 6px; font-size:12px;">
+            <option value="">-- Choisir --</option>
+            <option value="${m.equipe_1}" ${m.equipe_qualifiee === m.equipe_1 ? 'selected' : ''}>${m.equipe_1}</option>
+            <option value="${m.equipe_2}" ${m.equipe_qualifiee === m.equipe_2 ? 'selected' : ''}>${m.equipe_2}</option>
+          </select>
         </div>
         <button class="btn-secondary" style="width:auto; padding:6px 14px;"
           onclick="saveResult('${m.id}')">Enregistrer</button>
       </div>`;
   });
+}
+
+// Affiche/masque dynamiquement le sélecteur d'équipe qualifiée quand les deux
+// scores saisis deviennent égaux (uniquement hors phase de groupes).
+window.checkQualifNeeded = function(matchId) {
+  // Récupère la carte englobante via l'input pour savoir si c'est un match de groupes
+  const s1Input = document.getElementById('s1-' + matchId);
+  const cardEl = s1Input.closest('.card');
+  const isGroupe = cardEl?.dataset.groupe === '1';
+  const qualifDiv = document.getElementById('qualif-' + matchId);
+  if (!qualifDiv) return;
+
+  if (isGroupe) { qualifDiv.style.display = 'none'; return; }
+
+  const s2Input = document.getElementById('s2-' + matchId);
+  const s1 = s1Input.value;
+  const s2 = s2Input.value;
+
+  if (s1 !== '' && s2 !== '' && s1 === s2) {
+    qualifDiv.style.display = 'flex';
+  } else {
+    qualifDiv.style.display = 'none';
+  }
 }
 
 window.saveResult = async function(matchId) {
@@ -385,9 +425,24 @@ window.saveResult = async function(matchId) {
     return;
   }
 
-   const { error } = await supabase.from('matches').update({
+  const qualifDiv = document.getElementById('qualif-' + matchId);
+  const qualifVisible = qualifDiv && qualifDiv.style.display !== 'none';
+  let equipe_qualifiee = null;
+
+  if (qualifVisible) {
+    const select = document.getElementById('qualif-select-' + matchId);
+    equipe_qualifiee = select.value || null;
+    if (!equipe_qualifiee) {
+      alert("Match nul à 90 min : merci d'indiquer l'équipe qualifiée après prolongation/tirs au but.");
+      return;
+    }
+  }
+  // Si le score n'est plus un nul (correction), on efface un éventuel ancien flag.
+
+  const { error } = await supabase.from('matches').update({
     score_final_1: s1,
     score_final_2: s2,
+    equipe_qualifiee,
     statut: 'termine',
     updated_at: new Date().toISOString()
   }).eq('id', matchId);
