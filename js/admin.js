@@ -1,6 +1,7 @@
 import { supabase } from './supabase.js';
 import { renderNavbar } from './navbar.js';
 
+
 // ========== INIT ==========
 window.addEventListener('load', () => {
   const user = renderNavbar('admin');
