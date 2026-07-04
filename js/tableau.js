@@ -169,8 +169,13 @@ export async function buildBracketHTML(supabase, eventId) {
   (matches || []).forEach(m => { if (byPhase[m.phase]) byPhase[m.phase].push(m); });
   PHASES.forEach(p => { byPhase[p].sort((a,b) => new Date(a.date_heure)-new Date(b.date_heure)); });
 
+  // NOTE : le score_final_1/2 reste le score à 90 minutes (base du calcul des points
+  // de pronostic, inchangé). Quand un match à élimination directe se termine sur un
+  // score nul à 90 min, l'équipe qualifiée après prolongation/tirs au but est stockée
+  // séparément dans m.equipe_qualifiee. On la priorise ici pour la propagation du bracket.
   function getWinner(m) {
     if (!m || m.statut !== 'termine') return null;
+    if (m.equipe_qualifiee) return m.equipe_qualifiee;
     if (m.score_final_1 > m.score_final_2) return m.equipe_1;
     if (m.score_final_1 < m.score_final_2) return m.equipe_2;
     return null;
@@ -178,6 +183,7 @@ export async function buildBracketHTML(supabase, eventId) {
 
   function getLoser(m) {
     if (!m || m.statut !== 'termine') return null;
+    if (m.equipe_qualifiee) return m.equipe_qualifiee === m.equipe_1 ? m.equipe_2 : m.equipe_1;
     if (m.score_final_1 > m.score_final_2) return m.equipe_2;
     if (m.score_final_1 < m.score_final_2) return m.equipe_1;
     return null;
@@ -224,7 +230,7 @@ export async function buildBracketHTML(supabase, eventId) {
     const e1 = m?.equipe_1 || e1Known || null;
     const e2 = m?.equipe_2 || e2Known || null;
     const done = m?.statut === 'termine';
-    const w = done ? (m.score_final_1>m.score_final_2 ? e1 : m.score_final_1<m.score_final_2 ? e2 : null) : null;
+    const w = done ? (m.equipe_qualifiee || (m.score_final_1>m.score_final_2 ? e1 : m.score_final_1<m.score_final_2 ? e2 : null)) : null;
     const d = m ? fmt(m.date_heure) : fallbackDate;
     const teamRow = (eq, lbl, sc, isW, isL) => `
       <div style="display:flex;align-items:center;padding:4px 8px;font-size:11px;
