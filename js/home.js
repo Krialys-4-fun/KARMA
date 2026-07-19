@@ -29,6 +29,17 @@ function flag(equipe) {
   return `<img src="https://flagcdn.com/16x12/${code}.png" style="vertical-align:middle; margin-right:4px;"/> ${equipe}`;
 }
 
+// Détermine le vainqueur d'un match terminé, en priorisant equipe_qualifiee
+// (cas d'un match nul à 90 min tranché en prolongation/tirs au but) sur le
+// score à 90 min. Retourne null si aucun vainqueur ne peut être déterminé.
+function getMatchWinner(match) {
+  if (!match || match.statut !== 'termine') return null;
+  if (match.equipe_qualifiee) return match.equipe_qualifiee;
+  if (match.score_final_1 > match.score_final_2) return match.equipe_1;
+  if (match.score_final_1 < match.score_final_2) return match.equipe_2;
+  return null;
+}
+
 // ========== INIT ==========
 let currentUser = null;
 
@@ -140,6 +151,24 @@ async function loadCurrentRanking(eventId) {
     }
   });
 
+  // Bonus vainqueur du tournoi (+10 pts fixes, sans multiplicateur, tous modes confondus)
+  const finaleMatch = matches.find(m => m.phase === 'Finale');
+  const vainqueurTournoi = getMatchWinner(finaleMatch);
+  if (vainqueurTournoi) {
+    const { data: votesBonus } = await supabase
+      .from('votes_bonus')
+      .select('*, users!inner(login, mode)')
+      .eq('event_id', eventId);
+
+    votesBonus?.forEach(vb => {
+      const login = vb.users.login;
+      if (!scores[login]) scores[login] = { login, mode: vb.users.mode, points: 0 };
+      if (vb.equipe_gagnante_vote === vainqueurTournoi) {
+        scores[login].points += 10;
+      }
+    });
+  }
+
   const ranking = Object.values(scores).sort((a, b) => b.points - a.points);
 
   let html = `<table class="data-table">
@@ -246,6 +275,24 @@ async function loadLastEvent() {
       if (bonGagnant) scores[login].points += 3;
       if (r1 === v.score_vote_1 && r2 === v.score_vote_2) scores[login].points += 1;
     });
+
+    // Bonus vainqueur du tournoi (+10 pts fixes, tous modes confondus)
+    const finaleMatch = matches.find(m => m.phase === 'Finale');
+    const vainqueurTournoi = getMatchWinner(finaleMatch);
+    if (vainqueurTournoi) {
+      const { data: votesBonus } = await supabase
+        .from('votes_bonus')
+        .select('*, users!inner(login)')
+        .eq('event_id', event.id);
+
+      votesBonus?.forEach(vb => {
+        const login = vb.users.login;
+        if (!scores[login]) scores[login] = { login, points: 0 };
+        if (vb.equipe_gagnante_vote === vainqueurTournoi) {
+          scores[login].points += 10;
+        }
+      });
+    }
 
     top3 = Object.values(scores).sort((a, b) => b.points - a.points).slice(0, 3);
   }
